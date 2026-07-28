@@ -51,15 +51,10 @@ const Dashboard = () => {
     <div className="min-h-screen bg-slate-50 font-sans selection:bg-orange-100 antialiased">
       {/* Top Navbar */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
-        {/* Logo */}
-        <div className="flex items-center space-x-2.5 select-none">
-          <div className="bg-gradient-to-tr from-orange-500 to-amber-400 p-1.5 rounded-lg shadow flex items-center justify-center">
-            <Truck className="w-5 h-5 text-white transform -scale-x-100" />
-          </div>
-          <div className="flex items-center text-sm md:text-base">
-            <span className="font-extrabold tracking-tight text-slate-800">TRANSPORT</span>
-            <span className="font-extrabold tracking-tight text-orange-500 ml-1">ERP</span>
-          </div>
+        {/* Page Title */}
+        <div className="text-left select-none">
+          <h2 className="font-extrabold text-slate-800 text-sm md:text-base tracking-tight m-0">Dashboard Overview</h2>
+          <p className="text-[10px] text-slate-400 font-semibold tracking-wide uppercase mt-0.5">Control Center</p>
         </div>
 
         {/* User Profile & Logout */}
