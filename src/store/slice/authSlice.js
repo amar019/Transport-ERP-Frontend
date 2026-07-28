@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { login } from "../thunk/authThunk.js";
 
+const savedToken = localStorage.getItem("token");
+
 const initialState = {
     user: null,
-    token: null,
+    token: savedToken || null,
     isLoading: false,
     error: null,
-    isAuthenticated: false,
+    isAuthenticated: !!savedToken,
 };
 
 const authSlice = createSlice({
@@ -20,6 +22,7 @@ const authSlice = createSlice({
             state.token = null;
             state.isAuthenticated = false;
             state.error = null;
+            localStorage.removeItem("token");
         },
     },
 
@@ -38,6 +41,9 @@ const authSlice = createSlice({
 
                 state.token = action.payload.token;
                 state.user = action.payload.user;
+                if (action.payload.token) {
+                    localStorage.setItem("token", action.payload.token);
+                }
 
                 state.isAuthenticated = true;
                 state.error = null;
@@ -48,6 +54,7 @@ const authSlice = createSlice({
                 state.isLoading = false;
                 state.error = action.payload;
                 state.isAuthenticated = false;
+                localStorage.removeItem("token");
             });
     },
 });
