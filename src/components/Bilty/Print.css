@@ -1,0 +1,90 @@
+/* ==========================================================================
+   Bilty Print Styles & CSS Custom Properties
+   Optimized for Single A4 Landscape Browser Print & PDF Generation
+   ========================================================================== */
+
+:root {
+  /* Brand Colors */
+  --primary: #E85A1F;
+  --primary-dark: #D84315;
+  --text-main: #222222;
+  --text-muted: #555555;
+  --border-dark: #222222;
+  --border-card: #CFCFCF;
+  --border-light: #E5E5E5;
+  
+  /* Background Fills */
+  --bg-page: #FFFFFF;
+  --bg-highlight: #FFF3E0;
+  --bg-office-ribbon: #333333;
+  --bg-customer-ribbon: #E85A1F;
+
+  /* Typography */
+  --font-family: 'Noto Sans Devanagari', 'Poppins', -apple-system, sans-serif;
+
+  /* Strict A4 Landscape Dimensions */
+  --page-width: 285mm;
+  --page-height: 198mm;
+  --copy-height: 95mm;
+  --cut-height: 6mm;
+}
+
+/* Page Print Settings */
+@page {
+  size: A4 landscape;
+  margin: 0;
+}
+
+@media print {
+  /* Hide non-printable elements */
+  .no-print,
+  .no-print * {
+    display: none !important;
+  }
+
+  html, body {
+    width: 297mm !important;
+    height: 210mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    overflow: hidden !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .bilty-page-container {
+    width: 297mm !important;
+    height: 210mm !important;
+    margin: 0 !important;
+    padding: 6mm 6mm !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+  }
+}
+
+/* Reset & Box Sizing */
+.bilty-page-container,
+.bilty-page-container * {
+  box-sizing: border-box;
+  font-family: var(--font-family);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.bilty-page-container {
+  width: var(--page-width);
+  height: var(--page-height);
+  background: var(--bg-page);
+  color: var(--text-main);
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}

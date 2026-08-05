@@ -1,0 +1,77 @@
+/* ==========================================================================
+   ReceiverSection CSS Module (Compact Width: 126mm)
+   ========================================================================== */
+
+.receiverCard {
+  flex: 1;
+  height: 19mm;
+  border: 1px solid var(--border, #CFCFCF);
+  border-radius: 4px;
+  padding: 1mm 2.5mm 1mm calc(2.5mm + 4px);
+  box-sizing: border-box;
+  background: var(--bg, #FFFFFF);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 1.5mm;
+  color: #EB5A00;
+  font-weight: 800;
+  font-size: 7.2pt;
+  line-height: 1;
+  margin-bottom: 0.3mm;
+}
+
+.titleIcon {
+  font-size: 8pt;
+  color: #EB5A00;
+}
+
+.titleMarathi {
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  color: #EB5A00;
+}
+
+.titleEnglish {
+  font-size: 6.5pt;
+  color: #EB5A00;
+  font-weight: 700;
+}
+
+.detailsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5mm;
+  font-size: 7.5pt;
+  line-height: 1.15;
+}
+
+.detailRow {
+  display: flex;
+  align-items: baseline;
+}
+
+.label {
+  width: 14mm;
+  color: #222222;
+  font-weight: 700;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+}
+
+.colon {
+  margin-right: 1.5mm;
+  color: #222222;
+  font-weight: 700;
+}
+
+.value {
+  color: #111111;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

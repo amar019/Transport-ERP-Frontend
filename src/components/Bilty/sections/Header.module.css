@@ -1,0 +1,433 @@
+/* ==========================================================================
+   Header Section CSS Module (Payment Mode Removed)
+   - Left: Logo + Company Title (~114mm)
+   - Middle: Contacts & Branches (~65mm)
+   - Booking Info Card (~50mm)
+   - Right Panel (~46mm): QR Payment Card + Corner Ribbon
+   ========================================================================== */
+
+.headerWrapper {
+  display: flex;
+  width: 100%;
+  gap: 2mm;
+  align-items: stretch;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+/* 1. Logo & Brand Title Box (~114mm) */
+.logoCompanyBox {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2mm;
+  padding: 0 1mm;
+  box-sizing: border-box;
+}
+
+.logoArea {
+  width: 20mm;
+  height: 20mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logoSvg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.companyInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  text-align: center;
+}
+
+.shree {
+  font-size: 8pt;
+  font-weight: 700;
+  color: var(--text, #222222);
+  margin-bottom: 0.1mm;
+}
+
+.companyName {
+  font-size: 26pt;
+  font-weight: 900;
+  color: #EB5A00;
+  line-height: 0.95;
+  letter-spacing: 0.5px;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+}
+
+.subtitleWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5mm;
+  margin: 0.6mm 0 0.4mm 0;
+  width: 100%;
+}
+
+.subLine {
+  height: 1.2px;
+  background-color: #222222;
+  flex: 1;
+  min-width: 8mm;
+}
+
+.subtitle {
+  font-size: 13pt;
+  font-weight: 800;
+  color: #222222;
+  line-height: 1;
+  white-space: nowrap;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+}
+
+.tagline {
+  font-size: 7.5pt;
+  font-weight: 700;
+  color: #EB5A00;
+  margin-top: 0.1mm;
+  white-space: nowrap;
+}
+
+/* 2. Middle Section - Contacts & Branches (~65mm) */
+.branchBox {
+  flex: 0 0 65mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 1mm;
+  box-sizing: border-box;
+  font-size: 6.8pt;
+  line-height: 1.2;
+  color: var(--text, #222222);
+}
+
+.phonesRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 3.5mm;
+  margin-bottom: 1.2mm;
+}
+
+.phoneItem {
+  display: flex;
+  align-items: center;
+  gap: 1.2mm;
+  font-weight: 900;
+  font-size: 9.5pt;
+  color: #111111;
+  line-height: 1.1;
+  font-family: 'Poppins', sans-serif;
+}
+
+.phoneIconCircle {
+  width: 3.8mm;
+  height: 3.8mm;
+  border-radius: 50%;
+  border: 1.2px solid #222222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5.5pt;
+  flex-shrink: 0;
+}
+
+.branchesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8mm;
+}
+
+.branchItem {
+  display: flex;
+  align-items: center;
+  gap: 1mm;
+  white-space: nowrap;
+}
+
+.branchTitle {
+  font-weight: 800;
+  font-size: 7.2pt;
+  color: #111111;
+}
+
+.colon {
+  font-weight: 700;
+  color: #222222;
+  margin: 0 0.5mm;
+}
+
+.branchAddress {
+  font-size: 6.8pt;
+  font-weight: 500;
+  color: #444444;
+  white-space: nowrap;
+}
+
+.pinIcon {
+  font-size: 6.5pt;
+  color: #EB5A00;
+  flex-shrink: 0;
+}
+
+.serviceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8mm;
+  margin-top: 1.5mm;
+  font-size: 6.9pt;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.serviceTitle {
+  font-weight: 800;
+  color: #EB5A00;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  flex-shrink: 0;
+}
+
+.serviceLocations {
+  font-weight: 600;
+  color: #333333;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.websiteRow {
+  display: flex;
+  align-items: center;
+  gap: 1mm;
+  margin-top: 0.4mm;
+  font-size: 6.5pt;
+  font-weight: 800;
+  color: #222222;
+  line-height: 1;
+}
+
+.globeIcon {
+  color: #EB5A00;
+  flex-shrink: 0;
+}
+
+.websiteUrl {
+  font-family: 'Poppins', sans-serif;
+  color: #111111;
+  letter-spacing: 0.2px;
+}
+
+/* 3. Booking Info Card (~50mm) */
+.bookingCard {
+  flex: 0 0 50mm;
+  height: 27mm;
+  border: 1px solid #777777;
+  border-radius: 6px;
+  padding: 1.5mm 2.5mm;
+  box-sizing: border-box;
+  background: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.biltyLabel {
+  font-size: 7.5pt;
+  font-weight: 700;
+  color: #222222;
+  line-height: 1.1;
+}
+
+.biltyNumber {
+  font-size: 17pt;
+  font-weight: 900;
+  color: #EB5A00;
+  line-height: 1.05;
+  letter-spacing: 0.5px;
+  margin-top: 0.3mm;
+  font-family: 'Poppins', sans-serif;
+}
+
+.divider {
+  height: 1px;
+  background-color: #D9D9D9;
+  margin: 0.5mm 0;
+  width: 100%;
+}
+
+.dateRow {
+  display: flex;
+  align-items: center;
+  gap: 1.5mm;
+  font-size: 8pt;
+}
+
+.dateLabel {
+  font-weight: 700;
+  color: #222222;
+}
+
+.dateValue {
+  font-weight: 900;
+  color: #111111;
+  font-size: 8.8pt;
+}
+
+.statusGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3mm;
+}
+
+.statusLabel {
+  font-size: 6pt;
+  font-weight: 800;
+  color: #EB5A00;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.statusBadge {
+  background-color: #EB5A00;
+  color: #FFFFFF;
+  font-size: 7.5pt;
+  font-weight: 900;
+  padding: 2px 10px;
+  border-radius: 10px;
+  letter-spacing: 0.4px;
+  display: inline-block;
+  width: max-content;
+  line-height: 1.1;
+}
+
+/* 4. RIGHT PANEL COLUMN (~46mm) */
+.rightPanelColumn {
+  flex: 0 0 46mm;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.qrCard {
+  height: 27mm;
+  border: 1px solid #777777;
+  border-radius: 6px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  padding: 2mm 1mm 1mm 1mm;
+  background: #FFFFFF;
+}
+
+.copyRibbon {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  background-color: #EB5A00;
+  color: #FFFFFF;
+  font-size: 7.5pt;
+  font-weight: 800;
+  padding: 2px 12px;
+  border-bottom-left-radius: 8px;
+  border-top-right-radius: 5px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  line-height: 1.1;
+  font-family: 'Poppins', sans-serif;
+  z-index: 2;
+}
+
+.copyRibbonOffice {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  background-color: #333333;
+  color: #FFFFFF;
+  font-size: 7.5pt;
+  font-weight: 800;
+  padding: 2px 12px;
+  border-bottom-left-radius: 8px;
+  border-top-right-radius: 5px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  line-height: 1.1;
+  font-family: 'Poppins', sans-serif;
+  z-index: 2;
+}
+
+.scanPayTitle {
+  font-size: 7.8pt;
+  font-weight: 900;
+  color: #EB5A00;
+  text-align: center;
+  line-height: 1.1;
+  letter-spacing: 0.4px;
+}
+
+.upiTitle {
+  font-size: 7.2pt;
+  font-weight: 800;
+  color: #EB5A00;
+  text-align: center;
+  line-height: 1.1;
+  margin-bottom: 0.5mm;
+  letter-spacing: 0.3px;
+}
+
+.qrContainer {
+  width: 16.5mm;
+  height: 16.5mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.2mm auto;
+}
+
+.qrImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.upiDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.3mm;
+}
+
+.upiLabel {
+  font-size: 5.5pt;
+  color: #EB5A00;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.upiId {
+  font-size: 5.8pt;
+  color: #EB5A00;
+  font-weight: 800;
+  line-height: 1.1;
+  word-break: break-all;
+  text-align: center;
+}

@@ -1,0 +1,99 @@
+/* ==========================================================================
+   RouteSection CSS Module (Height: 20mm, Width: 48mm)
+   ========================================================================== */
+
+.routeCard {
+  flex: 0 0 48mm;
+  height: 19mm;
+  border: 1px solid var(--border, #CFCFCF);
+  border-radius: 4px;
+  padding: 1mm 2.5mm;
+  box-sizing: border-box;
+  background: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 1mm;
+  color: #EB5A00;
+  font-weight: 800;
+  font-size: 7.2pt;
+  line-height: 1;
+  border-bottom: 1px dashed #E5E7EB;
+  padding-bottom: 0.8mm;
+}
+
+.titleIcon {
+  color: #EB5A00;
+  flex-shrink: 0;
+}
+
+.titleMarathi {
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  color: #EB5A00;
+  font-weight: 800;
+}
+
+.titleEnglish {
+  font-size: 6pt;
+  color: #666666;
+  font-weight: 700;
+}
+
+.routeDetails {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1mm;
+  flex: 1;
+  padding-top: 0.3mm;
+}
+
+.routeBlock {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.routeLabel {
+  font-size: 5.5pt;
+  font-weight: 800;
+  color: #777777;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.routeCity {
+  font-size: 6.8pt;
+  font-weight: 900;
+  color: #111111;
+  margin-top: 0.2mm;
+  line-height: 1.05;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.routeCityHighlight {
+  font-size: 6.8pt;
+  font-weight: 900;
+  color: #EB5A00;
+  margin-top: 0.2mm;
+  line-height: 1.05;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.arrowContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0 0.5mm;
+}

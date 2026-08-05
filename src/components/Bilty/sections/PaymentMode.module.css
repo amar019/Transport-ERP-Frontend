@@ -1,0 +1,69 @@
+/* ==========================================================================
+   PaymentMode CSS Module (Height Budget: 18mm)
+   ========================================================================== */
+
+.paymentModeCard {
+  flex: 0 0 46mm;
+  height: 18mm;
+  border: 1px solid var(--border, #CFCFCF);
+  border-radius: 4px;
+  padding: 1mm 2.5mm;
+  box-sizing: border-box;
+  background: var(--bg, #FFFFFF);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.title {
+  font-size: 6pt;
+  font-weight: 800;
+  color: #EB5A00;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  margin-bottom: 0.8mm;
+}
+
+.optionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5mm;
+}
+
+.optionItem {
+  display: flex;
+  align-items: center;
+  gap: 1.5mm;
+  font-size: 6.8pt;
+  font-weight: 700;
+  color: #222222;
+  line-height: 1;
+}
+
+.checkbox {
+  width: 2.6mm;
+  height: 2.6mm;
+  border: 1px solid #333333;
+  border-radius: 1px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5pt;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.checkedBox {
+  width: 2.6mm;
+  height: 2.6mm;
+  border: 1px solid #111111;
+  border-radius: 1px;
+  background-color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5.5pt;
+  font-weight: 900;
+  color: #111111;
+  line-height: 1;
+}

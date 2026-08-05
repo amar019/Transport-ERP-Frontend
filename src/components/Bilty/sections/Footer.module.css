@@ -1,0 +1,63 @@
+/* ==========================================================================
+   Footer CSS Module (Height Budget: 5mm)
+   ========================================================================== */
+
+.footerStrip {
+  width: 100%;
+  height: 5mm;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  padding: 0 1.5mm;
+  background: var(--bg, #FFFFFF);
+  font-size: 5.8pt;
+  line-height: 1;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.serviceLeft {
+  display: flex;
+  align-items: center;
+  gap: 1.5mm;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.serviceTitle {
+  font-weight: 800;
+  color: #EB5A00;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  flex-shrink: 0;
+  font-size: 6pt;
+}
+
+.serviceLocations {
+  font-weight: 600;
+  color: #222222;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 5.8pt;
+}
+
+.websiteRight {
+  display: flex;
+  align-items: center;
+  gap: 1mm;
+  font-weight: 700;
+  color: #111111;
+  flex-shrink: 0;
+}
+
+.globeIcon {
+  font-size: 6pt;
+  color: #222222;
+}
+
+.websiteUrl {
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.2px;
+  font-size: 6pt;
+}

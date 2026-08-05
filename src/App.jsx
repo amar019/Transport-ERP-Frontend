@@ -7,7 +7,11 @@ import Customers from "./pages/customer";
 import CustomerForm from "./components/customers/CustomerForm";
 import CustomerDetails from "./components/customers/CustomerDetails";
 
+import BookingList from "./pages/Booking/BookingList";
+import BookingFormPage from "./pages/Booking/BookingFormPage";
+import BookingDetails from "./pages/Booking/BookingDetails";
 import PlaceholderPage from "./pages/PlaceholderPage";
+import BiltyPreview from "./pages/BiltyPreview";
 
 function App() {
   return (
@@ -18,7 +22,10 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/booking" element={<PlaceholderPage />} />
+          <Route path="/booking" element={<BookingList />} />
+          <Route path="/bookings/new" element={<BookingFormPage />} />
+          <Route path="/bookings/:id/edit" element={<BookingFormPage />} />
+          <Route path="/bookings/:id" element={<BookingDetails />} />
           <Route path="/lr-parcel" element={<PlaceholderPage />} />
           <Route path="/delivery" element={<PlaceholderPage />} />
           <Route path="/trips" element={<PlaceholderPage />} />
@@ -40,6 +47,9 @@ function App() {
           <Route path="/roles-permissions" element={<PlaceholderPage />} />
           <Route path="/settings" element={<PlaceholderPage />} />
         </Route>
+
+        <Route path="/bilty-preview" element={<BiltyPreview />} />
+        <Route path="/bilty-preview/:id" element={<BiltyPreview />} />
 
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
