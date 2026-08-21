@@ -29,7 +29,6 @@ const WireframeCopy = ({ type, booking = {} }) => {
   ];
 
   const charges = {
-    parcelCharge: booking.parcelCharge ?? 0,
     crossing: booking.crossing ?? 0,
     freight: booking.freight ?? 0,
     hamali: booking.hamali ?? 0,
@@ -51,8 +50,8 @@ const WireframeCopy = ({ type, booking = {} }) => {
           {/* Row 2: Sender, Route & Receiver Sections */}
           <div className={styles.row2}>
             <SenderSection sender={sender} />
-            <RouteSection fromCity={booking.from} toCity={booking.to} />
-            <ReceiverSection customer={customer} deliveryAddress={booking.deliveryAddress} />
+            <RouteSection fromCity={booking.fromBranch?.name || booking.from || "-"} toCity={booking.toBranch?.name || booking.to || "-"} />
+            <ReceiverSection customer={customer} deliveryAddress={booking.deliveryAddress} receiver={booking.receiver} />
           </div>
         </div>
 

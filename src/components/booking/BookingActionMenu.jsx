@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import {
   Eye,
   Pencil,
@@ -10,6 +11,7 @@ import {
   Trash2,
   AlertTriangle,
   Loader2,
+  Lock,
 } from "lucide-react";
 
 export default function BookingActionMenu({
@@ -19,6 +21,8 @@ export default function BookingActionMenu({
   showToast,
 }) {
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -30,6 +34,13 @@ export default function BookingActionMenu({
   const bookingId = booking._id || booking.id;
   const isCancelled = booking.status === "CANCELLED";
   const isBooked = booking.status === "BOOKED" || !booking.status;
+
+  // Role & Memo checks
+  const isBookingBranch = user?.branch?.type === "BOOKING";
+  const isMemoAssigned = Boolean(booking.memo);
+  const canEdit = isBookingBranch && isBooked && !isMemoAssigned;
+  const canCancel = isBookingBranch && isBooked && !isMemoAssigned;
+  const canDelete = isBookingBranch && (isBooked || isCancelled) && !isMemoAssigned;
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -50,6 +61,7 @@ export default function BookingActionMenu({
 
   const handleEdit = (e) => {
     e.stopPropagation();
+    if (!canEdit) return;
     navigate(`/bookings/${bookingId}/edit`);
   };
 
@@ -90,7 +102,7 @@ export default function BookingActionMenu({
 
   return (
     <div className="relative inline-flex items-center gap-1" ref={menuRef}>
-      {/* Quick Action Icons */}
+      {/* Quick Action: View */}
       <button
         type="button"
         onClick={handleView}
@@ -100,7 +112,8 @@ export default function BookingActionMenu({
         <Eye className="w-3.5 h-3.5" />
       </button>
 
-      {isBooked && (
+      {/* Quick Action: Edit (Only if permitted) */}
+      {canEdit && (
         <button
           type="button"
           onClick={handleEdit}
@@ -111,6 +124,7 @@ export default function BookingActionMenu({
         </button>
       )}
 
+      {/* Quick Action: Print */}
       <button
         type="button"
         onClick={handlePrintBilty}
@@ -135,7 +149,7 @@ export default function BookingActionMenu({
 
       {/* Dropdown Menu */}
       {dropdownOpen && (
-        <div className="absolute right-0 top-full mt-1 w-44 bg-white border border-slate-200 rounded-xl shadow-lg z-30 py-1 text-xs font-semibold text-slate-700 animate-in fade-in zoom-in-95 duration-100">
+        <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-slate-200 rounded-xl shadow-lg z-30 py-1 text-xs font-semibold text-slate-700 animate-in fade-in zoom-in-95 duration-100">
           <button
             type="button"
             onClick={handleView}
@@ -144,7 +158,7 @@ export default function BookingActionMenu({
             <Eye className="w-3.5 h-3.5 text-slate-400" /> View Details
           </button>
 
-          {isBooked && (
+          {canEdit && (
             <button
               type="button"
               onClick={handleEdit}
@@ -162,39 +176,47 @@ export default function BookingActionMenu({
             <Printer className="w-3.5 h-3.5 text-slate-400" /> Print Bilty
           </button>
 
-          <div className="h-px bg-slate-100 my-1"></div>
+          {isMemoAssigned && (
+            <div className="px-3 py-1.5 bg-amber-50 text-amber-800 text-[10px] font-bold flex items-center gap-1.5 my-1">
+              <Lock className="w-3 h-3 text-amber-600 shrink-0" />
+              <span>Assigned to Memo</span>
+            </div>
+          )}
 
-          {/* Cancel Option (Only for BOOKED) */}
-          {isBooked && (
+          {canCancel && (
+            <>
+              <div className="h-px bg-slate-100 my-1"></div>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDropdownOpen(false);
+                  setCancelModalOpen(true);
+                }}
+                className="w-full px-3 py-2 text-left hover:bg-rose-50 text-rose-600 flex items-center gap-2 transition-colors cursor-pointer"
+              >
+                <XCircle className="w-3.5 h-3.5" /> Cancel Booking
+              </button>
+            </>
+          )}
+
+          {canDelete && (
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 setDropdownOpen(false);
-                setCancelModalOpen(true);
+                setDeleteModalOpen(true);
               }}
-              className="w-full px-3 py-2 text-left hover:bg-rose-50 text-rose-600 flex items-center gap-2 transition-colors cursor-pointer"
+              className="w-full px-3 py-2 text-left hover:bg-rose-50 text-rose-700 flex items-center gap-2 transition-colors cursor-pointer"
             >
-              <XCircle className="w-3.5 h-3.5" /> Cancel Booking
+              <Trash2 className="w-3.5 h-3.5" /> Delete Booking
             </button>
           )}
-
-          {/* Delete Option (For BOOKED and CANCELLED) */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setDropdownOpen(false);
-              setDeleteModalOpen(true);
-            }}
-            className="w-full px-3 py-2 text-left hover:bg-rose-50 text-rose-700 flex items-center gap-2 transition-colors cursor-pointer"
-          >
-            <Trash2 className="w-3.5 h-3.5" /> Delete Booking
-          </button>
         </div>
       )}
 
-      {/* Cancel Confirmation Modal using createPortal to mount on document.body */}
+      {/* Cancel Confirmation Modal */}
       {cancelModalOpen &&
         createPortal(
           <div
@@ -249,7 +271,7 @@ export default function BookingActionMenu({
           document.body
         )}
 
-      {/* Delete Confirmation Modal using createPortal to mount on document.body */}
+      {/* Delete Confirmation Modal */}
       {deleteModalOpen &&
         createPortal(
           <div

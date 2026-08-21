@@ -20,6 +20,20 @@ export const ChargesTable = ({
     return isNaN(num) ? "0.00" : num.toFixed(2);
   };
 
+  const chargesList = Array.isArray(charges)
+    ? charges.filter(
+        (item) =>
+          !item.label?.includes("पार्सल") &&
+          !item.label?.toLowerCase().includes("parcel")
+      )
+    : [
+        { label: "१. क्रॉसिंग (CROSSING)", amount: charges.crossing ?? 0 },
+        { label: "२. भाडे (FREIGHT)", amount: charges.freight ?? 0 },
+        { label: "३. हमाली (HAMALI)", amount: charges.hamali ?? 0 },
+        { label: "४. बिल्टी चार्ज (BILTY CHARGE)", amount: charges.biltyCharge ?? 0 },
+        { label: "५. इतर (OTHER CHARGES)", amount: charges.otherCharges ?? 0 }
+      ];
+
   return (
     <div className={styles.chargesCard}>
       {/* Section Header */}
@@ -33,7 +47,7 @@ export const ChargesTable = ({
 
       {/* Charges List */}
       <div className={styles.chargesList}>
-        {charges.map((item, idx) => (
+        {chargesList.map((item, idx) => (
           <div key={idx} className={styles.chargeRow}>
             <div className={styles.chargeLeft}>
               <span className={styles.chargeLabel}>

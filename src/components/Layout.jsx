@@ -23,7 +23,7 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
-  Menu
+  Menu,
 } from "lucide-react";
 
 const Layout = ({ children }) => {
@@ -42,6 +42,7 @@ const Layout = ({ children }) => {
     const path = location.pathname;
     if (path.includes("dashboard")) setActiveItem("Dashboard");
     else if (path.includes("booking")) setActiveItem("Booking");
+    else if (path.includes("memo")) setActiveItem("Memos");
     else if (path.includes("lr-parcel")) setActiveItem("LR / Parcel");
     else if (path.includes("delivery")) setActiveItem("Delivery");
     else if (path.includes("trips")) setActiveItem("Trips");
@@ -69,17 +70,17 @@ const Layout = ({ children }) => {
   const menuGroups = [
     {
       items: [
-        { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" }
-      ]
+        { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
+      ],
     },
     {
       group: "OPERATIONS",
       items: [
         { name: "Booking", icon: FileText, path: "/booking" },
-        { name: "LR / Parcel", icon: ClipboardCheck, path: "/lr-parcel" },
+        { name: "Memos", icon: ClipboardCheck, path: "/memos" },
+
         { name: "Delivery", icon: Truck, path: "/delivery" },
-        { name: "Trips", icon: Route, path: "/trips" }
-      ]
+      ],
     },
     {
       group: "MASTERS",
@@ -88,33 +89,33 @@ const Layout = ({ children }) => {
         { name: "Vehicles", icon: Truck, path: "/vehicles" },
         { name: "Drivers", icon: User, path: "/drivers" },
         { name: "Branches", icon: Building2, path: "/branches" },
-        { name: "Locations", icon: MapPin, path: "/locations" }
-      ]
+
+      ],
     },
     {
       group: "FINANCE",
       items: [
         { name: "Billing", icon: Receipt, path: "/billing" },
         { name: "Payments", icon: CreditCard, path: "/payments" },
-        { name: "Expenses", icon: Coins, path: "/expenses" }
-      ]
+        { name: "Expenses", icon: Coins, path: "/expenses" },
+      ],
     },
     {
       group: "REPORTS",
       items: [
         { name: "Booking Reports", icon: BarChart3, path: "/booking-reports" },
         { name: "Delivery Reports", icon: PieChart, path: "/delivery-reports" },
-        { name: "Financial Reports", icon: LineChart, path: "/financial-reports" }
-      ]
+        { name: "Financial Reports", icon: LineChart, path: "/financial-reports" },
+      ],
     },
     {
       group: "SETTINGS",
       items: [
         { name: "Users", icon: Users, path: "/users" },
         { name: "Roles & Permissions", icon: Shield, path: "/roles-permissions" },
-        { name: "Settings", icon: Settings, path: "/settings" }
-      ]
-    }
+        { name: "Settings", icon: Settings, path: "/settings" },
+      ],
+    },
   ];
 
   // Component Sidebar View
@@ -139,7 +140,6 @@ const Layout = ({ children }) => {
 
       {/* Curved White Mask Overlap */}
       <div className="rounded-t-[1.75rem] bg-white -mt-4 pt-3 flex-1 flex flex-col overflow-hidden z-10 relative">
-        
         {/* Trishul Ornament Emblem in Center of Curve */}
         {!isCollapsed && (
           <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20 bg-white px-2 py-0.5 rounded-full flex items-center justify-center border border-amber-300/80 shadow-xs">
@@ -148,6 +148,9 @@ const Layout = ({ children }) => {
             </svg>
           </div>
         )}
+
+
+
 
         {/* Scrollable Navigation Menu List */}
         <div className="flex-1 overflow-y-auto px-3 pb-6 space-y-3 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
@@ -181,11 +184,10 @@ const Layout = ({ children }) => {
                         setActiveItem(item.name);
                         setIsMobileOpen(false);
                       }}
-                      className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold tracking-wide transition-all duration-200 relative group text-left ${
-                        isActive
-                          ? "bg-[#fff4ed] text-[#ff5400] font-bold border border-orange-200/60 shadow-xs"
-                          : "text-slate-700 hover:text-slate-900 hover:bg-orange-50/60"
-                      }`}
+                      className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold tracking-wide transition-all duration-200 relative group text-left ${isActive
+                        ? "bg-[#fff4ed] text-[#ff5400] font-bold border border-orange-200/60 shadow-xs"
+                        : "text-slate-700 hover:text-slate-900 hover:bg-orange-50/60"
+                        }`}
                     >
                       {/* Active Left Indicator Pill */}
                       {isActive && (
@@ -260,9 +262,10 @@ const Layout = ({ children }) => {
       </div>
 
       {/* Sidebar: Desktop */}
-      <aside className={`hidden md:block flex-shrink-0 bg-white border-r border-slate-200 h-screen sticky top-0 transition-all duration-300 z-20 ${
-        isCollapsed ? "w-20" : "w-64"
-      }`}>
+      <aside
+        className={`hidden md:block flex-shrink-0 bg-white border-r border-slate-200 h-screen sticky top-0 transition-all duration-300 z-20 ${isCollapsed ? "w-20" : "w-64"
+          }`}
+      >
         <SidebarContent />
       </aside>
 

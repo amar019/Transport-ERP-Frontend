@@ -30,6 +30,7 @@ export default function BookingList() {
   const dispatch = useDispatch();
 
   // Redux state
+  const { user } = useSelector((state) => state.auth);
   const { list: rawBookings, isLoading, error: reduxError } = useSelector(
     (state) => state.bookings
   );
@@ -95,6 +96,8 @@ export default function BookingList() {
         ownerName.includes(q) ||
         fromLoc.includes(q) ||
         toLoc.includes(q) ||
+        (b.fromBranch?.name || "").toLowerCase().includes(q) ||
+        (b.toBranch?.name || "").toLowerCase().includes(q) ||
         deliveryAddress.includes(q) ||
         itemName.includes(q);
 
@@ -392,15 +395,17 @@ export default function BookingList() {
           )}
 
 
-          {/* Primary Action: + New Booking */}
-          <button
-            type="button"
-            onClick={() => navigate("/bookings/new")}
-            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold px-4 py-2 rounded-xl shadow-md shadow-orange-500/20 active:scale-[0.98] transition-all text-xs md:text-sm select-none cursor-pointer"
-          >
-            <Plus className="w-4 h-4 stroke-[3]" />
-            <span> New Booking</span>
-          </button>
+          {/* Primary Action: + New Booking (BOOKING branch only) */}
+          {user?.branch?.type === "BOOKING" && (
+            <button
+              type="button"
+              onClick={() => navigate("/bookings/new")}
+              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold px-4 py-2 rounded-xl shadow-md shadow-orange-500/20 active:scale-[0.98] transition-all text-xs md:text-sm select-none cursor-pointer"
+            >
+              <Plus className="w-4 h-4 stroke-[3]" />
+              <span> New Booking</span>
+            </button>
+          )}
         </div>
       </div>
 

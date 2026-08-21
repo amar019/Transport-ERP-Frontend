@@ -10,10 +10,36 @@ import styles from './ReceiverSection.module.css';
  */
 
 export const ReceiverSection = ({ customer = {}, deliveryAddress = "", receiver = {} }) => {
-  const shopName = customer?.shopName || receiver?.shopName || receiver?.name || "-";
+  const shopName = customer?.shopName || receiver?.shopName || receiver?.name || customer?.name || "-";
   const ownerName = customer?.ownerName || receiver?.ownerName || "";
-  const mobile = customer?.mobile || receiver?.mobile || "-";
-  const address = deliveryAddress || receiver?.address || "-";
+  const mobile = customer?.mobile || customer?.phone || receiver?.mobile || receiver?.phone || "-";
+
+  // Build structured address from customer/receiver if available
+  const customerFullAddress = [
+    customer?.address || customer?.deliveryAddress,
+    customer?.area,
+    customer?.city
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  const receiverFullAddress = [
+    receiver?.address || receiver?.deliveryAddress,
+    receiver?.area,
+    receiver?.city
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  const address =
+    (deliveryAddress && typeof deliveryAddress === "string" && deliveryAddress.trim()) ||
+    (customer?.deliveryAddress && typeof customer.deliveryAddress === "string" && customer.deliveryAddress.trim()) ||
+    (customer?.address && typeof customer.address === "string" && customer.address.trim()) ||
+    customerFullAddress ||
+    (receiver?.deliveryAddress && typeof receiver.deliveryAddress === "string" && receiver.deliveryAddress.trim()) ||
+    (receiver?.address && typeof receiver.address === "string" && receiver.address.trim()) ||
+    receiverFullAddress ||
+    "-";
 
   return (
     <div className={styles.receiverCard}>

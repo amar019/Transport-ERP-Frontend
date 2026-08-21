@@ -21,6 +21,8 @@ import {
   Loader2,
   AlertTriangle,
   IndianRupee,
+  Building2,
+  Lock,
 } from "lucide-react";
 import { fetchBookingById, cancelBookingThunk, deleteBookingThunk } from "../../store/thunk/bookingThunk";
 import BookingStatusBadge from "../../components/booking/BookingStatusBadge";
@@ -30,6 +32,7 @@ export default function BookingDetails() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const { user } = useSelector((state) => state.auth);
   const { currentBooking: booking, isLoading, error } = useSelector((state) => state.bookings);
 
   const [toast, setToast] = useState(null);
@@ -52,6 +55,13 @@ export default function BookingDetails() {
 
   const isBooked = booking?.status === "BOOKED" || !booking?.status;
   const isCancelled = booking?.status === "CANCELLED";
+
+  // Role & Memo checks
+  const isBookingBranch = user?.branch?.type === "BOOKING";
+  const isMemoAssigned = Boolean(booking?.memo);
+  const canEdit = isBookingBranch && isBooked && !isMemoAssigned;
+  const canCancel = isBookingBranch && isBooked && !isMemoAssigned;
+  const canDelete = isBookingBranch && (isBooked || isCancelled) && !isMemoAssigned;
 
   // Currency formatter
   const formatCurrency = (val) => {
@@ -119,13 +129,13 @@ export default function BookingDetails() {
     );
   }
 
-  if (error || !booking) {
+  if (!booking || error) {
     return (
-      <div className="min-h-screen bg-slate-50 p-6 max-w-3xl mx-auto">
+      <div className="min-h-screen bg-slate-50 p-6 max-w-4xl mx-auto">
         <button
           type="button"
           onClick={() => navigate("/booking")}
-          className="inline-flex items-center gap-2 text-slate-500 hover:text-orange-600 font-bold text-xs md:text-sm mb-6 transition-colors"
+          className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-800 text-xs font-bold mb-4"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Booking Management
         </button>
@@ -156,11 +166,10 @@ export default function BookingDetails() {
       {/* Toast Alert Banner */}
       {toast && (
         <div
-          className={`fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg border transition-all duration-300 ${
-            toast.type === "success"
+          className={`fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg border transition-all duration-300 ${toast.type === "success"
               ? "bg-emerald-50 text-emerald-800 border-emerald-200"
               : "bg-rose-50 text-rose-800 border-rose-200"
-          }`}
+            }`}
         >
           {toast.type === "success" ? (
             <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
@@ -208,8 +217,8 @@ export default function BookingDetails() {
               <span>Print Bilty</span>
             </button>
 
-            {/* Edit (BOOKED only) */}
-            {isBooked && (
+            {/* Edit (BOOKING branch & BOOKED only) */}
+            {canEdit && (
               <button
                 type="button"
                 onClick={() => navigate(`/bookings/${id}/edit`)}
@@ -220,8 +229,8 @@ export default function BookingDetails() {
               </button>
             )}
 
-            {/* Cancel (BOOKED only) */}
-            {isBooked && (
+            {/* Cancel (BOOKING branch & BOOKED only) */}
+            {canCancel && (
               <button
                 type="button"
                 onClick={() => setCancelModalOpen(true)}
@@ -232,17 +241,41 @@ export default function BookingDetails() {
               </button>
             )}
 
-            {/* Delete (BOOKED or CANCELLED) */}
-            <button
-              type="button"
-              onClick={() => setDeleteModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-rose-700 bg-white hover:bg-rose-50 border border-rose-200 rounded-xl transition-all cursor-pointer shadow-2xs"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              <span>Delete</span>
-            </button>
+            {/* Delete (BOOKING branch only) */}
+            {canDelete && (
+              <button
+                type="button"
+                onClick={() => setDeleteModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-rose-700 bg-white hover:bg-rose-50 border border-rose-200 rounded-xl transition-all cursor-pointer shadow-2xs"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Delete</span>
+              </button>
+            )}
           </div>
         </div>
+
+        {/* Assigned Memo Notification Banner */}
+        {isMemoAssigned && (
+          <div className="mt-3 bg-amber-50 border border-amber-200/80 rounded-xl p-3 flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs font-bold text-amber-800">
+              <Lock className="w-4 h-4 text-amber-600 shrink-0" />
+              <span>
+                Assigned to Manifest / Memo:{" "}
+                <b className="font-mono">{typeof booking.memo === "object" ? booking.memo.memoNumber : "MEMO"}</b>
+              </span>
+            </div>
+            {typeof booking.memo === "object" && booking.memo._id && (
+              <button
+                type="button"
+                onClick={() => navigate(`/memos/${booking.memo._id}`)}
+                className="text-xs font-black text-amber-900 underline hover:text-orange-700 cursor-pointer"
+              >
+                View Memo →
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Main Content Grid */}
@@ -306,34 +339,34 @@ export default function BookingDetails() {
           </div>
         </div>
 
-        {/* Row 2: Delivery & Goods Information */}
+        {/* Row 2: Route, Branch & Goods Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* TRANSPORT ROUTE & DELIVERY INFORMATION */}
+          {/* TRANSPORT ROUTE & BRANCH INFORMATION */}
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-3">
             <div className="flex items-center gap-2 pb-2.5 border-b border-slate-100">
-              <MapPin className="w-4 h-4 text-orange-500" />
+              <Building2 className="w-4 h-4 text-orange-500" />
               <h3 className="font-extrabold text-slate-800 text-sm tracking-tight">
-                Transport Route & Delivery
+                Route & Branches
               </h3>
             </div>
 
-            {/* From & To Route */}
+            {/* Origin & Destination Branch */}
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                <span className="text-[10px] font-bold uppercase text-slate-400 block">From</span>
-                <span className="font-extrabold text-slate-800">{booking.from || "N/A"}</span>
+                <span className="text-[10px] font-bold uppercase text-slate-400 block">Origin Branch</span>
+                <span className="font-extrabold text-slate-800">{booking.fromBranch?.name || "N/A"}</span>
               </div>
               <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                <span className="text-[10px] font-bold uppercase text-slate-400 block">To</span>
-                <span className="font-extrabold text-slate-800">{booking.to || "N/A"}</span>
+                <span className="text-[10px] font-bold uppercase text-slate-400 block">Destination Branch</span>
+                <span className="font-extrabold text-orange-700">{booking.toBranch?.name || "N/A"}</span>
               </div>
             </div>
 
             {/* Transport Route Banner */}
             <div className="bg-orange-50/60 p-2.5 rounded-xl border border-orange-100 flex items-center justify-between">
-              <span className="text-[10px] font-bold uppercase text-orange-600">Transport Route</span>
+              <span className="text-[10px] font-bold uppercase text-orange-600">Route</span>
               <span className="font-extrabold text-xs text-orange-800">
-                {booking.from || "N/A"} → {booking.to || "N/A"}
+                {booking.fromBranch?.name || "Origin"} → {booking.toBranch?.name || "Destination"}
               </span>
             </div>
 
@@ -376,18 +409,14 @@ export default function BookingDetails() {
             </h3>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
-              <span className="text-[10px] font-bold uppercase text-slate-400 block">Parcel Charge</span>
-              <span className="font-extrabold text-slate-800 text-sm">{formatCurrency(booking.parcelCharge || 0)}</span>
+              <span className="text-[10px] font-bold uppercase text-slate-400 block">Freight</span>
+              <span className="font-extrabold text-slate-800 text-sm">{formatCurrency(booking.freight || 0)}</span>
             </div>
             <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
               <span className="text-[10px] font-bold uppercase text-slate-400 block">Crossing</span>
               <span className="font-extrabold text-slate-800 text-sm">{formatCurrency(booking.crossing || 0)}</span>
-            </div>
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
-              <span className="text-[10px] font-bold uppercase text-slate-400 block">Freight</span>
-              <span className="font-extrabold text-slate-800 text-sm">{formatCurrency(booking.freight || 0)}</span>
             </div>
             <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
               <span className="text-[10px] font-bold uppercase text-slate-400 block">Hamali</span>

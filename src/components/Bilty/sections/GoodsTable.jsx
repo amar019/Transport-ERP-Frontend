@@ -22,12 +22,11 @@ export const GoodsTable = ({
   };
 
   const chargesRows = [
-    { label: "१. पार्सल चार्ज (PARCEL CHARGE)", amount: charges.parcelCharge ?? 0 },
-    { label: "२. क्राॉसिंग (CROSSING)", amount: charges.crossing ?? 0 },
-    { label: "३. भाडे (FREIGHT)", amount: charges.freight ?? 0 },
-    { label: "४. हमाली (HAMALI)", amount: charges.hamali ?? 0 },
-    { label: "५. बिल्टी चार्ज (BILTY CHARGE)", amount: charges.biltyCharge ?? 0 },
-    { label: "६. इतर (OTHER CHARGES)", amount: charges.otherCharges ?? 0 }
+    { label: "१. क्रॉसिंग (CROSSING)", amount: charges.crossing ?? 0 },
+    { label: "२. भाडे (FREIGHT)", amount: charges.freight ?? 0 },
+    { label: "३. हमाली (HAMALI)", amount: charges.hamali ?? 0 },
+    { label: "४. बिल्टी चार्ज (BILTY CHARGE)", amount: charges.biltyCharge ?? 0 },
+    { label: "५. इतर (OTHER CHARGES)", amount: charges.otherCharges ?? 0 }
   ];
 
   const total = charges.totalAmount ?? 0;

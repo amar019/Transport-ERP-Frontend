@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import {
   Calendar,
   User,
@@ -13,8 +14,11 @@ import {
   AlertCircle,
   IndianRupee,
   CreditCard,
+  Building2,
+  MapPin,
 } from "lucide-react";
 import BookingCustomerSelect from "./BookingCustomerSelect";
+import { getBranches } from "../../services/branch.service";
 
 export default function BookingForm({
   initialData = null,
@@ -23,6 +27,39 @@ export default function BookingForm({
   isSubmitting = false,
 }) {
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+
+  // Branches list for Destination branch selection
+  const [branches, setBranches] = useState([]);
+  const [branchesLoading, setBranchesLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchBranchList = async () => {
+      try {
+        setBranchesLoading(true);
+        const res = await getBranches();
+        const list = res?.data ? res.data : Array.isArray(res) ? res : [];
+        setBranches(list);
+      } catch (err) {
+        console.error("Failed to load branches:", err);
+      } finally {
+        setBranchesLoading(false);
+      }
+    };
+    fetchBranchList();
+  }, []);
+
+  // Filter destination branches: exclude current user's branch if possible, or show active delivery branches
+  const destinationBranches = useMemo(() => {
+    return branches.filter((b) => {
+      if (b.status && b.status !== "ACTIVE") return false;
+      const userBranchId = user?.branch?._id || user?.branch?.id || user?.branch;
+      if (userBranchId && (b._id === userBranchId || b.id === userBranchId)) {
+        return false;
+      }
+      return true;
+    });
+  }, [branches, user]);
 
   // Today's date string YYYY-MM-DD
   const todayStr = useMemo(() => {
@@ -57,8 +94,9 @@ export default function BookingForm({
         ownerName: initialData?.customer?.ownerName || "",
         mobile: initialData?.customer?.mobile || "",
       },
-      from: initialData?.from || "",
-      to: initialData?.to || "",
+
+      // Branches & Delivery
+      toBranch: initialData?.toBranch?._id || initialData?.toBranch || "",
       deliveryAddress: initialData?.deliveryAddress || "",
 
       // Goods
@@ -66,9 +104,8 @@ export default function BookingForm({
       quantity: initialData?.quantity ?? 1,
 
       // Charges (Direct flat charges)
-      parcelCharge: initialData?.parcelCharge ?? 0,
-      crossing: initialData?.crossing ?? 0,
       freight: initialData?.freight ?? 0,
+      crossing: initialData?.crossing ?? 0,
       hamali: initialData?.hamali ?? 0,
       biltyCharge: initialData?.biltyCharge ?? 5,
       otherCharges: initialData?.otherCharges ?? 0,
@@ -84,9 +121,15 @@ export default function BookingForm({
         ? new Date(initialData.bookingDate).toISOString().split("T")[0]
         : todayStr;
 
-      const custId = typeof initialData.customer === "object"
-        ? initialData.customer._id || initialData.customer.id
-        : initialData.customer || "";
+      const custId =
+        typeof initialData.customer === "object"
+          ? initialData.customer._id || initialData.customer.id
+          : initialData.customer || "";
+
+      const destBranchId =
+        typeof initialData.toBranch === "object"
+          ? initialData.toBranch._id || initialData.toBranch.id
+          : initialData.toBranch || "";
 
       reset({
         bookingDate: formattedDate,
@@ -102,14 +145,12 @@ export default function BookingForm({
           ownerName: initialData.customer?.ownerName || "",
           mobile: initialData.customer?.mobile || "",
         },
-        from: initialData.from || "",
-        to: initialData.to || "",
+        toBranch: destBranchId,
         deliveryAddress: initialData.deliveryAddress || "",
         itemName: initialData.itemName || "",
         quantity: initialData.quantity ?? 1,
-        parcelCharge: initialData.parcelCharge ?? 0,
-        crossing: initialData.crossing ?? 0,
         freight: initialData.freight ?? 0,
+        crossing: initialData.crossing ?? 0,
         hamali: initialData.hamali ?? 0,
         biltyCharge: initialData.biltyCharge ?? 5,
         otherCharges: initialData.otherCharges ?? 0,
@@ -119,7 +160,6 @@ export default function BookingForm({
   }, [initialData, reset, todayStr]);
 
   // Watch charge fields for live total calculation
-  const parcelChargeVal = useWatch({ control, name: "parcelCharge" });
   const crossingVal = useWatch({ control, name: "crossing" });
   const freightVal = useWatch({ control, name: "freight" });
   const hamaliVal = useWatch({ control, name: "hamali" });
@@ -130,17 +170,15 @@ export default function BookingForm({
   const customerInfo = useWatch({ control, name: "customerInfo" });
   const collectionType = useWatch({ control, name: "collectionType" });
 
-  // Calculate Total Amount: parcelCharge + crossing + freight + hamali + biltyCharge + otherCharges
-  // Note: parcelCharge is a direct flat charge and is NOT multiplied by quantity.
+  // Calculate Total Amount: freight + crossing + hamali + biltyCharge + otherCharges
   const totalAmount = useMemo(() => {
-    const p = Math.max(0, Number(parcelChargeVal || 0));
-    const c = Math.max(0, Number(crossingVal || 0));
     const f = Math.max(0, Number(freightVal || 0));
+    const c = Math.max(0, Number(crossingVal || 0));
     const h = Math.max(0, Number(hamaliVal || 0));
     const b = Math.max(0, Number(biltyChargeVal || 0));
     const o = Math.max(0, Number(otherChargesVal || 0));
-    return p + c + f + h + b + o;
-  }, [parcelChargeVal, crossingVal, freightVal, hamaliVal, biltyChargeVal, otherChargesVal]);
+    return f + c + h + b + o;
+  }, [freightVal, crossingVal, hamaliVal, biltyChargeVal, otherChargesVal]);
 
   // Currency Formatter
   const formatCurrency = (val) => {
@@ -170,7 +208,7 @@ export default function BookingForm({
 
     // Auto-fill delivery address if available and currently empty
     const fullAddress = [
-      customerObj.address,
+      customerObj.deliveryAddress || customerObj.address,
       customerObj.area,
       customerObj.city,
       customerObj.state,
@@ -193,14 +231,12 @@ export default function BookingForm({
         address: data.sender.address || "",
       },
       customer: data.customer,
-      from: data.from || "",
-      to: data.to || "",
+      toBranch: data.toBranch,
       deliveryAddress: data.deliveryAddress || "",
       itemName: data.itemName,
       quantity: Number(data.quantity || 1),
-      parcelCharge: Number(data.parcelCharge || 0),
-      crossing: Number(data.crossing || 0),
       freight: Number(data.freight || 0),
+      crossing: Number(data.crossing || 0),
       hamali: Number(data.hamali || 0),
       biltyCharge: Number(data.biltyCharge || 0),
       otherCharges: Number(data.otherCharges || 0),
@@ -301,7 +337,7 @@ export default function BookingForm({
             </label>
             <input
               type="text"
-              placeholder="e.g. Main Market, Pune"
+              placeholder="e.g. Main Market, Ahmednagar"
               {...register("sender.address")}
               className="w-full px-4 py-2 text-xs md:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 font-semibold text-slate-800 transition-all placeholder:text-slate-300"
             />
@@ -378,62 +414,66 @@ export default function BookingForm({
         </div>
       </div>
 
-      {/* SECTION 4: ROUTE & DELIVERY INFORMATION */}
+      {/* SECTION 4: ROUTE & BRANCH INFORMATION */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 md:p-6">
         <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100">
-          <Store className="w-4 h-4 text-orange-500" />
+          <Building2 className="w-4 h-4 text-orange-500" />
           <h3 className="font-extrabold text-slate-800 text-sm md:text-base tracking-tight">
-            4. Route & Delivery Information
+            4. Route & Destination Branch
           </h3>
         </div>
 
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* From */}
+            {/* Origin Branch (Current User's Branch) */}
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
-                From Location <span className="text-rose-500">*</span>
+                Origin Branch (Booked At)
               </label>
-              <input
-                type="text"
-                placeholder="e.g. Pune"
-                {...register("from", { required: "From location is required" })}
-                className="w-full px-4 py-2 text-xs md:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 font-semibold text-slate-800 transition-all placeholder:text-slate-300"
-              />
-              {errors.from && (
-                <p className="text-[11px] font-bold text-rose-500 mt-1 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3" /> {errors.from.message}
-                </p>
-              )}
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-orange-50/60 border border-orange-200/80 rounded-xl text-xs font-bold text-orange-800">
+                <Building2 className="w-4 h-4 text-orange-600 shrink-0" />
+                <span className="truncate">
+                  {user?.branch?.name || initialData?.fromBranch?.name || "Origin Branch"}
+                </span>
+                <span className="ml-auto text-[10px] uppercase px-2 py-0.5 bg-orange-200/70 text-orange-800 rounded-md font-extrabold">
+                  {user?.branch?.type || "BOOKING"}
+                </span>
+              </div>
             </div>
 
-            {/* To */}
+            {/* Destination Branch Dropdown */}
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
-                To Location <span className="text-rose-500">*</span>
+                Destination Branch <span className="text-rose-500">*</span>
               </label>
-              <input
-                type="text"
-                placeholder="e.g. Nashik"
-                {...register("to", { required: "To location is required" })}
-                className="w-full px-4 py-2 text-xs md:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 font-semibold text-slate-800 transition-all placeholder:text-slate-300"
-              />
-              {errors.to && (
+              <select
+                {...register("toBranch", { required: "Destination branch is required" })}
+                disabled={branchesLoading}
+                className="w-full px-4 py-2.5 text-xs md:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 font-bold text-slate-800 transition-all cursor-pointer disabled:opacity-50"
+              >
+                <option value="">-- Select Destination Branch --</option>
+                {destinationBranches.map((b) => (
+                  <option key={b._id || b.id} value={b._id || b.id}>
+                    {b.name} ({b.type})
+                  </option>
+                ))}
+              </select>
+              {errors.toBranch && (
                 <p className="text-[11px] font-bold text-rose-500 mt-1 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3" /> {errors.to.message}
+                  <AlertCircle className="w-3 h-3" /> {errors.toBranch.message}
                 </p>
               )}
             </div>
           </div>
 
-          {/* Delivery Address */}
+          {/* Delivery Address Override */}
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">
-              Delivery Address
+              Delivery / Drop Address <span className="text-xs text-slate-400 font-normal">(Optional Override)</span>
             </label>
             <textarea
               rows="2"
-              placeholder="e.g. Market Yard, Nashik"
+              placeholder="e.g. Warehouse 4, Market Yard, Pune"
               {...register("deliveryAddress")}
               className="w-full px-4 py-2 text-xs md:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 font-semibold text-slate-800 transition-all placeholder:text-slate-300"
             />
@@ -488,9 +528,6 @@ export default function BookingForm({
                 <AlertCircle className="w-3 h-3" /> {errors.quantity.message}
               </p>
             )}
-            <p className="text-[10px] text-slate-400 mt-1 font-semibold">
-              Package count only. Does not affect charge calculations.
-            </p>
           </div>
         </div>
       </div>
@@ -507,22 +544,19 @@ export default function BookingForm({
           <span className="text-[11px] font-bold text-slate-400">Direct Flat Charges</span>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-5">
-          {/* Parcel Charge */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-5">
+          {/* Freight */}
           <div>
             <label className="block text-[11px] font-bold text-slate-600 mb-1">
-              Parcel Charge (₹)
+              Freight (₹) <span className="text-rose-500">*</span>
             </label>
             <input
               type="number"
               min="0"
               step="any"
-              {...register("parcelCharge", { min: { value: 0, message: "Minimum 0" } })}
+              {...register("freight", { min: { value: 0, message: "Minimum 0" } })}
               className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-orange-500 font-bold text-slate-800"
             />
-            {errors.parcelCharge && (
-              <p className="text-[10px] font-bold text-rose-500 mt-0.5">{errors.parcelCharge.message}</p>
-            )}
           </div>
 
           {/* Crossing */}
@@ -535,20 +569,6 @@ export default function BookingForm({
               min="0"
               step="any"
               {...register("crossing", { min: { value: 0, message: "Minimum 0" } })}
-              className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-orange-500 font-bold text-slate-800"
-            />
-          </div>
-
-          {/* Freight */}
-          <div>
-            <label className="block text-[11px] font-bold text-slate-600 mb-1">
-              Freight (₹)
-            </label>
-            <input
-              type="number"
-              min="0"
-              step="any"
-              {...register("freight", { min: { value: 0, message: "Minimum 0" } })}
               className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-orange-500 font-bold text-slate-800"
             />
           </div>
@@ -607,7 +627,7 @@ export default function BookingForm({
                 Total Booking Amount (Live Calculation)
               </span>
               <span className="text-[11px] text-slate-300 font-medium">
-                Parcel ({formatCurrency(parcelChargeVal || 0)}) + Crossing + Freight + Hamali + Bilty + Other
+                Freight ({formatCurrency(freightVal || 0)}) + Crossing + Hamali + Bilty + Other
               </span>
             </div>
           </div>
@@ -637,10 +657,11 @@ export default function BookingForm({
             </label>
             <div className="grid grid-cols-2 gap-2 mt-0.5">
               <label
-                className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border text-xs font-extrabold cursor-pointer transition-all ${collectionType === "PAID_AT_BOOKING"
-                  ? "bg-emerald-50 text-emerald-700 border-emerald-300 shadow-xs"
-                  : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
-                  }`}
+                className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border text-xs font-extrabold cursor-pointer transition-all ${
+                  collectionType === "PAID_AT_BOOKING"
+                    ? "bg-emerald-50 text-emerald-700 border-emerald-300 shadow-xs"
+                    : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                }`}
               >
                 <input
                   type="radio"
@@ -653,10 +674,11 @@ export default function BookingForm({
               </label>
 
               <label
-                className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border text-xs font-extrabold cursor-pointer transition-all ${collectionType === "TO_PAY"
-                  ? "bg-amber-50 text-amber-700 border-amber-300 shadow-xs"
-                  : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
-                  }`}
+                className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border text-xs font-extrabold cursor-pointer transition-all ${
+                  collectionType === "TO_PAY"
+                    ? "bg-amber-50 text-amber-700 border-amber-300 shadow-xs"
+                    : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                }`}
               >
                 <input
                   type="radio"
@@ -670,7 +692,7 @@ export default function BookingForm({
             </div>
           </div>
 
-          {/* Payment Details Preview Card (Backend Source of Truth) */}
+          {/* Payment Details Preview Card */}
           <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80">
             <span className="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider block mb-2">
               Payment State Preview
@@ -679,7 +701,9 @@ export default function BookingForm({
               <div className="bg-white p-2 rounded-lg border border-slate-100">
                 <span className="text-[10px] font-bold text-slate-400 block">Status</span>
                 <span className="text-xs font-extrabold text-slate-700">
-                  {collectionType === "PAID_AT_BOOKING" ? "PAID" : initialData?.paymentStatus || "PENDING"}
+                  {collectionType === "PAID_AT_BOOKING"
+                    ? "PAID"
+                    : initialData?.paymentStatus || "PENDING"}
                 </span>
               </div>
               <div className="bg-white p-2 rounded-lg border border-slate-100">

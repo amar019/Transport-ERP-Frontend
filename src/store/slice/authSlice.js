@@ -2,9 +2,18 @@ import { createSlice } from "@reduxjs/toolkit";
 import { login } from "../thunk/authThunk.js";
 
 const savedToken = localStorage.getItem("token");
+let savedUser = null;
+try {
+    const rawUser = localStorage.getItem("user");
+    if (rawUser) {
+        savedUser = JSON.parse(rawUser);
+    }
+} catch (e) {
+    console.error("Failed to parse saved user from localStorage", e);
+}
 
 const initialState = {
-    user: null,
+    user: savedUser,
     token: savedToken || null,
     isLoading: false,
     error: null,
@@ -23,12 +32,12 @@ const authSlice = createSlice({
             state.isAuthenticated = false;
             state.error = null;
             localStorage.removeItem("token");
+            localStorage.removeItem("user");
         },
     },
 
     extraReducers: (builder) => {
         builder
-
             // Login Pending
             .addCase(login.pending, (state) => {
                 state.isLoading = true;
@@ -44,6 +53,9 @@ const authSlice = createSlice({
                 if (action.payload.token) {
                     localStorage.setItem("token", action.payload.token);
                 }
+                if (action.payload.user) {
+                    localStorage.setItem("user", JSON.stringify(action.payload.user));
+                }
 
                 state.isAuthenticated = true;
                 state.error = null;
@@ -55,6 +67,7 @@ const authSlice = createSlice({
                 state.error = action.payload;
                 state.isAuthenticated = false;
                 localStorage.removeItem("token");
+                localStorage.removeItem("user");
             });
     },
 });

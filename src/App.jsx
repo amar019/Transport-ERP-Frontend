@@ -10,8 +10,12 @@ import CustomerDetails from "./components/customers/CustomerDetails";
 import BookingList from "./pages/Booking/BookingList";
 import BookingFormPage from "./pages/Booking/BookingFormPage";
 import BookingDetails from "./pages/Booking/BookingDetails";
+import MemoList from "./pages/Memo/MemoList";
+import MemoFormPage from "./pages/Memo/MemoFormPage";
+import MemoDetails from "./pages/Memo/MemoDetails";
 import PlaceholderPage from "./pages/PlaceholderPage";
 import BiltyPreview from "./pages/BiltyPreview";
+import MemoPreview from "./pages/Memo/MemoPreview";
 
 function App() {
   return (
@@ -22,10 +26,19 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
+
+          {/* Booking Routes */}
           <Route path="/booking" element={<BookingList />} />
           <Route path="/bookings/new" element={<BookingFormPage />} />
           <Route path="/bookings/:id/edit" element={<BookingFormPage />} />
           <Route path="/bookings/:id" element={<BookingDetails />} />
+
+          {/* Memo / Manifest Routes */}
+          <Route path="/memos" element={<MemoList />} />
+          <Route path="/memos/new" element={<MemoFormPage />} />
+          <Route path="/memos/:id" element={<MemoDetails />} />
+
+          {/* Operations & Masters */}
           <Route path="/lr-parcel" element={<PlaceholderPage />} />
           <Route path="/delivery" element={<PlaceholderPage />} />
           <Route path="/trips" element={<PlaceholderPage />} />
@@ -50,6 +63,9 @@ function App() {
 
         <Route path="/bilty-preview" element={<BiltyPreview />} />
         <Route path="/bilty-preview/:id" element={<BiltyPreview />} />
+
+        <Route path="/memo-preview" element={<MemoPreview />} />
+        <Route path="/memo-preview/:id" element={<MemoPreview />} />
 
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>

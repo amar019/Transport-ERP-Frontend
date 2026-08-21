@@ -76,6 +76,7 @@ export default function BookingTable({
               </th>
               <th className="py-3 px-3 whitespace-nowrap">Booking No</th>
               <th className="py-3 px-3 whitespace-nowrap">Date</th>
+
               <th className="py-3 px-3 min-w-[200px] whitespace-nowrap">Customer</th>
               <th className="py-3 px-3 whitespace-nowrap">Item</th>
               <th className="py-3 px-3 text-center whitespace-nowrap">Qty</th>
@@ -170,15 +171,28 @@ export default function BookingTable({
 
                     {/* Booking No */}
                     <td className="py-3 px-3 whitespace-nowrap">
-                      <span className="font-mono text-xs font-black bg-slate-100 text-slate-800 px-2 py-0.5 rounded-md border border-slate-200 group-hover:bg-orange-100 group-hover:text-orange-800 transition-colors">
-                        {b.bookingNumber || "BK-0000"}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-mono text-xs font-black bg-slate-100 text-slate-800 px-2 py-0.5 rounded-md border border-slate-200 group-hover:bg-orange-100 group-hover:text-orange-800 transition-colors">
+                          {b.bookingNumber || "BK-0000"}
+                        </span>
+                        {b.memo && (
+                          <span
+                            className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 bg-amber-100 text-amber-800 border border-amber-200 rounded"
+                            title={typeof b.memo === "object" ? `Assigned to Memo: ${b.memo.memoNumber}` : "Assigned to Memo"}
+                          >
+                            {typeof b.memo === "object" ? b.memo.memoNumber : "MEMO"}
+                          </span>
+                        )}
+                      </div>
                     </td>
 
                     {/* Booking Date */}
                     <td className="py-3 px-3 text-slate-600 font-semibold whitespace-nowrap">
                       {formatDate(b.bookingDate || b.createdAt)}
                     </td>
+
+                    {/* Route (From -> To Branch) */}
+
 
                     {/* Customer / Shop Name */}
                     <td className="py-3 px-3 min-w-[200px] max-w-[260px] whitespace-nowrap">
