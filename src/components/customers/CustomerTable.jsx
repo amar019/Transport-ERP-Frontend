@@ -4,7 +4,9 @@ import { useNavigate } from "react-router-dom";
 import {
   fetchCustomers,
   removeCustomer,
-} from "../../store/thunk/customerThunk";
+} from "@/store/slices/customerSlice";
+import { ROUTES } from "@/constants/paths";
+
 import {
   Users,
   UserCheck,

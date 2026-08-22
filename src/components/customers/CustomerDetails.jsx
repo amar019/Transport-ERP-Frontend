@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { getCustomerById } from "../../services/customer.service";
-import { removeCustomer } from "../../store/thunk/customerThunk";
+import { getCustomerById } from "@/services/customer.service";
+import { removeCustomer } from "@/store/slices/customerSlice";
+import { ROUTES } from "@/constants/paths";
+
 import {
   ArrowLeft,
   Store,

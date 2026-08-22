@@ -2,7 +2,8 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import WireframeBilty from "../components/Bilty/WireframeBilty";
+import WireframeBilty from "@/components/Bilty/WireframeBilty";
+
 
 /**
  * Generate and download Bilty PDF purely on the frontend (No backend API required)

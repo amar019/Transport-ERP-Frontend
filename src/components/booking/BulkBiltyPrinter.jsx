@@ -1,6 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
-import WireframeBilty from "../Bilty/WireframeBilty";
+import WireframeBilty from "@/components/Bilty/WireframeBilty";
+
 
 const BulkBiltyPrinter = forwardRef(({ selectedBookings = [] }, ref) => {
   const printRef = useRef(null);

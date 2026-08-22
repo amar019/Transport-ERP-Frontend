@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Search, Store, User, Phone, MapPin, ChevronDown, Check, X, Loader2 } from "lucide-react";
-import { getCustomers } from "../../services/customer.service";
+import { getCustomers } from "@/services/customer.service";
+
 
 export default function BookingCustomerSelect({
   selectedCustomerId,

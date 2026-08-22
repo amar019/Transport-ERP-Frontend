@@ -1,16 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "./slice/authSlice.js";
-import customersReducer from "./slice/customerSlice.js";
-import bookingsReducer from "./slice/bookingSlice.js";
-import memoReducer from "./slice/memoSlice.js";
+import authReducer from "./slices/authSlice";
+import customersReducer from "./slices/customerSlice";
+import bookingsReducer from "./slices/bookingSlice";
+import memoReducer from "./slices/memoSlice";
 
 const store = configureStore({
-    reducer: {
-        auth: authReducer,
-        customers: customersReducer,
-        bookings: bookingsReducer,
-        memos: memoReducer,
-    },
+  reducer: {
+    auth: authReducer,
+    customers: customersReducer,
+    bookings: bookingsReducer,
+    memos: memoReducer,
+  },
 });
 
 export default store;

@@ -102,28 +102,6 @@ export default function BookingActionMenu({
 
   return (
     <div className="relative inline-flex items-center gap-1" ref={menuRef}>
-      {/* Quick Action: View */}
-      <button
-        type="button"
-        onClick={handleView}
-        className="p-1.5 text-slate-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg border border-slate-200 hover:border-orange-200 transition-all cursor-pointer"
-        title="View Details"
-      >
-        <Eye className="w-3.5 h-3.5" />
-      </button>
-
-      {/* Quick Action: Edit (Only if permitted) */}
-      {canEdit && (
-        <button
-          type="button"
-          onClick={handleEdit}
-          className="p-1.5 text-slate-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg border border-slate-200 hover:border-orange-200 transition-all cursor-pointer"
-          title="Edit Booking"
-        >
-          <Pencil className="w-3.5 h-3.5" />
-        </button>
-      )}
-
       {/* Quick Action: Print */}
       <button
         type="button"

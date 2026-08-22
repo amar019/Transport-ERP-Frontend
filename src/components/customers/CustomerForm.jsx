@@ -5,7 +5,9 @@ import {
   fetchCustomers,
   addCustomer,
   editCustomer,
-} from "../../store/thunk/customerThunk";
+} from "@/store/slices/customerSlice";
+import { ROUTES } from "@/constants/paths";
+
 import {
   ArrowLeft,
   Store,
