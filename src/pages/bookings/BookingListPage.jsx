@@ -14,6 +14,7 @@ import {
   Calendar,
   Clock,
   TrendingUp,
+  ChevronRight,
 } from "lucide-react";
 import BookingFilters from "@/components/booking/BookingFilters";
 import BookingTable from "@/components/booking/BookingTable";
@@ -79,7 +80,7 @@ export const BookingListPage = () => {
     if (!Array.isArray(rawBookings)) return [];
 
     return rawBookings.filter((b) => {
-      // 1. Search text (Booking Number, Shop Name / Owner Name, From / To Route, Delivery Address, Item)
+      // 1. Search text
       const q = (filters.search || "").toLowerCase().trim();
       const bookingNo = (b.bookingNumber || "").toLowerCase();
       const shopName = (b.customer?.shopName || (typeof b.customer === "string" ? b.customer : "")).toLowerCase();
@@ -301,8 +302,28 @@ export const BookingListPage = () => {
 
   const displayError = localError || reduxError;
 
+  // Quick Status Tab Switch Options
+  const statusTabs = [
+    { label: "All Bookings", value: "ALL", count: rawBookings?.length || 0 },
+    {
+      label: "Active",
+      value: "BOOKED",
+      count: rawBookings?.filter((b) => b.status === "BOOKED" || !b.status).length || 0,
+    },
+    {
+      label: "Delivered",
+      value: "DELIVERED",
+      count: rawBookings?.filter((b) => b.status === "DELIVERED").length || 0,
+    },
+    {
+      label: "Cancelled",
+      value: "CANCELLED",
+      count: rawBookings?.filter((b) => b.status === "CANCELLED").length || 0,
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-50 p-3.5 md:p-5 font-sans antialiased selection:bg-orange-100 printable-area select-none space-y-4">
+    <div className="min-h-screen bg-[#F8FAFC] p-6 md:p-8 font-sans antialiased text-[#0F172A] selection:bg-[#FFF7ED] selection:text-[#C2410C] printable-area select-none space-y-6">
       {/* Hidden Bulk Printer Component */}
       <BulkBiltyPrinter
         ref={bulkPrinterRef}
@@ -312,70 +333,74 @@ export const BookingListPage = () => {
       {/* Toast Notification Banner */}
       {toast && (
         <div
-          className={`fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg border transition-all duration-300 ${toast.type === "success"
-            ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-            : toast.type === "error"
-              ? "bg-rose-50 text-rose-800 border-rose-200"
-              : "bg-sky-50 text-sky-800 border-sky-200"
-            }`}
+          className={`fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border transition-all duration-200 animate-in fade-in slide-in-from-top-4 ${
+            toast.type === "success"
+              ? "bg-[#ECFDF5] text-[#059669] border-[#A7F3D0]"
+              : toast.type === "error"
+              ? "bg-[#FEF2F2] text-[#DC2626] border-[#FECACA]"
+              : "bg-[#EFF6FF] text-[#2563EB] border-[#BFDBFE]"
+          }`}
         >
           {toast.type === "success" ? (
-            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+            <CheckCircle2 className="w-5 h-5 text-[#059669] shrink-0" />
           ) : toast.type === "error" ? (
-            <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" />
+            <AlertCircle className="w-5 h-5 text-[#DC2626] shrink-0" />
           ) : (
-            <Info className="w-5 h-5 text-sky-600 shrink-0" />
+            <Info className="w-5 h-5 text-[#2563EB] shrink-0" />
           )}
-          <span className="text-xs md:text-sm font-bold">{toast.msg}</span>
+          <span className="text-xs md:text-sm font-semibold">{toast.msg}</span>
         </div>
       )}
 
-      {/* Page Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 no-print">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 no-print">
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-sm md:text-base font-bold text-slate-800 tracking-tight">
-                Bookings List
-              </h1>
-
-              {selectedIds.length > 0 && (
-                <span className="bg-orange-100 text-orange-800 border border-orange-200 text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                  <CheckSquare className="w-3 h-3 text-orange-600" />
-                  {selectedIds.length} Selected
-                </span>
-              )}
-            </div>
-
-            <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-              {kpiMetrics.totalCount} bookings · {kpiMetrics.todayCount} today ·{" "}
-              {formatKpiCurrency(kpiMetrics.toPayTotal)} to pay
-            </p>
+      {/* PAGE HEADER SECTION */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print">
+        {/* Left: Breadcrumbs + Title + Subtitle */}
+        <div className="space-y-1">
+          {/* Small Breadcrumb */}
+          <div className="flex items-center gap-1.5 text-xs font-medium text-[#64748B]">
+            <span>Bookings</span>
+            <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
+            <span className="font-semibold text-[#0F172A]">Directory</span>
           </div>
+
+          <div className="flex items-center gap-3">
+            <h1 className="text-[28px] font-bold text-[#0F172A] tracking-tight leading-tight m-0 p-0">
+              Bookings
+            </h1>
+
+            {selectedIds.length > 0 && (
+              <span className="bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5] text-[11px] font-semibold px-2.5 py-0.5 rounded-md flex items-center gap-1 shrink-0 whitespace-nowrap">
+                <CheckSquare className="w-3 h-3 text-[#F97316]" />
+                {selectedIds.length} Selected
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-[#64748B] font-normal">
+            Manage and track all transport bookings
+          </p>
         </div>
 
-
-        {/* Toolbar Actions */}
-        <div className="flex items-center flex-wrap gap-2">
-          {/* Refresh */}
+        {/* Right Toolbar Actions */}
+        <div className="flex items-center flex-wrap gap-2 shrink-0 self-start sm:self-auto">
+          {/* Refresh Button */}
           <button
             type="button"
             onClick={loadBookings}
             disabled={isLoading}
-            className="p-2 text-slate-600 hover:text-orange-600 hover:bg-orange-50 bg-white rounded-xl border border-slate-200 shadow-2xs transition-all cursor-pointer disabled:opacity-50"
+            className="p-2 text-[#64748B] hover:text-[#0F172A] hover:bg-white bg-white rounded-lg border border-[#E2E8F0] shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
             title="Refresh Bookings"
           >
-            <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin text-orange-500" : ""}`} />
+            <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin text-[#F97316]" : ""}`} />
           </button>
 
-          {/* Export Excel */}
+          {/* Export Excel / CSV */}
           <button
             type="button"
             onClick={handleExportCsv}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-2xs transition-all cursor-pointer"
-            title="Export CSV"
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#0F172A] bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg shadow-2xs transition-colors cursor-pointer"
+            title="Export Bookings to CSV/Excel"
           >
-            <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+            <FileSpreadsheet className="w-4 h-4 text-[#059669]" />
             <span className="hidden sm:inline">Export Excel</span>
           </button>
 
@@ -384,10 +409,10 @@ export const BookingListPage = () => {
             <button
               type="button"
               onClick={handlePrintSelected}
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl border bg-orange-50 text-orange-700 border-orange-300 hover:bg-orange-100 shadow-xs transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border bg-[#FFF7ED] text-[#C2410C] border-[#FFEDD5] hover:bg-[#FFEDD5] shadow-2xs transition-colors cursor-pointer animate-in fade-in"
               title={`Print ${selectedIds.length} Selected Bilty Documents`}
             >
-              <Printer className="w-4 h-4 text-orange-600" />
+              <Printer className="w-4 h-4 text-[#F97316]" />
               <span>Print Selected ({selectedIds.length})</span>
             </button>
           )}
@@ -397,87 +422,139 @@ export const BookingListPage = () => {
             <button
               type="button"
               onClick={() => navigate(ROUTES.BOOKINGS.NEW)}
-              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold px-4 py-2 rounded-xl shadow-md shadow-orange-500/20 active:scale-[0.98] transition-all text-xs md:text-sm select-none cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 bg-[#F97316] hover:bg-[#EA580C] text-white font-semibold px-4 py-2 rounded-lg shadow-2xs transition-colors text-xs select-none cursor-pointer"
             >
-              <Plus className="w-4 h-4 stroke-[3]" />
+              <Plus className="w-4 h-4 stroke-[2.5]" />
               <span>New Booking</span>
             </button>
           )}
         </div>
       </div>
 
-      {/* KPI Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 no-print">
+      {/* STATISTICS CARDS SECTION */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 no-print">
         {/* Card 1: Total Bookings */}
-        <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs flex items-center justify-between">
-          <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+        <div className="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#64748B]">
               Total Bookings
             </span>
-            <span className="text-xl md:text-2xl font-black text-slate-800 mt-0.5 block">
+            <div className="w-8 h-8 rounded-lg bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0] flex items-center justify-center shrink-0">
+              <FileText className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <span className="text-2xl font-bold text-[#0F172A] tracking-tight block">
               {kpiMetrics.totalCount}
             </span>
-          </div>
-          <div className="w-9 h-9 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center shrink-0 border border-orange-100">
-            <FileText className="w-4 h-4" />
+            <span className="text-xs text-[#64748B] font-normal block mt-0.5">
+              Lifetime consignments
+            </span>
           </div>
         </div>
 
         {/* Card 2: Today's Bookings */}
-        <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs flex items-center justify-between">
-          <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+        <div className="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#64748B]">
               Today's Bookings
             </span>
-            <span className="text-xl md:text-2xl font-black text-slate-800 mt-0.5 block">
+            <div className="w-8 h-8 rounded-lg bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] flex items-center justify-center shrink-0">
+              <Calendar className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <span className="text-2xl font-bold text-[#0F172A] tracking-tight block">
               {kpiMetrics.todayCount}
             </span>
-          </div>
-          <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100">
-            <Calendar className="w-4 h-4" />
+            <span className="text-xs text-[#64748B] font-normal block mt-0.5">
+              Created today
+            </span>
           </div>
         </div>
 
-        {/* Card 3: To Pay Total */}
-        <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs flex items-center justify-between">
-          <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
-              To Pay
+        {/* Card 3: Pending Collection */}
+        <div className="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#64748B]">
+              Pending Collection
             </span>
-            <span className="text-xl md:text-2xl font-black text-amber-600 mt-0.5 block">
+            <div className="w-8 h-8 rounded-lg bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A] flex items-center justify-center shrink-0">
+              <Clock className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <span className="text-2xl font-bold text-[#0F172A] tracking-tight font-mono block">
               {formatKpiCurrency(kpiMetrics.toPayTotal)}
             </span>
-          </div>
-          <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-100">
-            <Clock className="w-4 h-4" />
+            <span className="text-xs text-[#64748B] font-normal block mt-0.5">
+              To pay at delivery
+            </span>
           </div>
         </div>
 
-        {/* Card 4: Paid Total */}
-        <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs flex items-center justify-between">
-          <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
-              Paid
+        {/* Card 4: Paid Amount */}
+        <div className="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#64748B]">
+              Paid Amount
             </span>
-            <span className="text-xl md:text-2xl font-black text-emerald-600 mt-0.5 block">
+            <div className="w-8 h-8 rounded-lg bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] flex items-center justify-center shrink-0">
+              <TrendingUp className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <span className="text-2xl font-bold text-[#0F172A] tracking-tight font-mono block">
               {formatKpiCurrency(kpiMetrics.paidTotal)}
             </span>
+            <span className="text-xs text-[#64748B] font-normal block mt-0.5">
+              Settled at booking
+            </span>
           </div>
-          <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
-            <TrendingUp className="w-4 h-4" />
-          </div>
+        </div>
+      </div>
+
+      {/* SEGMENTED CONTROL STATUS TABS */}
+      <div className="no-print">
+        <div className="bg-[#F1F5F9] p-1 rounded-lg border border-[#E2E8F0] inline-flex items-center gap-1 overflow-x-auto">
+          {statusTabs.map((tab) => {
+            const isTabActive = filters.status === tab.value;
+            return (
+              <button
+                key={tab.value}
+                type="button"
+                onClick={() => setFilters((prev) => ({ ...prev, status: tab.value }))}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs transition-colors cursor-pointer ${
+                  isTabActive
+                    ? "bg-[#F97316] text-white font-semibold shadow-2xs"
+                    : "text-[#64748B] hover:text-[#0F172A] hover:bg-slate-200/50 font-medium"
+                }`}
+              >
+                <span>{tab.label}</span>
+                <span
+                  className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
+                    isTabActive
+                      ? "bg-white/20 text-white"
+                      : "bg-slate-200/70 text-[#475569]"
+                  }`}
+                >
+                  {tab.count}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Global Error Banner */}
       {displayError && (
-        <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-center gap-2 text-rose-700 text-xs font-semibold no-print">
-          <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
-          <span>{typeof displayError === "string" ? displayError : "An error occurred"}</span>
+        <div className="p-4 bg-[#FEF2F2] border border-[#FECACA] rounded-xl flex items-center gap-3 text-[#DC2626] text-xs font-medium no-print">
+          <AlertCircle className="w-5 h-5 shrink-0 text-[#DC2626]" />
+          <span>{typeof displayError === "string" ? displayError : "An error occurred while loading bookings."}</span>
         </div>
       )}
 
-      {/* Filter Section */}
+      {/* Filter Form Controls Section */}
       <div className="no-print">
         <BookingFilters
           filters={filters}
@@ -487,7 +564,7 @@ export const BookingListPage = () => {
         />
       </div>
 
-      {/* Booking Table Section */}
+      {/* Main Enterprise Data Table */}
       <BookingTable
         bookings={filteredBookings}
         loading={isLoading}

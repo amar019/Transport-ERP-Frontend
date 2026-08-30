@@ -4,12 +4,12 @@
 
 .paymentModeCard {
   flex: 0 0 46mm;
-  height: 18mm;
-  border: 1px solid var(--border, #CFCFCF);
+  height: 20mm;
+  border: 1px solid #CFCFCF !important;
   border-radius: 4px;
   padding: 1mm 2.5mm;
   box-sizing: border-box;
-  background: var(--bg, #FFFFFF);
+  background-color: #FFFFFF !important;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

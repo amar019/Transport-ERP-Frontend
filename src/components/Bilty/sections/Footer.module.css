@@ -1,23 +1,26 @@
 /* ==========================================================================
-   Footer CSS Module (Height Budget: 5mm)
+   Premium Software Advertisement Footer CSS Module
    ========================================================================== */
 
 .footerStrip {
   width: 100%;
-  height: 5mm;
+  height: 5.5mm;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
-  padding: 0 1.5mm;
-  background: var(--bg, #FFFFFF);
-  font-size: 5.8pt;
+  padding: 0 2mm;
+  background-color: #FFF7ED !important;
+  border: 1px solid #FFEDD5 !important;
+  border-radius: 3px;
+  font-size: 8pt;
   line-height: 1;
   page-break-inside: avoid;
   break-inside: avoid;
+  overflow: hidden;
 }
 
-.serviceLeft {
+.adLeft {
   display: flex;
   align-items: center;
   gap: 1.5mm;
@@ -25,39 +28,70 @@
   white-space: nowrap;
 }
 
-.serviceTitle {
-  font-weight: 800;
-  color: #EB5A00;
-  font-family: 'Noto Sans Devanagari', sans-serif;
+.badgeIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+}
+
+.adTag {
+  font-size: 5.5pt;
+  font-weight: 900;
+  color: #FFFFFF;
+  background-color: #EA580C !important;
+  padding: 0.5px 4px;
+  border-radius: 2px;
+  letter-spacing: 0.3px;
+  font-family: 'Poppins', sans-serif;
+  flex-shrink: 0;
+}
+
+.adTextEnglish {
+  font-weight: 800;
+  color: #C2410C;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.1px;
   font-size: 6pt;
 }
 
-.serviceLocations {
-  font-weight: 600;
-  color: #222222;
-  font-family: 'Noto Sans Devanagari', sans-serif;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 5.8pt;
+.dotDivider {
+  color: #F97316;
+  font-weight: 900;
 }
 
-.websiteRight {
+.adTextMarathi {
+  font-weight: 700;
+  color: #431407;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: 6pt;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.contactRight {
   display: flex;
   align-items: center;
   gap: 1mm;
-  font-weight: 700;
-  color: #111111;
+  font-weight: 800;
+  color: #C2410C;
   flex-shrink: 0;
+  background-color: #FFFFFF !important;
+  border: 0.8px solid #FFEDD5 !important;
+  padding: 0.5px 4px;
+  border-radius: 3px;
 }
 
-.globeIcon {
-  font-size: 6pt;
-  color: #222222;
+.contactLabel {
+  font-size: 5.5pt;
+  color: #7C2D12;
+  font-weight: 700;
 }
 
-.websiteUrl {
+.contactNumber {
+  font-size: 6.8pt;
+  font-weight: 900;
+  color: #EA580C;
   font-family: 'Poppins', sans-serif;
-  letter-spacing: 0.2px;
-  font-size: 6pt;
+  letter-spacing: 0.3px;
 }

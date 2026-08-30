@@ -46,34 +46,34 @@ export const ReceiverSection = ({ customer = {}, deliveryAddress = "", receiver 
       {/* Title */}
       <div className={styles.titleRow}>
         <User size={14} strokeWidth={2.2} color="#EB5A00" className={styles.titleIcon} />
-        <span className={styles.titleMarathi}>घेणारा</span>
-        <span className={styles.titleEnglish}>(RECEIVER)</span>
+        {/* <span className={styles.titleMarathi}>घेणारा</span> */}
+        <span className={styles.titleEnglish}>RECEIVER</span>
       </div>
 
       {/* Details */}
       <div className={styles.detailsList}>
         <div className={styles.detailRow}>
-          <span className={styles.label}>नाव</span>
+          <span className={styles.label}>Name</span>
           <span className={styles.colon}>:</span>
           <span className={styles.value}>{shopName}</span>
         </div>
 
         {ownerName ? (
           <div className={styles.detailRow}>
-            <span className={styles.label}>मालक</span>
+            <span className={styles.label}>Owner</span>
             <span className={styles.colon}>:</span>
             <span className={styles.value}>{ownerName}</span>
           </div>
         ) : null}
 
         <div className={styles.detailRow}>
-          <span className={styles.label}>मोबाईल</span>
+          <span className={styles.label}>Mobile</span>
           <span className={styles.colon}>:</span>
           <span className={styles.value}>{mobile}</span>
         </div>
 
         <div className={styles.detailRow}>
-          <span className={styles.label}>पत्ता</span>
+          <span className={styles.label}>Address</span>
           <span className={styles.colon}>:</span>
           <span className={styles.value}>{address}</span>
         </div>

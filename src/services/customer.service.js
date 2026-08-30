@@ -29,3 +29,10 @@ export const deactivateCustomer = async (id) => {
     const response = await api.patch(`/customers/${id}/deactivate`);
     return response.data;
 };
+
+// 6. Activate customer (PATCH /customers/:id/activate)
+export const activateCustomer = async (id) => {
+    const response = await api.patch(`/customers/${id}/activate`);
+    return response.data;
+};
+

@@ -4,6 +4,7 @@ import {
   createCustomer,
   updateCustomer,
   deactivateCustomer,
+  activateCustomer,
 } from "@/services/customer.service";
 
 export const fetchCustomers = createAsyncThunk(
@@ -65,6 +66,21 @@ export const removeCustomer = createAsyncThunk(
   }
 );
 
+export const activateCustomerThunk = createAsyncThunk(
+  "customers/activate",
+  async (id, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await activateCustomer(id);
+      dispatch(fetchCustomers());
+      return response.data || response;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to activate customer"
+      );
+    }
+  }
+);
+
 const initialState = {
   list: [],
   isLoading: false,
@@ -108,9 +124,15 @@ const customerSlice = createSlice({
       // Deactivate
       .addCase(removeCustomer.rejected, (state, action) => {
         state.error = action.payload;
+      })
+
+      // Activate
+      .addCase(activateCustomerThunk.rejected, (state, action) => {
+        state.error = action.payload;
       });
   },
 });
 
 export const { clearCustomerError } = customerSlice.actions;
 export default customerSlice.reducer;
+

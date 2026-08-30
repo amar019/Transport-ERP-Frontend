@@ -64,9 +64,12 @@ const WireframeCopy = ({ type, booking = {} }) => {
         <GoodsTable goodsItems={goodsItems} charges={charges} notes={booking.notes} />
       </div>
 
-      {/* Row 4: Signatures Section */}
-      <div className={styles.row4}>
-        <SignatureSection />
+      {/* Row 4: Signature Section */}
+
+
+      {/* Row 5: Custom Software Advertisement Footer Strip */}
+      <div className={styles.row5}>
+        <Footer />
       </div>
     </div>
   );

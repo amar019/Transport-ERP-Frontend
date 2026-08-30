@@ -1,35 +1,40 @@
 import React from 'react';
-import { Globe } from 'lucide-react';
+import { Sparkles, PhoneCall } from 'lucide-react';
 import styles from './Footer.module.css';
 
 /**
- * Footer Component (~285mm width, ~5mm height)
- * Displays bottom service coverage towns & website URL with Lucide Globe icon:
- * - Left: आमच्या सेवा क्षेत्र : [serviceAreas]
- * - Right: Globe Icon + [website]
- * 
- * Accepts props: serviceAreas (string), website (string)
+ * Footer Component (~285mm width, ~5.5mm height)
+ * Low-contrast tech credit bar / Advertisement Strip:
+ * ✨ AI-POWERED SOFTWARE • Build Custom Software & Websites for your Business | Call/WhatsApp: 7744949305
  */
 
 export const Footer = ({
-  serviceAreas = "अ.नगर • बीड • जामखेड • कडा • आष्टी • भूम • पाटोदा • खर्डा • इ.",
-  website = "www.mahakaltransport.in"
+  contactNumber = "7744949305"
 }) => {
   return (
     <footer className={styles.footerStrip}>
-      {/* Left: Service Coverage Towns */}
-      <div className={styles.serviceLeft}>
-        <span className={styles.serviceTitle}>आमच्या सेवा क्षेत्र :</span>
-        <span className={styles.serviceLocations}>{serviceAreas}</span>
+      {/* Left: Software Offer Text */}
+      <div className={styles.adLeft}>
+        <div className={styles.badgeIcon}>
+          <Sparkles size={10} strokeWidth={2.4} color="#EA580C" />
+        </div>
+        <span className={styles.adTag}>AI-POWERED SOFTWARE</span>
+        <span className={styles.dotDivider}>•</span>
+        <span className={styles.adTextEnglish}>
+          Build Custom Software & Websites for your Business
+        </span>
       </div>
 
-      {/* Right: Website URL */}
-      <div className={styles.websiteRight}>
-        <Globe size={12} strokeWidth={2.2} color="#222222" className={styles.globeIcon} />
-        <span className={styles.websiteUrl}>{website}</span>
+      {/* Right: Contact Number */}
+      <div className={styles.contactRight}>
+        <PhoneCall size={10} strokeWidth={2.4} color="#EA580C" />
+        <span className={styles.contactLabel}>Call / WhatsApp:</span>
+        <span className={styles.contactNumber}>{contactNumber}</span>
       </div>
     </footer>
   );
 };
 
 export default Footer;
+
+

@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import {
   fetchCustomers,
   removeCustomer,
+  activateCustomerThunk,
 } from "@/store/slices/customerSlice";
-import { ROUTES } from "@/constants/paths";
-
+import { confirmAction } from "@/utils/swal";
 import {
   Users,
   UserCheck,
@@ -24,6 +24,7 @@ import {
   X,
   CheckCircle2,
   AlertCircle,
+  ChevronRight,
 } from "lucide-react";
 
 export default function CustomerTable() {
@@ -90,11 +91,16 @@ export default function CustomerTable() {
   const handleDeactivate = async (customer, e) => {
     e.stopPropagation();
     const id = customer._id || customer.id;
-    if (
-      window.confirm(
-        `Are you sure you want to deactivate ${customer.shopName || "this customer"}?`
-      )
-    ) {
+    const isConfirmed = await confirmAction({
+      title: "Deactivate Customer?",
+      text: `Are you sure you want to deactivate ${customer.shopName || "this customer"}?`,
+      icon: "warning",
+      confirmButtonText: "Yes, Deactivate",
+      cancelButtonText: "Keep Active",
+      isDanger: true,
+    });
+
+    if (isConfirmed) {
       const res = await dispatch(removeCustomer(id));
       if (!res.error) {
         showToast("Customer deactivated successfully", "success");
@@ -104,251 +110,317 @@ export default function CustomerTable() {
     }
   };
 
+  // Activate handler
+  const handleActivate = async (customer, e) => {
+    e.stopPropagation();
+    const id = customer._id || customer.id;
+    const isConfirmed = await confirmAction({
+      title: "Activate Customer?",
+      text: `Are you sure you want to activate ${customer.shopName || "this customer"}?`,
+      icon: "question",
+      confirmButtonText: "Yes, Activate",
+      cancelButtonText: "Cancel",
+      isDanger: false,
+    });
+
+    if (isConfirmed) {
+      const res = await dispatch(activateCustomerThunk(id));
+      if (!res.error) {
+        showToast("Customer activated successfully", "success");
+      } else {
+        showToast(res.payload || "Failed to activate customer", "error");
+      }
+    }
+  };
+
+  const statusTabs = [
+    { label: "All Clients", value: "ALL", count: stats.total },
+    { label: "Active", value: "ACTIVE", count: stats.active },
+    { label: "Inactive", value: "INACTIVE", count: stats.inactive },
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans antialiased selection:bg-orange-100">
+    <div className="min-h-screen bg-[#F8FAFC] p-6 md:p-8 font-sans antialiased text-[#0F172A] selection:bg-[#FFF7ED] selection:text-[#C2410C] select-none space-y-6">
       {/* Toast Alert */}
       {toastMessage && (
         <div
-          className={`fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg border transition-all duration-300 ${
+          className={`fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border transition-all duration-200 animate-in fade-in slide-in-from-top-4 ${
             toastMessage.type === "success"
-              ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-              : "bg-rose-50 text-rose-800 border-rose-200"
+              ? "bg-[#ECFDF5] text-[#059669] border-[#A7F3D0]"
+              : "bg-[#FEF2F2] text-[#DC2626] border-[#FECACA]"
           }`}
         >
           {toastMessage.type === "success" ? (
-            <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+            <CheckCircle2 className="w-5 h-5 text-[#059669] shrink-0" />
           ) : (
-            <AlertCircle className="w-5 h-5 text-rose-600" />
+            <AlertCircle className="w-5 h-5 text-[#DC2626] shrink-0" />
           )}
-          <span className="text-sm font-semibold">{toastMessage.msg}</span>
+          <span className="text-xs md:text-sm font-semibold">{toastMessage.msg}</span>
         </div>
       )}
 
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl md:text-2xl font-extrabold text-slate-800 tracking-tight">
-              Customer Directory
+      {/* 1. HEADER SECTION */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print">
+        {/* Left: Breadcrumbs + Title + Subtitle */}
+        <div className="space-y-1">
+          {/* Small Breadcrumb */}
+          <div className="flex items-center gap-1.5 text-xs font-medium text-[#64748B]">
+            <span>Customers</span>
+            <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
+            <span className="font-semibold text-[#0F172A]">Directory</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <h1 className="text-[28px] font-bold text-[#0F172A] tracking-tight leading-tight m-0 p-0">
+              Customers
             </h1>
-            <span className="bg-orange-100 text-orange-700 text-xs font-bold px-2.5 py-0.5 rounded-full border border-orange-200">
-              {stats.total} Total
+            <span className="bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5] text-[11px] font-semibold px-2.5 py-0.5 rounded-md flex items-center gap-1 shrink-0 whitespace-nowrap">
+              {stats.total} Registered
             </span>
           </div>
-          <p className="text-xs text-slate-500 font-medium mt-1">
-            Manage customer profiles, contact info, and billing addresses
+          <p className="text-xs text-[#64748B] font-normal">
+            Manage customer profiles, contact information, and billing master records
           </p>
         </div>
 
-        <button
-          onClick={() => navigate("/customers/add")}
-          className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold px-4 py-2.5 rounded-xl shadow-md shadow-orange-500/20 active:scale-[0.98] transition-all text-xs md:text-sm select-none cursor-pointer"
-        >
-          <Plus className="w-4 h-4 stroke-[3]" />
-          <span>Register New Customer</span>
-        </button>
+        {/* Right Toolbar Actions */}
+        <div className="flex items-center flex-wrap gap-2 shrink-0 self-start sm:self-auto">
+          {/* Refresh Button */}
+          <button
+            type="button"
+            onClick={() => dispatch(fetchCustomers())}
+            disabled={loading}
+            className="p-2 text-[#64748B] hover:text-[#0F172A] hover:bg-white bg-white rounded-lg border border-[#E2E8F0] shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
+            title="Refresh Customers"
+          >
+            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-[#F97316]" : ""}`} />
+          </button>
+
+          {/* Primary Action: + Register New Customer */}
+          <button
+            type="button"
+            onClick={() => navigate("/customers/add")}
+            className="inline-flex items-center justify-center gap-1.5 bg-[#F97316] hover:bg-[#EA580C] text-white font-semibold px-4 py-2 rounded-lg shadow-2xs transition-colors text-xs select-none cursor-pointer"
+          >
+            <Plus className="w-4 h-4 stroke-[2.5]" />
+            <span>Register New Customer</span>
+          </button>
+        </div>
       </div>
 
-      {/* Analytics KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
-        {/* Card 1: Total */}
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
-          <div>
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+      {/* 2. STATISTICS CARDS SECTION */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 no-print">
+        {/* Card 1: Total Clients */}
+        <div className="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#64748B]">
               Total Clients
-            </p>
-            <h3 className="text-xl md:text-2xl font-black text-slate-800 mt-0.5">
+            </span>
+            <div className="w-8 h-8 rounded-lg bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0] flex items-center justify-center shrink-0">
+              <Users className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <span className="text-2xl font-bold text-[#0F172A] tracking-tight block">
               {stats.total}
-            </h3>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center">
-            <Users className="w-5 h-5" />
+            </span>
+            <span className="text-xs text-[#64748B] font-normal block mt-0.5">
+              Registered customer profiles
+            </span>
           </div>
         </div>
 
-        {/* Card 2: Active */}
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
-          <div>
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+        {/* Card 2: Active Accounts */}
+        <div className="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#64748B]">
               Active Accounts
-            </p>
-            <h3 className="text-xl md:text-2xl font-black text-emerald-600 mt-0.5">
+            </span>
+            <div className="w-8 h-8 rounded-lg bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] flex items-center justify-center shrink-0">
+              <UserCheck className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <span className="text-2xl font-bold text-[#0F172A] tracking-tight block">
               {stats.active}
-            </h3>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-            <UserCheck className="w-5 h-5" />
+            </span>
+            <span className="text-xs text-[#64748B] font-normal block mt-0.5">
+              Verified active accounts
+            </span>
           </div>
         </div>
 
-        {/* Card 3: Inactive */}
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
-          <div>
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+        {/* Card 3: Inactive Accounts */}
+        <div className="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#64748B]">
               Inactive Accounts
-            </p>
-            <h3 className="text-xl md:text-2xl font-black text-slate-500 mt-0.5">
-              {stats.inactive}
-            </h3>
+            </span>
+            <div className="w-8 h-8 rounded-lg bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0] flex items-center justify-center shrink-0">
+              <UserX className="w-4 h-4" />
+            </div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center">
-            <UserX className="w-5 h-5" />
+          <div className="mt-3">
+            <span className="text-2xl font-bold text-[#0F172A] tracking-tight block">
+              {stats.inactive}
+            </span>
+            <span className="text-xs text-[#64748B] font-normal block mt-0.5">
+              Deactivated profiles
+            </span>
           </div>
         </div>
 
-        {/* Card 4: Cities */}
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
-          <div>
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+        {/* Card 4: Cities Covered */}
+        <div className="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#64748B]">
               Cities Covered
-            </p>
-            <h3 className="text-xl md:text-2xl font-black text-indigo-600 mt-0.5">
-              {stats.cities}
-            </h3>
+            </span>
+            <div className="w-8 h-8 rounded-lg bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] flex items-center justify-center shrink-0">
+              <MapPin className="w-4 h-4" />
+            </div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-            <MapPin className="w-5 h-5" />
+          <div className="mt-3">
+            <span className="text-2xl font-bold text-[#0F172A] tracking-tight block">
+              {stats.cities}
+            </span>
+            <span className="text-xs text-[#64748B] font-normal block mt-0.5">
+              Coverage locations
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Main Container */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-        {/* Search & Filter Toolbar */}
-        <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row items-center justify-between gap-3">
-          {/* Search Box */}
-          <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search shop, owner, mobile, code..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-xs md:text-sm bg-white border border-slate-200 rounded-xl focus:outline-hidden focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 transition-all font-medium placeholder:text-slate-400"
-            />
-            {searchTerm && (
+      {/* 3. SEGMENTED CONTROL STATUS TABS */}
+      <div className="no-print">
+        <div className="bg-[#F1F5F9] p-1 rounded-lg border border-[#E2E8F0] inline-flex items-center gap-1 overflow-x-auto">
+          {statusTabs.map((tab) => {
+            const isTabActive = statusFilter === tab.value;
+            return (
               <button
-                onClick={() => setSearchTerm("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                key={tab.value}
+                type="button"
+                onClick={() => setStatusFilter(tab.value)}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs transition-colors cursor-pointer ${
+                  isTabActive
+                    ? "bg-[#F97316] text-white font-semibold shadow-2xs"
+                    : "text-[#64748B] hover:text-[#0F172A] hover:bg-slate-200/50 font-medium"
+                }`}
               >
-                <X className="w-3.5 h-3.5" />
+                <span>{tab.label}</span>
+                <span
+                  className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
+                    isTabActive
+                      ? "bg-white/20 text-white"
+                      : "bg-slate-200/70 text-[#475569]"
+                  }`}
+                >
+                  {tab.count}
+                </span>
               </button>
-            )}
-          </div>
+            );
+          })}
+        </div>
+      </div>
 
-          {/* Filter Pills & Actions */}
-          <div className="flex items-center justify-between w-full md:w-auto gap-2">
-            <div className="bg-slate-200/60 p-1 rounded-xl flex items-center gap-1 text-xs select-none">
-              <button
-                onClick={() => setStatusFilter("ALL")}
-                className={`px-3 py-1 rounded-lg font-bold transition-all ${
-                  statusFilter === "ALL"
-                    ? "bg-white text-slate-800 shadow-xs"
-                    : "text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                All
-              </button>
-              <button
-                onClick={() => setStatusFilter("ACTIVE")}
-                className={`px-3 py-1 rounded-lg font-bold transition-all ${
-                  statusFilter === "ACTIVE"
-                    ? "bg-white text-emerald-700 shadow-xs"
-                    : "text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                Active
-              </button>
-              <button
-                onClick={() => setStatusFilter("INACTIVE")}
-                className={`px-3 py-1 rounded-lg font-bold transition-all ${
-                  statusFilter === "INACTIVE"
-                    ? "bg-white text-slate-700 shadow-xs"
-                    : "text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                Inactive
-              </button>
-            </div>
-
+      {/* 4. FILTER TOOLBAR & SEARCH */}
+      <div className="bg-white p-3 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col md:flex-row items-center justify-between gap-3 no-print">
+        <div className="relative w-full md:w-96">
+          <Search className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Search shop, owner, mobile, code, city..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-9 pr-8 py-2 text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg focus:bg-white focus:outline-none focus:border-[#F97316] font-medium text-[#0F172A] placeholder:text-[#94A3B8] transition-colors"
+          />
+          {searchTerm && (
             <button
-              onClick={() => dispatch(fetchCustomers())}
-              className="p-2 text-slate-500 hover:text-orange-600 hover:bg-orange-50 rounded-xl border border-slate-200 transition-all cursor-pointer"
-              title="Refresh Customers"
+              type="button"
+              onClick={() => setSearchTerm("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[#94A3B8] hover:text-[#0F172A] rounded-md cursor-pointer"
             >
-              <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-orange-500" : ""}`} />
+              <X className="w-3.5 h-3.5" />
             </button>
+          )}
+        </div>
+      </div>
+
+      {/* Global Error Alert */}
+      {error && (
+        <div className="p-4 bg-[#FEF2F2] border border-[#FECACA] rounded-xl flex items-center justify-between text-[#DC2626] text-xs font-medium no-print">
+          <div className="flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 shrink-0 text-[#DC2626]" />
+            <span>{typeof error === "string" ? error : "Unable to load customer directory."}</span>
           </div>
         </div>
+      )}
 
-        {/* Global Error Alert */}
-        {error && (
-          <div className="m-4 p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-center gap-2 text-rose-700 text-xs font-semibold">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>{error}</span>
-          </div>
-        )}
-
-        {/* Table Content */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50/80 border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400 select-none">
-                <th className="py-3.5 px-4">Code</th>
-                <th className="py-3.5 px-4">Shop & Owner Name</th>
-                <th className="py-3.5 px-4">Contact Info</th>
-                <th className="py-3.5 px-4">Location</th>
-                <th className="py-3.5 px-4">Status</th>
-                <th className="py-3.5 px-4 text-right">Actions</th>
+      {/* 5. ENTERPRISE DATA TABLE */}
+      <div className="w-full bg-white rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col select-none overflow-hidden">
+        <div className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-slate-200">
+          <table className="w-full text-left border-collapse min-w-[850px] lg:min-w-full">
+            {/* Sticky Table Header */}
+            <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold uppercase tracking-wider text-[#64748B] select-none sticky top-0 z-10">
+              <tr>
+                <th className="py-3 px-4 whitespace-nowrap w-[110px]">Code</th>
+                <th className="py-3 px-4 min-w-[220px]">Customer / Shop Name</th>
+                <th className="py-3 px-4 min-w-[180px]">Contact Info</th>
+                <th className="py-3 px-4 whitespace-nowrap w-[140px]">Location</th>
+                <th className="py-3 px-4 whitespace-nowrap w-[110px]">Status</th>
+                <th className="py-3 px-4 text-right whitespace-nowrap w-[120px]">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-xs md:text-sm">
+
+            {/* Table Body */}
+            <tbody className="divide-y divide-[#F1F5F9] text-xs">
               {loading ? (
-                [1, 2, 3, 4].map((n) => (
+                [1, 2, 3, 4, 5].map((n) => (
                   <tr key={n} className="animate-pulse">
-                    <td className="py-4 px-4">
-                      <div className="h-4 w-16 bg-slate-200 rounded-md"></div>
+                    <td className="py-3.5 px-4">
+                      <div className="h-4 w-16 bg-slate-200 rounded"></div>
                     </td>
-                    <td className="py-4 px-4">
-                      <div className="h-4 w-36 bg-slate-200 rounded-md mb-1.5"></div>
-                      <div className="h-3 w-24 bg-slate-100 rounded-md"></div>
+                    <td className="py-3.5 px-4">
+                      <div className="h-4 w-36 bg-slate-200 rounded mb-1"></div>
+                      <div className="h-3 w-24 bg-slate-100 rounded"></div>
                     </td>
-                    <td className="py-4 px-4">
-                      <div className="h-4 w-28 bg-slate-200 rounded-md mb-1.5"></div>
-                      <div className="h-3 w-32 bg-slate-100 rounded-md"></div>
+                    <td className="py-3.5 px-4">
+                      <div className="h-4 w-28 bg-slate-200 rounded mb-1"></div>
+                      <div className="h-3 w-32 bg-slate-100 rounded"></div>
                     </td>
-                    <td className="py-4 px-4">
-                      <div className="h-4 w-24 bg-slate-200 rounded-md"></div>
+                    <td className="py-3.5 px-4">
+                      <div className="h-4 w-24 bg-slate-200 rounded"></div>
                     </td>
-                    <td className="py-4 px-4">
-                      <div className="h-5 w-16 bg-slate-200 rounded-full"></div>
+                    <td className="py-3.5 px-4">
+                      <div className="h-4.5 w-16 bg-slate-200 rounded"></div>
                     </td>
-                    <td className="py-4 px-4 text-right">
-                      <div className="h-8 w-24 bg-slate-200 rounded-xl ml-auto"></div>
+                    <td className="py-3.5 px-4 text-right">
+                      <div className="h-6 w-20 bg-slate-200 rounded ml-auto"></div>
                     </td>
                   </tr>
                 ))
               ) : filteredCustomers.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="py-12 px-4 text-center">
+                  <td colSpan="6" className="py-16 px-4 text-center">
                     <div className="max-w-xs mx-auto flex flex-col items-center justify-center">
-                      <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center mb-3">
-                        <Store className="w-6 h-6" />
+                      <div className="w-10 h-10 rounded-lg bg-[#FFF7ED] text-[#F97316] flex items-center justify-center mb-2.5 border border-[#FFEDD5]">
+                        <Store className="w-5 h-5" />
                       </div>
-                      <h4 className="font-bold text-slate-800 text-base">
-                        No Customers Found
+                      <h4 className="font-bold text-[#0F172A] text-sm">
+                        No customers found
                       </h4>
-                      <p className="text-slate-400 text-xs mt-1 leading-relaxed">
+                      <p className="text-[#64748B] text-xs mt-1 leading-relaxed font-normal">
                         {searchTerm || statusFilter !== "ALL"
                           ? "Try adjusting your search query or status filter."
                           : "Get started by adding your first customer profile."}
                       </p>
                       {!searchTerm && statusFilter === "ALL" && (
                         <button
+                          type="button"
                           onClick={() => navigate("/customers/add")}
-                          className="mt-4 inline-flex items-center gap-1.5 bg-orange-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl hover:bg-orange-600 transition-all cursor-pointer"
+                          className="mt-3 inline-flex items-center gap-1.5 px-3 py-2 bg-[#F97316] hover:bg-[#EA580C] text-white font-semibold text-xs rounded-lg shadow-2xs cursor-pointer transition-colors"
                         >
-                          <Plus className="w-3.5 h-3.5" />
+                          <Plus className="w-4 h-4 stroke-[2.5]" />
                           <span>Register New Customer</span>
                         </button>
                       )}
@@ -357,115 +429,113 @@ export default function CustomerTable() {
                 </tr>
               ) : (
                 filteredCustomers.map((c) => {
-                  const isActive =
-                    c.status === "ACTIVE" || c.isActive === true;
-                  const initial = (c.shopName || "C").charAt(0).toUpperCase();
+                  const isActive = c.status === "ACTIVE" || c.isActive === true;
                   const customerId = c._id || c.id;
 
                   return (
                     <tr
                       key={customerId}
                       onClick={() => navigate(`/customers/${customerId}`)}
-                      className="hover:bg-slate-50/80 transition-colors group cursor-pointer"
+                      className="hover:bg-[#F8FAFC] transition-colors group cursor-pointer"
                     >
-                      <td className="py-3.5 px-4">
-                        <span className="font-mono text-xs font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md border border-slate-200/80 group-hover:bg-orange-100 group-hover:text-orange-700 transition-colors">
+                      {/* 1. Code */}
+                      <td className="py-3.5 px-4 whitespace-nowrap">
+                        <span className="font-mono text-xs font-semibold bg-[#F1F5F9] text-[#0F172A] px-2 py-0.5 rounded-md border border-[#E2E8F0] group-hover:bg-[#FFF7ED] group-hover:text-[#C2410C] group-hover:border-[#FFEDD5] transition-colors">
                           {c.customerCode || "CUS-0000"}
                         </span>
                       </td>
 
+                      {/* 2. Customer Shop & Owner */}
                       <td className="py-3.5 px-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-400 text-white font-black text-sm flex items-center justify-center shrink-0 shadow-xs">
-                            {initial}
+                        <div className="font-semibold text-[#0F172A] text-xs group-hover:text-[#C2410C] transition-colors">
+                          {c.shopName}
+                        </div>
+                        {c.ownerName && (
+                          <div className="text-[11px] text-[#64748B] font-normal mt-0.5">
+                            Owner: <span className="text-[#334155] font-medium">{c.ownerName}</span>
                           </div>
-                          <div>
-                            <div className="font-bold text-slate-800 group-hover:text-orange-600 transition-colors">
-                              {c.shopName}
-                            </div>
-                            <div className="text-[11px] font-semibold text-slate-400 flex items-center gap-1 mt-0.5">
-                              <span>Owner:</span>
-                              <span className="text-slate-600 font-medium">
-                                {c.ownerName || "N/A"}
-                              </span>
-                            </div>
+                        )}
+                      </td>
+
+                      {/* 3. Contact Info */}
+                      <td className="py-3.5 px-4">
+                        <div className="flex items-center gap-1.5 font-medium text-[#0F172A] text-xs">
+                          <Phone className="w-3.5 h-3.5 text-[#94A3B8]" />
+                          <span>{c.mobile || "N/A"}</span>
+                        </div>
+                        {c.email && (
+                          <div className="flex items-center gap-1.5 text-[11px] text-[#64748B] font-normal mt-0.5">
+                            <Mail className="w-3.5 h-3.5 text-[#94A3B8]" />
+                            <span className="truncate max-w-[160px]">{c.email}</span>
                           </div>
+                        )}
+                      </td>
+
+                      {/* 4. Location */}
+                      <td className="py-3.5 px-4 whitespace-nowrap">
+                        <div className="flex items-center gap-1.5 text-[#475569] font-medium text-xs">
+                          <MapPin className="w-3.5 h-3.5 text-[#94A3B8] shrink-0" />
+                          <span>{[c.city, c.state].filter(Boolean).join(", ") || "N/A"}</span>
                         </div>
                       </td>
 
-                      <td className="py-3.5 px-4">
-                        <div className="space-y-0.5">
-                          <div className="flex items-center gap-1.5 font-semibold text-slate-700">
-                            <Phone className="w-3.5 h-3.5 text-slate-400" />
-                            <span>{c.mobile || "N/A"}</span>
-                          </div>
-                          {c.email && (
-                            <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
-                              <Mail className="w-3.5 h-3.5 text-slate-300" />
-                              <span className="truncate max-w-[160px]">
-                                {c.email}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </td>
-
-                      <td className="py-3.5 px-4">
-                        <div className="flex items-center gap-1.5 text-slate-600 font-medium">
-                          <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                          <span>
-                            {[c.city, c.state].filter(Boolean).join(", ") ||
-                              "N/A"}
-                          </span>
-                        </div>
-                      </td>
-
-                      <td className="py-3.5 px-4">
+                      {/* 5. Status Badge */}
+                      <td className="py-3.5 px-4 whitespace-nowrap">
                         <span
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider ${
+                          className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${
                             isActive
-                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200/80"
-                              : "bg-slate-100 text-slate-500 border border-slate-200"
+                              ? "bg-[#ECFDF5] text-[#059669] border-[#A7F3D0]"
+                              : "bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0]"
                           }`}
                         >
                           <span
                             className={`w-1.5 h-1.5 rounded-full ${
-                              isActive ? "bg-emerald-500 animate-pulse" : "bg-slate-400"
+                              isActive ? "bg-[#059669]" : "bg-[#94A3B8]"
                             }`}
                           />
                           {isActive ? "ACTIVE" : "INACTIVE"}
                         </span>
                       </td>
 
-                      <td className="py-3.5 px-4 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
+                      {/* 6. Actions */}
+                      <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                        <div
+                          className="flex items-center justify-end gap-1"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              navigate(`/customers/${customerId}`);
-                            }}
-                            className="p-1.5 text-slate-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg border border-slate-200 hover:border-orange-200 transition-all cursor-pointer"
+                            type="button"
+                            onClick={() => navigate(`/customers/${customerId}`)}
+                            className="p-1.5 text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] transition-colors cursor-pointer"
                             title="View Customer Details"
                           >
                             <Eye className="w-3.5 h-3.5" />
                           </button>
 
                           <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              navigate(`/customers/edit/${customerId}`);
-                            }}
-                            className="p-1.5 text-slate-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg border border-slate-200 hover:border-orange-200 transition-all cursor-pointer"
+                            type="button"
+                            onClick={() => navigate(`/customers/edit/${customerId}`)}
+                            className="p-1.5 text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] transition-colors cursor-pointer"
                             title="Edit Customer"
                           >
                             <Pencil className="w-3.5 h-3.5" />
                           </button>
 
-                          {isActive && (
+                          {isActive ? (
                             <button
+                              type="button"
                               onClick={(e) => handleDeactivate(c, e)}
-                              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg border border-slate-200 hover:border-rose-200 transition-all cursor-pointer"
+                              className="p-1.5 text-[#94A3B8] hover:text-[#DC2626] hover:bg-[#FEF2F2] rounded-lg border border-[#E2E8F0] hover:border-[#FECACA] transition-colors cursor-pointer"
                               title="Deactivate Customer"
+                            >
+                              <Power className="w-3.5 h-3.5" />
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={(e) => handleActivate(c, e)}
+                              className="p-1.5 text-[#059669] bg-[#ECFDF5] hover:bg-[#A7F3D0]/30 rounded-lg border border-[#A7F3D0] transition-colors cursor-pointer"
+                              title="Activate Customer"
                             >
                               <Power className="w-3.5 h-3.5" />
                             </button>
@@ -480,13 +550,15 @@ export default function CustomerTable() {
           </table>
         </div>
 
-        <div className="px-4 py-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between text-xs text-slate-400 font-medium">
+        {/* Table Footer */}
+        <div className="px-4 py-3 border-t border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between text-xs text-[#64748B] font-medium select-none">
           <span>
-            Showing <b>{filteredCustomers.length}</b> of <b>{stats.total}</b> customers
+            Showing <b className="text-[#0F172A]">{filteredCustomers.length}</b> of <b className="text-[#0F172A]">{stats.total}</b> customers
           </span>
-          <span>Transport ERP Masters</span>
+          <span>Transport ERP Master Directory</span>
         </div>
       </div>
     </div>
   );
 }
+

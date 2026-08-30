@@ -6,11 +6,11 @@
   flex: 1;
   height: 100%;
   max-height: 20mm;
-  border: 1px solid var(--border, #CFCFCF);
+  border: 1px solid #CFCFCF !important;
   border-radius: 4px;
   padding: 0.8mm 2.5mm 0.8mm calc(2.5mm + 4px);
   box-sizing: border-box;
-  background: var(--bg, #FFFFFF);
+  background-color: #FFFFFF !important;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -39,7 +39,7 @@
 }
 
 .titleEnglish {
-  font-size: 6.5pt;
+  font-size: 8.5pt;
   color: #EB5A00;
   font-weight: 700;
 }

@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Inbox } from "lucide-react";
 import BookingStatusBadge from "./BookingStatusBadge";
 import BookingActionMenu from "./BookingActionMenu";
@@ -13,6 +14,8 @@ export default function BookingTable({
   onDeleteSuccess,
   showToast,
 }) {
+  const navigate = useNavigate();
+
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -56,15 +59,15 @@ export default function BookingTable({
   }, [bookings.length, selectedIds.length]);
 
   return (
-    <div className="w-full bg-white rounded-2xl border border-slate-200/90 shadow-xs flex flex-col select-none overflow-hidden">
+    <div className="w-full bg-white rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col select-none overflow-hidden">
       {/* Full Width & Height Responsive Table Container */}
       <div className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-slate-200">
         <table className="w-full text-left border-collapse min-w-[900px] xl:min-w-full">
-          {/* Table Header */}
-          <thead className="bg-slate-50/90 border-b border-slate-200/90 text-[10.5px] font-extrabold uppercase tracking-wider text-slate-500 select-none">
+          {/* Sticky Table Header */}
+          <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold uppercase tracking-wider text-[#64748B] select-none sticky top-0 z-10">
             <tr>
               {/* 1. Checkbox */}
-              <th className="py-2.5 px-2.5 w-9 text-center">
+              <th className="py-3 px-3 w-9 text-center">
                 <input
                   type="checkbox"
                   checked={isAllSelected}
@@ -72,93 +75,93 @@ export default function BookingTable({
                     if (el) el.indeterminate = isSomeSelected;
                   }}
                   onChange={() => onToggleSelectAll && onToggleSelectAll()}
-                  className="w-3.5 h-3.5 text-orange-600 border-slate-300 rounded focus:ring-orange-500 cursor-pointer"
+                  className="w-3.5 h-3.5 text-[#F97316] border-[#CBD5E1] rounded focus:ring-[#F97316] cursor-pointer"
                 />
               </th>
 
               {/* 2. Booking No */}
-              <th className="py-2.5 px-2.5 whitespace-nowrap w-[110px]">
+              <th className="py-3 px-3 whitespace-nowrap w-[110px]">
                 Booking No
               </th>
 
               {/* 3. Date */}
-              <th className="py-2.5 px-2 whitespace-nowrap w-[90px]">
+              <th className="py-3 px-3 whitespace-nowrap w-[95px]">
                 Date
               </th>
 
               {/* 4. Memo */}
-              <th className="py-2.5 px-2 whitespace-nowrap w-[80px]">
+              <th className="py-3 px-3 whitespace-nowrap w-[85px]">
                 Memo
               </th>
 
               {/* 5. Customer */}
-              <th className="py-2.5 px-2.5 min-w-[150px]">
+              <th className="py-3 px-3 min-w-[160px]">
                 Customer
               </th>
 
               {/* 6. Consignment */}
-              <th className="py-2.5 px-2.5 min-w-[130px]">
+              <th className="py-3 px-3 min-w-[140px]">
                 Consignment
               </th>
 
               {/* 7. Total Amount */}
-              <th className="py-2.5 px-2.5 text-right whitespace-nowrap w-[100px]">
+              <th className="py-3 px-3 text-right whitespace-nowrap w-[110px]">
                 Total Amount
               </th>
 
               {/* 8. Payment */}
-              <th className="py-2.5 px-2 whitespace-nowrap w-[115px]">
+              <th className="py-3 px-3 whitespace-nowrap w-[120px]">
                 Payment
               </th>
 
               {/* 9. Status */}
-              <th className="py-2.5 px-2 whitespace-nowrap w-[90px]">
+              <th className="py-3 px-3 whitespace-nowrap w-[95px]">
                 Status
               </th>
 
               {/* 10. Actions */}
-              <th className="py-2.5 px-2.5 text-right whitespace-nowrap w-[80px]">
+              <th className="py-3 px-3 text-right whitespace-nowrap w-[90px]">
                 Actions
               </th>
             </tr>
           </thead>
 
           {/* Table Body */}
-          <tbody className="divide-y divide-slate-100 text-xs font-medium">
+          <tbody className="divide-y divide-[#F1F5F9] text-xs">
             {loading ? (
               [1, 2, 3, 4, 5, 6].map((n) => (
                 <tr key={n} className="animate-pulse">
-                  <td className="py-2.5 px-2.5 text-center">
+                  <td className="py-3 px-3 text-center">
                     <div className="h-3.5 w-3.5 bg-slate-200 rounded mx-auto"></div>
                   </td>
-                  <td className="py-2.5 px-2.5">
-                    <div className="h-4 w-16 bg-slate-200 rounded-md"></div>
+                  <td className="py-3 px-3">
+                    <div className="h-4 w-16 bg-slate-200 rounded"></div>
                   </td>
-                  <td className="py-2.5 px-2">
-                    <div className="h-3.5 w-14 bg-slate-200 rounded-md"></div>
+                  <td className="py-3 px-3">
+                    <div className="h-3.5 w-14 bg-slate-200 rounded"></div>
                   </td>
-                  <td className="py-2.5 px-2">
-                    <div className="h-3.5 w-12 bg-slate-200 rounded-md"></div>
+                  <td className="py-3 px-3">
+                    <div className="h-3.5 w-12 bg-slate-200 rounded"></div>
                   </td>
-                  <td className="py-2.5 px-2.5">
-                    <div className="h-3.5 w-28 bg-slate-200 rounded-md mb-1"></div>
-                    <div className="h-2.5 w-20 bg-slate-100 rounded-md"></div>
+                  <td className="py-3 px-3">
+                    <div className="h-4 w-28 bg-slate-200 rounded mb-1"></div>
+                    <div className="h-3 w-20 bg-slate-100 rounded"></div>
                   </td>
-                  <td className="py-2.5 px-2.5">
-                    <div className="h-3.5 w-24 bg-slate-200 rounded-md mb-1"></div>
-                    <div className="h-2.5 w-12 bg-slate-100 rounded-md"></div>
+                  <td className="py-3 px-3">
+                    <div className="h-3.5 w-24 bg-slate-200 rounded mb-1"></div>
+                    <div className="h-3 w-12 bg-slate-100 rounded"></div>
                   </td>
-                  <td className="py-2.5 px-2.5 text-right">
-                    <div className="h-4 w-14 bg-slate-200 rounded-md ml-auto"></div>
+                  <td className="py-3 px-3 text-right">
+                    <div className="h-4 w-16 bg-slate-200 rounded ml-auto"></div>
                   </td>
-                  <td className="py-2.5 px-2">
-                    <div className="h-4.5 w-16 bg-slate-200 rounded-full"></div>
+                  <td className="py-3 px-3">
+                    <div className="h-4.5 w-16 bg-slate-200 rounded"></div>
                   </td>
-                  <td className="py-2.5 px-2">
-                    <div className="h-4.5 w-14 bg-slate-200 rounded-full"></div>
+                  <td className="py-3 px-3">
+                    <div className="h-4.5 w-14 bg-slate-200 rounded"></div>
                   </td>
-                  <td className="py-2.5 px-2.5 text-right">
-                    <div className="h-6 w-20 bg-slate-200 rounded-lg ml-auto"></div>
+                  <td className="py-3 px-3 text-right">
+                    <div className="h-6 w-16 bg-slate-200 rounded ml-auto"></div>
                   </td>
                 </tr>
               ))
@@ -166,13 +169,13 @@ export default function BookingTable({
               <tr>
                 <td colSpan="10" className="py-16 px-4 text-center">
                   <div className="max-w-xs mx-auto flex flex-col items-center justify-center">
-                    <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center mb-3 border border-orange-100 shadow-2xs">
-                      <Inbox className="w-6 h-6" />
+                    <div className="w-10 h-10 rounded-lg bg-[#FFF7ED] text-[#F97316] flex items-center justify-center mb-2.5 border border-[#FFEDD5]">
+                      <Inbox className="w-5 h-5" />
                     </div>
-                    <h4 className="font-extrabold text-slate-800 text-sm">
+                    <h4 className="font-bold text-[#0F172A] text-sm">
                       No bookings found
                     </h4>
-                    <p className="text-slate-400 text-xs mt-1 leading-relaxed font-medium">
+                    <p className="text-[#64748B] text-xs mt-1 leading-relaxed font-normal">
                       No transport bookings match your current search query or active filters.
                     </p>
                   </div>
@@ -183,10 +186,6 @@ export default function BookingTable({
                 const bookingId = b._id || b.id;
                 const isSelected = selectedIds.includes(bookingId);
                 const isCancelled = b.status === "CANCELLED";
-
-                // Visual row identification stripe
-                let rowBorderClass = "border-l-4 border-l-orange-500/80";
-                if (isCancelled) rowBorderClass = "bg-rose-50/30 border-l-4 border-l-rose-500/90 opacity-80";
 
                 const customerShop =
                   b.customer?.shopName ||
@@ -203,54 +202,58 @@ export default function BookingTable({
                 return (
                   <tr
                     key={bookingId}
-                    className={`hover:bg-orange-50/40 transition-colors group ${rowBorderClass} ${
-                      isSelected ? "bg-orange-50/60 font-semibold" : ""
-                    }`}
+                    onClick={() => navigate(`/bookings/${bookingId}`)}
+                    className={`hover:bg-[#F8FAFC] transition-colors group cursor-pointer ${
+                      isCancelled ? "bg-[#FEF2F2]/30" : ""
+                    } ${isSelected ? "bg-[#FFF7ED]/70 font-medium" : ""}`}
                   >
                     {/* 1. Checkbox */}
-                    <td className="py-2.5 px-2.5 text-center whitespace-nowrap">
+                    <td
+                      className="py-3 px-3 text-center whitespace-nowrap"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <input
                         type="checkbox"
                         checked={isSelected}
                         onChange={() => onToggleSelect && onToggleSelect(bookingId)}
-                        className="w-3.5 h-3.5 text-orange-600 border-slate-300 rounded focus:ring-orange-500 cursor-pointer"
+                        className="w-3.5 h-3.5 text-[#F97316] border-[#CBD5E1] rounded focus:ring-[#F97316] cursor-pointer"
                       />
                     </td>
 
                     {/* 2. Booking No */}
-                    <td className="py-2.5 px-2.5 whitespace-nowrap">
-                      <span className="font-mono text-xs font-black bg-slate-100 text-slate-800 px-2 py-0.5 rounded-md border border-slate-200/90 group-hover:bg-orange-100 group-hover:text-orange-900 transition-colors">
+                    <td className="py-3 px-3 whitespace-nowrap">
+                      <span className="font-mono text-xs font-semibold bg-[#F1F5F9] text-[#0F172A] px-2 py-0.5 rounded-md border border-[#E2E8F0] group-hover:bg-[#FFF7ED] group-hover:text-[#C2410C] group-hover:border-[#FFEDD5] transition-colors">
                         {b.bookingNumber || "BK-0000"}
                       </span>
                     </td>
 
                     {/* 3. Booking Date */}
-                    <td className="py-2.5 px-2 text-slate-600 font-semibold whitespace-nowrap text-xs">
+                    <td className="py-3 px-3 text-[#475569] font-medium whitespace-nowrap text-xs">
                       {formatDate(b.bookingDate || b.createdAt)}
                     </td>
 
                     {/* 4. Dedicated Memo Column */}
-                    <td className="py-2.5 px-2 whitespace-nowrap">
+                    <td className="py-3 px-3 whitespace-nowrap">
                       {memoNumber ? (
-                        <span className="font-mono text-[11px] font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded-md border border-slate-200">
+                        <span className="font-mono text-[11px] font-medium text-[#475569] bg-[#F1F5F9] px-1.5 py-0.5 rounded-md border border-[#E2E8F0]">
                           {memoNumber}
                         </span>
                       ) : (
-                        <span className="text-slate-300 font-bold px-1">—</span>
+                        <span className="text-[#94A3B8] font-normal px-1">—</span>
                       )}
                     </td>
 
-                    {/* 5. Customer */}
-                    <td className="py-2.5 px-2.5">
+                    {/* 5. Customer Details */}
+                    <td className="py-3 px-3">
                       <div
-                        className="font-extrabold text-slate-800 group-hover:text-orange-600 transition-colors truncate max-w-[200px] text-xs"
+                        className="font-semibold text-[#0F172A] text-xs truncate max-w-[200px]"
                         title={customerShop}
                       >
                         {customerShop}
                       </div>
                       {customerSubInfo && (
                         <div
-                          className="text-[10.5px] text-slate-500 font-medium truncate max-w-[200px] mt-0.5"
+                          className="text-[11px] text-[#64748B] font-normal truncate max-w-[200px] mt-0.5"
                           title={customerSubInfo}
                         >
                           {customerSubInfo}
@@ -258,34 +261,34 @@ export default function BookingTable({
                       )}
                     </td>
 
-                    {/* 6. Consignment (Item + Quantity) */}
-                    <td className="py-2.5 px-2.5">
+                    {/* 6. Consignment Details */}
+                    <td className="py-3 px-3">
                       <div
-                        className="text-slate-800 font-bold truncate max-w-[160px] text-xs"
+                        className="text-[#0F172A] font-medium text-xs truncate max-w-[160px]"
                         title={b.itemName || "Goods"}
                       >
                         {b.itemName || "Goods"}
                       </div>
-                      <div className="text-[10.5px] text-slate-500 font-semibold mt-0.5">
+                      <div className="text-[11px] text-[#64748B] font-normal mt-0.5">
                         {b.quantity ?? 1} Qty
                       </div>
                     </td>
 
                     {/* 7. Total Amount */}
-                    <td className="py-2.5 px-2.5 text-right font-mono font-black text-slate-900 whitespace-nowrap text-xs">
+                    <td className="py-3 px-3 text-right font-mono font-bold text-[#0F172A] whitespace-nowrap text-xs">
                       {formatCurrency(b.totalAmount || 0)}
                     </td>
 
-                    {/* 8. Payment */}
-                    <td className="py-2.5 px-2 whitespace-nowrap">
+                    {/* 8. Payment Status Badge */}
+                    <td className="py-3 px-3 whitespace-nowrap">
                       <BookingStatusBadge
                         type="collection"
                         value={b.collectionType || "TO_PAY"}
                       />
                     </td>
 
-                    {/* 9. Booking Status */}
-                    <td className="py-2.5 px-2 whitespace-nowrap">
+                    {/* 9. Booking Status Badge */}
+                    <td className="py-3 px-3 whitespace-nowrap">
                       <BookingStatusBadge
                         type="status"
                         value={b.status || "BOOKED"}
@@ -293,7 +296,10 @@ export default function BookingTable({
                     </td>
 
                     {/* 10. Actions */}
-                    <td className="py-2.5 px-2.5 text-right whitespace-nowrap">
+                    <td
+                      className="py-3 px-3 text-right whitespace-nowrap"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <BookingActionMenu
                         booking={b}
                         onCancelSuccess={onCancelSuccess}
@@ -310,12 +316,12 @@ export default function BookingTable({
       </div>
 
       {/* Table Footer / Pagination */}
-      <div className="px-4 py-3 border-t border-slate-100 bg-slate-50/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-medium select-none">
+      <div className="px-4 py-3 border-t border-[#E2E8F0] bg-[#F8FAFC] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#64748B] font-medium select-none">
         <div>
-          Showing <b>{paginatedBookings.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}</b> to{" "}
-          <b>{Math.min(currentPage * itemsPerPage, totalItems)}</b> of <b>{totalItems}</b> bookings
+          Showing <b className="text-[#0F172A]">{paginatedBookings.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}</b> to{" "}
+          <b className="text-[#0F172A]">{Math.min(currentPage * itemsPerPage, totalItems)}</b> of <b className="text-[#0F172A]">{totalItems}</b> bookings
           {selectedIds.length > 0 && (
-            <span className="ml-2 font-bold text-orange-600 bg-orange-50 border border-orange-200 px-2 py-0.5 rounded-full text-[11px]">
+            <span className="ml-2 font-semibold text-[#C2410C] bg-[#FFF7ED] border border-[#FFEDD5] px-2 py-0.5 rounded-md text-[11px]">
               {selectedIds.length} selected
             </span>
           )}
@@ -327,18 +333,18 @@ export default function BookingTable({
               type="button"
               onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
               disabled={currentPage === 1}
-              className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-white disabled:opacity-40 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] hover:bg-white disabled:opacity-40 transition-colors cursor-pointer"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <span className="px-3 py-1 font-bold text-slate-700">
+            <span className="px-3 py-1 font-semibold text-[#0F172A]">
               Page {currentPage} of {totalPages}
             </span>
             <button
               type="button"
               onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-white disabled:opacity-40 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] hover:bg-white disabled:opacity-40 transition-colors cursor-pointer"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -348,3 +354,4 @@ export default function BookingTable({
     </div>
   );
 }
+

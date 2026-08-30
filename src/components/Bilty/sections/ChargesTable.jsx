@@ -22,17 +22,17 @@ export const ChargesTable = ({
 
   const chargesList = Array.isArray(charges)
     ? charges.filter(
-        (item) =>
-          !item.label?.includes("पार्सल") &&
-          !item.label?.toLowerCase().includes("parcel")
-      )
+      (item) =>
+        !item.label?.includes("पार्सल") &&
+        !item.label?.toLowerCase().includes("parcel")
+    )
     : [
-        { label: "१. क्रॉसिंग (CROSSING)", amount: charges.crossing ?? 0 },
-        { label: "२. भाडे (FREIGHT)", amount: charges.freight ?? 0 },
-        { label: "३. हमाली (HAMALI)", amount: charges.hamali ?? 0 },
-        { label: "४. बिल्टी चार्ज (BILTY CHARGE)", amount: charges.biltyCharge ?? 0 },
-        { label: "५. इतर (OTHER CHARGES)", amount: charges.otherCharges ?? 0 }
-      ];
+      { label: "1. CROSSING", amount: charges.crossing ?? 0 },
+      { label: "2. FREIGHT", amount: charges.freight ?? 0 },
+      { label: "3. HAMALI", amount: charges.hamali ?? 0 },
+      { label: "4. BILTY CHARGE", amount: charges.biltyCharge ?? 0 },
+      { label: "5. OTHER CHARGES", amount: charges.otherCharges ?? 0 }
+    ];
 
   return (
     <div className={styles.chargesCard}>
@@ -41,8 +41,8 @@ export const ChargesTable = ({
         <div className={styles.rupeeCircleIcon}>
           <IndianRupee size={10} strokeWidth={2.5} color="#FFFFFF" />
         </div>
-        <span className={styles.titleMarathi}>भाडे तपशील</span>
-        <span className={styles.titleEnglish}>(CHARGES)</span>
+        {/* <span className={styles.titleMarathi}>भाडे तपशील</span> */}
+        <span className={styles.titleEnglish}>CHARGES</span>
       </div>
 
       {/* Charges List */}
@@ -54,7 +54,7 @@ export const ChargesTable = ({
                 {item.label || `${idx + 1}. Charge`}
               </span>
             </div>
-            
+
             <div className={styles.chargeDots} />
 
             <div className={styles.chargeRight}>
@@ -68,7 +68,7 @@ export const ChargesTable = ({
       {/* Total Amount Box */}
       <div className={styles.totalBox}>
         <span className={styles.totalLabel}>
-          एकूण रक्कम (TOTAL AMOUNT)
+          TOTAL AMOUNT:
         </span>
 
         <div className={styles.totalRight}>

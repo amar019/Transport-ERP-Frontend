@@ -24,7 +24,7 @@
 
 .copyContainer {
   width: 285mm;
-  height: 95mm;
+  height: 96mm;
   border: 1.2px solid #333333;
   position: relative;
   display: flex;
@@ -39,7 +39,7 @@
 .topSection {
   display: flex;
   height: 48.5mm;
-  gap: 1.5mm;
+  gap: 1mm;
   width: 100%;
 }
 
@@ -48,41 +48,41 @@
   display: flex;
   flex-direction: column;
   height: 48.5mm;
-  gap: 1.5mm;
+  gap: 1mm;
 }
 
 .row1 {
   display: flex;
   height: 27mm;
-  gap: 1.5mm;
+  gap: 1mm;
   width: 100%;
 }
 
 .row2 {
   display: flex;
   height: 20mm;
-  gap: 1.5mm;
+  gap: 1mm;
   width: 100%;
 }
 
 .row3 {
   display: flex;
-  height: 36mm;
-  gap: 1.5mm;
+  height: 29mm;
+  gap: 1mm;
   width: 100%;
 }
 
 .row4 {
   display: flex;
-  height: 11mm;
-  gap: 1.5mm;
+  height: 9.5mm;
+  gap: 1mm;
   width: 100%;
 }
 
 .row5 {
   display: flex;
-  height: 5mm;
-  gap: 1.5mm;
+  height: 5.5mm;
+  gap: 1mm;
   width: 100%;
 }
 

@@ -12,15 +12,12 @@ import {
   IndianRupee,
   AlertCircle,
   Search,
-  Building2,
-  ArrowRight,
+  ChevronRight,
   Inbox,
-  Filter,
   X,
-  AlertTriangle,
   RotateCcw,
-  DollarSign,
-  Calendar,
+  Trash2,
+  Building2,
 } from "lucide-react";
 import { createPortal } from "react-dom";
 import MemoStatusBadge from "@/components/memo/MemoStatusBadge";
@@ -54,8 +51,8 @@ export const MemoListPage = () => {
     endDate: "",
   });
 
-  // Active quick chip filter ("ALL" | "CREATED" | "IN_TRANSIT" | "RECEIVED" | "PENDING_COLLECTION")
-  const [activeChip, setActiveChip] = useState("ALL");
+  // Active quick status tab filter ("ALL" | "CREATED" | "IN_TRANSIT" | "RECEIVED" | "PENDING_COLLECTION")
+  const [activeTab, setActiveTab] = useState("ALL");
 
   // Action Modals State
   const [dispatchModalMemo, setDispatchModalMemo] = useState(null);
@@ -81,7 +78,7 @@ export const MemoListPage = () => {
     loadMemos();
   }, [loadMemos]);
 
-  // Memo lifecycle status calculator based on specification
+  // Memo lifecycle status calculator
   const getMemoStatus = useCallback((memo) => {
     if (!memo) return "CREATED";
     if (memo.status === "RECEIVED") return "RECEIVED";
@@ -91,8 +88,8 @@ export const MemoListPage = () => {
     return "CREATED";
   }, []);
 
-  // Quick Chips Counts & Metrics Calculator
-  const counts = useMemo(() => {
+  // Summary Metrics Calculator
+  const kpiMetrics = useMemo(() => {
     if (!Array.isArray(rawMemos)) {
       return {
         total: 0,
@@ -198,18 +195,18 @@ export const MemoListPage = () => {
         }
       }
 
-      // Quick Chips Filter Override
-      let matchChip = true;
-      if (activeChip === "CREATED") matchChip = memoSt === "CREATED";
-      else if (activeChip === "IN_TRANSIT") matchChip = memoSt === "IN_TRANSIT";
-      else if (activeChip === "RECEIVED") matchChip = memoSt === "RECEIVED";
-      else if (activeChip === "PENDING_COLLECTION") {
-        matchChip = Number(m.pendingAmount ?? 0) > 0 || m.collectionStatus === "PENDING";
+      // Segmented Status Tab Override
+      let matchTab = true;
+      if (activeTab === "CREATED") matchTab = memoSt === "CREATED";
+      else if (activeTab === "IN_TRANSIT") matchTab = memoSt === "IN_TRANSIT";
+      else if (activeTab === "RECEIVED") matchTab = memoSt === "RECEIVED";
+      else if (activeTab === "PENDING_COLLECTION") {
+        matchTab = Number(m.pendingAmount ?? 0) > 0 || m.collectionStatus === "PENDING";
       }
 
-      return matchSearch && matchStatus && matchCollection && matchDate && matchChip;
+      return matchSearch && matchStatus && matchCollection && matchDate && matchTab;
     });
-  }, [rawMemos, filters, activeChip, getMemoStatus]);
+  }, [rawMemos, filters, activeTab, getMemoStatus]);
 
   // Actions Handlers
   const handleConfirmDispatch = async () => {
@@ -286,7 +283,7 @@ export const MemoListPage = () => {
     filters.status !== "ALL" ||
     filters.collectionStatus !== "ALL" ||
     filters.dateRange !== "ALL" ||
-    activeChip !== "ALL";
+    activeTab !== "ALL";
 
   const handleResetAllFilters = () => {
     setFilters({
@@ -297,162 +294,224 @@ export const MemoListPage = () => {
       startDate: "",
       endDate: "",
     });
-    setActiveChip("ALL");
+    setActiveTab("ALL");
   };
 
+  // Status tabs array
+  const statusTabs = [
+    { label: "All Memos", value: "ALL", count: kpiMetrics.total },
+    { label: "Created", value: "CREATED", count: kpiMetrics.created },
+    { label: "In Transit", value: "IN_TRANSIT", count: kpiMetrics.inTransit },
+    { label: "Received", value: "RECEIVED", count: kpiMetrics.received },
+    { label: "Pending Payment", value: "PENDING_COLLECTION", count: kpiMetrics.pendingCollection },
+  ];
+
   return (
-    <div className="w-full min-h-screen bg-slate-50 p-3.5 md:p-5 font-sans antialiased text-slate-800 selection:bg-orange-100 select-none pb-16 space-y-4">
+    <div className="min-h-screen bg-[#F8FAFC] p-6 md:p-8 font-sans antialiased text-[#0F172A] selection:bg-[#FFF7ED] selection:text-[#C2410C] select-none space-y-6">
       {/* Toast Alert */}
       {toast && (
         <div
-          className={`fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-lg border transition-all duration-300 animate-in fade-in slide-in-from-top-4 ${toast.type === "success"
-            ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-            : "bg-rose-50 text-rose-800 border-rose-200"
-            }`}
+          className={`fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border transition-all duration-200 animate-in fade-in slide-in-from-top-4 ${
+            toast.type === "success"
+              ? "bg-[#ECFDF5] text-[#059669] border-[#A7F3D0]"
+              : "bg-[#FEF2F2] text-[#DC2626] border-[#FECACA]"
+          }`}
         >
           {toast.type === "success" ? (
-            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+            <CheckCircle2 className="w-5 h-5 text-[#059669] shrink-0" />
           ) : (
-            <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" />
+            <AlertCircle className="w-5 h-5 text-[#DC2626] shrink-0" />
           )}
-          <span className="text-xs md:text-sm font-extrabold">{toast.msg}</span>
+          <span className="text-xs md:text-sm font-semibold">{toast.msg}</span>
         </div>
       )}
 
-      {/* 1. COMPACT PROFESSIONAL HEADER */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80">
-        <div>
-          <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="text-xl md:text-2xl font-black text-slate-800 tracking-tight">
-              {isDeliveryBranch ? " Memos " : "Memos"}
+      {/* 1. PAGE HEADER SECTION */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print">
+        {/* Left: Breadcrumbs + Title + Subtitle */}
+        <div className="space-y-1">
+          {/* Small Breadcrumb */}
+          <div className="flex items-center gap-1.5 text-xs font-medium text-[#64748B]">
+            <span>Memos</span>
+            <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
+            <span className="font-semibold text-[#0F172A]">Directory</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <h1 className="text-[28px] font-bold text-[#0F172A] tracking-tight leading-tight m-0 p-0">
+              Memos
             </h1>
-            <span className="bg-orange-50 text-orange-800 border border-orange-200/90 text-xs font-black px-2.5 py-0.5 rounded-full">
-              {user?.branch?.name || "Ahmednagar Booking"} · {user?.branch?.type || "BOOKING"}
+
+            <span className="bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5] text-[11px] font-semibold px-2.5 py-0.5 rounded-md flex items-center gap-1 shrink-0 whitespace-nowrap">
+              <Building2 className="w-3 h-3 text-[#F97316]" />
+              {user?.branch?.name || "Ahilyanagar Branch"} · {user?.branch?.type || "BOOKING"}
             </span>
           </div>
-          <p className="text-xs text-slate-500 font-semibold mt-0.5">
-            Create, dispatch and track branch memos.
+          <p className="text-xs text-[#64748B] font-normal">
+            Manage, dispatch and track transport dispatch manifests
           </p>
         </div>
 
-        {/* Header Right Actions */}
-        <div className="flex items-center flex-wrap gap-2 self-start sm:self-auto">
+        {/* Right Toolbar Actions */}
+        <div className="flex items-center flex-wrap gap-2 shrink-0 self-start sm:self-auto">
+          {/* Refresh Button */}
           <button
             type="button"
             onClick={loadMemos}
             disabled={isLoading}
-            className="p-2 text-slate-600 hover:text-orange-600 hover:bg-orange-50 bg-white rounded-xl border border-slate-200 shadow-2xs transition-all cursor-pointer disabled:opacity-50"
+            className="p-2 text-[#64748B] hover:text-[#0F172A] hover:bg-white bg-white rounded-lg border border-[#E2E8F0] shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
             title="Refresh Memos"
           >
-            <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin text-orange-500" : ""}`} />
+            <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin text-[#F97316]" : ""}`} />
           </button>
 
+          {/* Primary Action: + Create Memo */}
           {isBookingBranch && (
             <button
               type="button"
               onClick={() => navigate(ROUTES.MEMOS.NEW)}
-              className="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold px-4 py-2 rounded-xl shadow-md shadow-orange-500/20 active:scale-[0.98] transition-all text-xs md:text-sm cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 bg-[#F97316] hover:bg-[#EA580C] text-white font-semibold px-4 py-2 rounded-lg shadow-2xs transition-colors text-xs select-none cursor-pointer"
             >
-              <Plus className="w-4 h-4 stroke-[3]" />
+              <Plus className="w-4 h-4 stroke-[2.5]" />
               <span>Create Memo</span>
             </button>
           )}
         </div>
       </div>
 
-      {/* 2. 4 BUSINESS KPI CARDS (Responsive: 1 col mobile, 2 tablet, 4 desktop) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-        {/* KPI 1: Total Memos */}
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-between">
-          <div className="space-y-0.5">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
+      {/* 2. STATISTICS CARDS SECTION */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 no-print">
+        {/* Card 1: Total Memos */}
+        <div className="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#64748B]">
               Total Memos
             </span>
-            <span className="text-2xl font-black text-slate-800 block">
-              {isLoading ? "..." : counts.total}
+            <div className="w-8 h-8 rounded-lg bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0] flex items-center justify-center shrink-0">
+              <Truck className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <span className="text-2xl font-bold text-[#0F172A] tracking-tight block">
+              {isLoading ? "..." : kpiMetrics.total}
             </span>
-            <span className="text-[11px] font-medium text-slate-400 block">
+            <span className="text-xs text-[#64748B] font-normal block mt-0.5">
               All dispatch manifests
             </span>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-slate-50 text-slate-600 flex items-center justify-center shrink-0 border border-slate-200/80">
-            <Truck className="w-5 h-5" />
-          </div>
         </div>
 
-        {/* KPI 2: In Transit */}
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-between">
-          <div className="space-y-0.5">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
+        {/* Card 2: In Transit */}
+        <div className="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#64748B]">
               In Transit
             </span>
-            <span className="text-2xl font-black text-blue-700 block">
-              {isLoading ? "..." : counts.inTransit}
+            <div className="w-8 h-8 rounded-lg bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] flex items-center justify-center shrink-0">
+              <Clock className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <span className="text-2xl font-bold text-[#0F172A] tracking-tight block">
+              {isLoading ? "..." : kpiMetrics.inTransit}
             </span>
-            <span className="text-[11px] font-medium text-slate-400 block">
+            <span className="text-xs text-[#64748B] font-normal block mt-0.5">
               Awaiting branch receipt
             </span>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100">
-            <Clock className="w-5 h-5" />
-          </div>
         </div>
 
-        {/* KPI 3: Received */}
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-between">
-          <div className="space-y-0.5">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
+        {/* Card 3: Received */}
+        <div className="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#64748B]">
               Received
             </span>
-            <span className="text-2xl font-black text-emerald-700 block">
-              {isLoading ? "..." : counts.received}
-            </span>
-            <span className="text-[11px] font-medium text-slate-400 block">
-              Received by delivery branch
-            </span>
+            <div className="w-8 h-8 rounded-lg bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-4 h-4" />
+            </div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
-            <CheckCircle2 className="w-5 h-5" />
+          <div className="mt-3">
+            <span className="text-2xl font-bold text-[#0F172A] tracking-tight block">
+              {isLoading ? "..." : kpiMetrics.received}
+            </span>
+            <span className="text-xs text-[#64748B] font-normal block mt-0.5">
+              Received at destination
+            </span>
           </div>
         </div>
 
-        {/* KPI 4: Outstanding To-Pay (Calculated strictly from pendingAmount) */}
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-between">
-          <div className="space-y-0.5">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
+        {/* Card 4: Outstanding To-Pay */}
+        <div className="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#64748B]">
               Outstanding To-Pay
             </span>
-            <span className="text-2xl font-black font-mono text-amber-700 block">
-              {isLoading ? "..." : formatCurrency(counts.outstandingAmount)}
-            </span>
-            <span className="text-[11px] font-medium text-slate-400 block">
-              {counts.pendingCollection} memos pending
-            </span>
+            <div className="w-8 h-8 rounded-lg bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A] flex items-center justify-center shrink-0">
+              <IndianRupee className="w-4 h-4" />
+            </div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0 border border-amber-100">
-            <IndianRupee className="w-5 h-5" />
+          <div className="mt-3">
+            <span className="text-2xl font-bold text-[#0F172A] tracking-tight font-mono block">
+              {isLoading ? "..." : formatCurrency(kpiMetrics.outstandingAmount)}
+            </span>
+            <span className="text-xs text-[#64748B] font-normal block mt-0.5">
+              {kpiMetrics.pendingCollection} memos pending
+            </span>
           </div>
         </div>
       </div>
 
-      {/* 3. SEARCH & CONTROLS TOOLBAR */}
-      <div className="bg-white p-3 rounded-2xl border border-slate-200/90 shadow-xs space-y-2.5">
+      {/* 3. SEGMENTED CONTROL STATUS TABS */}
+      <div className="no-print">
+        <div className="bg-[#F1F5F9] p-1 rounded-lg border border-[#E2E8F0] inline-flex items-center gap-1 overflow-x-auto">
+          {statusTabs.map((tab) => {
+            const isTabActive = activeTab === tab.value;
+            return (
+              <button
+                key={tab.value}
+                type="button"
+                onClick={() => setActiveTab(tab.value)}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs transition-colors cursor-pointer ${
+                  isTabActive
+                    ? "bg-[#F97316] text-white font-semibold shadow-2xs"
+                    : "text-[#64748B] hover:text-[#0F172A] hover:bg-slate-200/50 font-medium"
+                }`}
+              >
+                <span>{tab.label}</span>
+                <span
+                  className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
+                    isTabActive
+                      ? "bg-white/20 text-white"
+                      : "bg-slate-200/70 text-[#475569]"
+                  }`}
+                >
+                  {tab.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 4. FILTER TOOLBAR */}
+      <div className="bg-white p-3 rounded-xl border border-[#E2E8F0] shadow-2xs space-y-2.5 no-print">
         <div className="flex flex-col lg:flex-row items-center gap-2.5">
           {/* Search Input */}
           <div className="relative w-full lg:flex-1">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search memo no, from branch, to branch..."
+              placeholder="Search memo number, from branch, to branch..."
               value={filters.search}
               onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value }))}
-              className="w-full pl-9 pr-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:border-orange-500 font-semibold text-slate-800 placeholder:text-slate-400 transition-all"
+              className="w-full pl-9 pr-8 py-2 text-xs bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg focus:bg-white focus:outline-none focus:border-[#F97316] font-medium text-[#0F172A] placeholder:text-[#94A3B8] transition-colors"
             />
             {filters.search && (
               <button
                 type="button"
                 onClick={() => setFilters((f) => ({ ...f, search: "" }))}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-md cursor-pointer"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[#94A3B8] hover:text-[#0F172A] rounded-md cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -466,9 +525,9 @@ export const MemoListPage = () => {
               value={filters.status}
               onChange={(e) => {
                 setFilters((f) => ({ ...f, status: e.target.value }));
-                setActiveChip("ALL");
+                setActiveTab("ALL");
               }}
-              className="px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-700 focus:outline-hidden focus:border-orange-500 cursor-pointer flex-1 sm:flex-initial"
+              className="px-3 py-2 text-xs bg-white border border-[#E2E8F0] rounded-lg font-semibold text-[#0F172A] focus:outline-none focus:border-[#F97316] cursor-pointer flex-1 sm:flex-initial"
             >
               <option value="ALL">All Statuses</option>
               <option value="CREATED">Created</option>
@@ -481,9 +540,9 @@ export const MemoListPage = () => {
               value={filters.collectionStatus}
               onChange={(e) => {
                 setFilters((f) => ({ ...f, collectionStatus: e.target.value }));
-                setActiveChip("ALL");
+                setActiveTab("ALL");
               }}
-              className="px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-700 focus:outline-hidden focus:border-orange-500 cursor-pointer flex-1 sm:flex-initial"
+              className="px-3 py-2 text-xs bg-white border border-[#E2E8F0] rounded-lg font-semibold text-[#0F172A] focus:outline-none focus:border-[#F97316] cursor-pointer flex-1 sm:flex-initial"
             >
               <option value="ALL">All Payment Statuses</option>
               <option value="PENDING">Pending Payment</option>
@@ -495,7 +554,7 @@ export const MemoListPage = () => {
             <select
               value={filters.dateRange}
               onChange={(e) => setFilters((f) => ({ ...f, dateRange: e.target.value }))}
-              className="px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-700 focus:outline-hidden focus:border-orange-500 cursor-pointer flex-1 sm:flex-initial"
+              className="px-3 py-2 text-xs bg-white border border-[#E2E8F0] rounded-lg font-semibold text-[#0F172A] focus:outline-none focus:border-[#F97316] cursor-pointer flex-1 sm:flex-initial"
             >
               <option value="ALL">All Dates</option>
               <option value="TODAY">Today</option>
@@ -509,10 +568,10 @@ export const MemoListPage = () => {
               <button
                 type="button"
                 onClick={handleResetAllFilters}
-                className="p-2 text-slate-500 hover:text-orange-600 hover:bg-orange-50 rounded-xl border border-slate-200 transition-all cursor-pointer"
+                className="p-2 text-[#64748B] hover:text-[#0F172A] hover:bg-slate-100 rounded-lg border border-[#E2E8F0] transition-colors cursor-pointer"
                 title="Reset all filters"
               >
-                <RotateCcw className="w-3.5 h-3.5" />
+                <RotateCcw className="w-4 h-4" />
               </button>
             )}
           </div>
@@ -520,213 +579,148 @@ export const MemoListPage = () => {
 
         {/* Custom Date Range Picker Row (if CUSTOM selected) */}
         {filters.dateRange === "CUSTOM" && (
-          <div className="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs">
-            <span className="text-[11px] font-bold text-slate-500">From:</span>
+          <div className="flex items-center gap-2 pt-2 border-t border-[#E2E8F0] text-xs">
+            <span className="text-[11px] font-semibold text-[#64748B]">From:</span>
             <input
               type="date"
               value={filters.startDate}
               onChange={(e) => setFilters((f) => ({ ...f, startDate: e.target.value }))}
-              className="px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold"
+              className="px-2.5 py-1 bg-white border border-[#E2E8F0] rounded-lg text-xs font-medium"
             />
-            <span className="text-[11px] font-bold text-slate-500">To:</span>
+            <span className="text-[11px] font-semibold text-[#64748B]">To:</span>
             <input
               type="date"
               value={filters.endDate}
               onChange={(e) => setFilters((f) => ({ ...f, endDate: e.target.value }))}
-              className="px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold"
+              className="px-2.5 py-1 bg-white border border-[#E2E8F0] rounded-lg text-xs font-medium"
             />
           </div>
         )}
-
-        {/* 4. COMPACT QUICK FILTER CHIPS */}
-        <div className="flex items-center flex-wrap gap-1.5 pt-2 border-t border-slate-100 text-xs">
-          {/* Chip: All */}
-          <button
-            type="button"
-            onClick={() => setActiveChip("ALL")}
-            className={`px-3 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${activeChip === "ALL"
-              ? "bg-orange-500 text-white shadow-xs"
-              : "bg-slate-100 text-slate-600 hover:bg-slate-200/80"
-              }`}
-          >
-            All <span className="opacity-80">({counts.total})</span>
-          </button>
-
-          {/* Chip: Created */}
-          <button
-            type="button"
-            onClick={() => setActiveChip("CREATED")}
-            className={`px-3 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${activeChip === "CREATED"
-              ? "bg-orange-500 text-white shadow-xs"
-              : "bg-slate-100 text-slate-600 hover:bg-slate-200/80"
-              }`}
-          >
-            Created <span className="opacity-80">({counts.created})</span>
-          </button>
-
-          {/* Chip: In Transit */}
-          <button
-            type="button"
-            onClick={() => setActiveChip("IN_TRANSIT")}
-            className={`px-3 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${activeChip === "IN_TRANSIT"
-              ? "bg-orange-500 text-white shadow-xs"
-              : "bg-slate-100 text-slate-600 hover:bg-slate-200/80"
-              }`}
-          >
-            In Transit <span className="opacity-80">({counts.inTransit})</span>
-          </button>
-
-          {/* Chip: Received */}
-          <button
-            type="button"
-            onClick={() => setActiveChip("RECEIVED")}
-            className={`px-3 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${activeChip === "RECEIVED"
-              ? "bg-orange-500 text-white shadow-xs"
-              : "bg-slate-100 text-slate-600 hover:bg-slate-200/80"
-              }`}
-          >
-            Received <span className="opacity-80">({counts.received})</span>
-          </button>
-
-          {/* Chip: Pending Payment */}
-          <button
-            type="button"
-            onClick={() => setActiveChip("PENDING_COLLECTION")}
-            className={`px-3 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${activeChip === "PENDING_COLLECTION"
-              ? "bg-orange-500 text-white shadow-xs"
-              : "bg-slate-100 text-slate-600 hover:bg-slate-200/80"
-              }`}
-          >
-            Pending Payment <span className="opacity-80">({counts.pendingCollection})</span>
-          </button>
-        </div>
       </div>
 
-      {/* 5. REDESIGNED 7-COLUMN RESPONSIVE ERP TABLE (No Horizontal Scroll on Normal Desktop) */}
-      <div className="w-full bg-white rounded-2xl border border-slate-200/90 shadow-xs flex flex-col overflow-hidden">
-        {/* Error State */}
-        {error && (
-          <div className="p-4 bg-rose-50 border-b border-rose-200 flex items-center justify-between text-rose-800 text-xs font-semibold">
-            <div className="flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-              <span>{typeof error === "string" ? error : "Unable to load dispatch memos."}</span>
-            </div>
-            <button
-              type="button"
-              onClick={loadMemos}
-              className="px-3 py-1 bg-white text-rose-700 border border-rose-200 rounded-lg hover:bg-rose-100 font-bold cursor-pointer transition-colors"
-            >
-              Retry
-            </button>
+      {/* Global Error Banner */}
+      {error && (
+        <div className="p-4 bg-[#FEF2F2] border border-[#FECACA] rounded-xl flex items-center justify-between text-[#DC2626] text-xs font-medium no-print">
+          <div className="flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 shrink-0 text-[#DC2626]" />
+            <span>{typeof error === "string" ? error : "Unable to load dispatch memos."}</span>
           </div>
-        )}
+          <button
+            type="button"
+            onClick={loadMemos}
+            className="px-3 py-1 bg-white text-[#DC2626] border border-[#FECACA] rounded-lg hover:bg-[#FEF2F2] font-semibold cursor-pointer transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      )}
 
+      {/* 5. ENTERPRISE DATA TABLE */}
+      <div className="w-full bg-white rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col select-none overflow-hidden">
         <div className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-slate-200">
           <table className="w-full text-left border-collapse min-w-[850px] lg:min-w-full">
-            {/* Table Header (~50-54px height) */}
-            <thead className="bg-slate-50/90 border-b border-slate-200/90 text-[11px] font-extrabold uppercase tracking-wider text-slate-500 select-none">
+            {/* Sticky Table Header */}
+            <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold uppercase tracking-wider text-[#64748B] select-none sticky top-0 z-10">
               <tr>
                 {/* 1. Memo */}
-                <th className="py-3.5 px-3 whitespace-nowrap w-[120px]">
-                  Memo
+                <th className="py-3 px-3 whitespace-nowrap w-[120px]">
+                  Memo No
                 </th>
 
                 {/* 2. Route */}
-                <th className="py-3.5 px-3 min-w-[170px]">
+                <th className="py-3 px-3 min-w-[170px]">
                   Route
                 </th>
 
                 {/* 3. Contents */}
-                <th className="py-3.5 px-3 whitespace-nowrap w-[110px]">
+                <th className="py-3 px-3 whitespace-nowrap w-[110px]">
                   Contents
                 </th>
 
                 {/* 4. Total Amount */}
-                <th className="py-3.5 px-3 text-right whitespace-nowrap w-[115px]">
+                <th className="py-3 px-3 text-right whitespace-nowrap w-[115px]">
                   Total Amount
                 </th>
 
                 {/* 5. To Pay */}
-                <th className="py-3.5 px-3 text-right whitespace-nowrap w-[110px]">
+                <th className="py-3 px-3 text-right whitespace-nowrap w-[110px]">
                   To Pay
                 </th>
 
                 {/* 6. Memo Status */}
-                <th className="py-3.5 px-2.5 whitespace-nowrap w-[110px] text-center">
+                <th className="py-3 px-2.5 whitespace-nowrap w-[110px] text-center">
                   Memo Status
                 </th>
 
                 {/* 7. Collection */}
-                <th className="py-3.5 px-3 whitespace-nowrap w-[130px]">
+                <th className="py-3 px-3 whitespace-nowrap w-[130px]">
                   Collection
                 </th>
 
                 {/* 8. Actions */}
-                <th className="py-3.5 px-3 text-right whitespace-nowrap w-[165px]">
+                <th className="py-3 px-3 text-right whitespace-nowrap w-[165px]">
                   Actions
                 </th>
               </tr>
             </thead>
 
-            {/* Table Body (~72-80px row height) */}
-            <tbody className="divide-y divide-slate-100 text-xs font-medium">
+            {/* Table Body */}
+            <tbody className="divide-y divide-[#F1F5F9] text-xs">
               {isLoading ? (
-                // SKELETON LOADING STATE
                 [1, 2, 3, 4, 5].map((n) => (
-                  <tr key={n} className="animate-pulse h-[74px]">
-                    <td className="py-3.5 px-3">
-                      <div className="h-4 w-20 bg-slate-200 rounded mb-1.5"></div>
+                  <tr key={n} className="animate-pulse">
+                    <td className="py-3 px-3">
+                      <div className="h-4 w-20 bg-slate-200 rounded mb-1"></div>
                       <div className="h-3 w-14 bg-slate-100 rounded"></div>
                     </td>
-                    <td className="py-3.5 px-3">
-                      <div className="h-4 w-32 bg-slate-200 rounded mb-1.5"></div>
+                    <td className="py-3 px-3">
+                      <div className="h-4 w-32 bg-slate-200 rounded mb-1"></div>
                       <div className="h-3 w-28 bg-slate-100 rounded"></div>
                     </td>
-                    <td className="py-3.5 px-3">
-                      <div className="h-3.5 w-16 bg-slate-200 rounded mb-1.5"></div>
+                    <td className="py-3 px-3">
+                      <div className="h-3.5 w-16 bg-slate-200 rounded mb-1"></div>
                       <div className="h-3 w-16 bg-slate-100 rounded"></div>
                     </td>
-                    <td className="py-3.5 px-3 text-right">
+                    <td className="py-3 px-3 text-right">
                       <div className="h-4 w-16 bg-slate-200 rounded ml-auto"></div>
                     </td>
-                    <td className="py-3.5 px-3 text-right">
+                    <td className="py-3 px-3 text-right">
                       <div className="h-4 w-16 bg-slate-200 rounded ml-auto"></div>
                     </td>
-                    <td className="py-3.5 px-2.5 text-center">
+                    <td className="py-3 px-2.5 text-center">
                       <div className="h-5 w-20 bg-slate-200 rounded-md mx-auto"></div>
                     </td>
-                    <td className="py-3.5 px-3">
-                      <div className="h-4.5 w-16 bg-slate-200 rounded-md mb-1.5"></div>
+                    <td className="py-3 px-3">
+                      <div className="h-4.5 w-16 bg-slate-200 rounded-md mb-1"></div>
                       <div className="h-3 w-20 bg-slate-100 rounded"></div>
                     </td>
-                    <td className="py-3.5 px-3 text-right">
-                      <div className="h-7 w-28 bg-slate-200 rounded-lg ml-auto"></div>
+                    <td className="py-3 px-3 text-right">
+                      <div className="h-6 w-28 bg-slate-200 rounded ml-auto"></div>
                     </td>
                   </tr>
                 ))
               ) : filteredMemos.length === 0 ? (
-                // EMPTY STATE
                 <tr>
                   <td colSpan="8" className="py-16 px-4 text-center">
                     <div className="max-w-xs mx-auto flex flex-col items-center justify-center">
-                      <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center mb-3 border border-orange-100 shadow-2xs">
-                        <Inbox className="w-6 h-6" />
+                      <div className="w-10 h-10 rounded-lg bg-[#FFF7ED] text-[#F97316] flex items-center justify-center mb-2.5 border border-[#FFEDD5]">
+                        <Inbox className="w-5 h-5" />
                       </div>
-                      <h4 className="font-extrabold text-slate-800 text-sm">
+                      <h4 className="font-bold text-[#0F172A] text-sm">
                         No dispatch memos found
                       </h4>
-                      <p className="text-slate-400 text-xs mt-1 leading-relaxed font-medium">
+                      <p className="text-[#64748B] text-xs mt-1 leading-relaxed font-normal">
                         {hasActiveFilters
                           ? "No memos match your current search query or active filters."
-                          : "Create your first memo to dispatch bookings from this branch to a delivery branch."}
+                          : "Create your first memo to dispatch bookings from this branch."}
                       </p>
                       {isBookingBranch && !hasActiveFilters && (
                         <button
                           type="button"
                           onClick={() => navigate(ROUTES.MEMOS.NEW)}
-                          className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs rounded-xl shadow-md shadow-orange-500/20 cursor-pointer transition-all"
+                          className="mt-3 inline-flex items-center gap-1.5 px-3 py-2 bg-[#F97316] hover:bg-[#EA580C] text-white font-semibold text-xs rounded-lg shadow-2xs cursor-pointer transition-colors"
                         >
-                          <Plus className="w-3.5 h-3.5 stroke-[3]" />
+                          <Plus className="w-4 h-4 stroke-[2.5]" />
                           <span>Create Memo</span>
                         </button>
                       )}
@@ -748,74 +742,73 @@ export const MemoListPage = () => {
                     <tr
                       key={mId}
                       onClick={() => navigate(ROUTES.MEMOS.DETAILS(mId))}
-                      className="hover:bg-slate-50/80 transition-colors group cursor-pointer border-l-4 border-l-orange-500/90 h-[74px]"
+                      className="hover:bg-[#F8FAFC] transition-colors group cursor-pointer"
                     >
                       {/* 1. Memo (Memo No + Date) */}
                       <td className="py-3 px-3 whitespace-nowrap">
-                        <div className="font-mono text-xs font-black text-slate-900 group-hover:text-orange-600 transition-colors">
+                        <span className="font-mono text-xs font-semibold bg-[#F1F5F9] text-[#0F172A] px-2 py-0.5 rounded-md border border-[#E2E8F0] group-hover:bg-[#FFF7ED] group-hover:text-[#C2410C] group-hover:border-[#FFEDD5] transition-colors">
                           {m.memoNumber || "MEM-0000"}
-                        </div>
-                        <div className="text-[11.5px] text-slate-500 font-semibold mt-0.5">
+                        </span>
+                        <div className="text-[11px] text-[#64748B] font-normal mt-1">
                           {formatDate(m.memoDate ?? m.date ?? m.createdAt)}
                         </div>
                       </td>
 
                       {/* 2. Route (Origin -> Destination) */}
                       <td className="py-3 px-3">
-                        <div className="text-xs font-bold text-slate-800 truncate" title={m.fromBranch?.name || "Origin Branch"}>
-                          {m.fromBranch?.name || "Ahmednagar Booking"}
+                        <div className="text-xs font-semibold text-[#0F172A] truncate" title={m.fromBranch?.name || "Origin Branch"}>
+                          {m.fromBranch?.name || "Ahilyanagar Branch"}
                         </div>
-                        <div className="flex items-center gap-1 text-xs font-extrabold text-slate-800 truncate mt-0.5" title={m.toBranch?.name || "Destination Branch"}>
-                          <span className="text-orange-500 font-black">→</span>
-                          <span className="truncate">{m.toBranch?.name || "Jamkhed Delivery"}</span>
+                        <div className="flex items-center gap-1 text-[11px] font-medium text-[#64748B] truncate mt-0.5" title={m.toBranch?.name || "Destination Branch"}>
+                          <span className="text-[#F97316] font-bold">→</span>
+                          <span className="truncate">{m.toBranch?.name || "Jamkhed Branch"}</span>
                         </div>
                       </td>
 
                       {/* 3. Contents (Bilties + Packages) */}
                       <td className="py-3 px-3 whitespace-nowrap">
-                        <div className="text-xs font-extrabold text-slate-800">
+                        <div className="text-xs font-semibold text-[#0F172A]">
                           {biltyCount} {biltyCount === 1 ? "Bilty" : "Bilties"}
                         </div>
-                        <div className="text-[11.5px] text-slate-500 font-semibold mt-0.5">
-                          {packageCount} Packages
+                        <div className="text-[11px] text-[#64748B] font-normal mt-0.5">
+                          {packageCount} Pkgs
                         </div>
                       </td>
 
                       {/* 4. Total Amount */}
-                      <td className="py-3 px-3 text-right whitespace-nowrap">
-                        <div className="font-mono text-xs font-black text-slate-900">
-                          {formatCurrency(totalMoneyVal)}
-                        </div>
+                      <td className="py-3 px-3 text-right font-mono font-bold text-[#0F172A] whitespace-nowrap text-xs">
+                        {formatCurrency(totalMoneyVal)}
                       </td>
 
                       {/* 5. To Pay */}
-                      <td className="py-3 px-3 text-right whitespace-nowrap">
-                        <div className="font-mono text-xs font-black text-orange-600">
-                          {formatCurrency(totalToPayVal)}
-                        </div>
+                      <td className="py-3 px-3 text-right font-mono font-bold text-[#C2410C] whitespace-nowrap text-xs">
+                        {formatCurrency(totalToPayVal)}
                       </td>
 
-                      {/* 6. Memo Status (CREATED | IN_TRANSIT | RECEIVED) */}
+                      {/* 6. Memo Status */}
                       <td className="py-3 px-2.5 whitespace-nowrap text-center">
                         <MemoStatusBadge type="status" value={memoStatus} />
                       </td>
 
-                      {/* 7. Collection (Badge + Outstanding Amount) */}
+                      {/* 7. Collection */}
                       <td className="py-3 px-3 whitespace-nowrap">
                         <div>
                           <MemoStatusBadge type="collection" value={m.collectionStatus || "PENDING"} />
                         </div>
-                        <div className="text-[11.5px] font-mono font-bold text-slate-500 mt-0.5">
+                        <div className="text-[11px] font-mono font-medium text-[#64748B] mt-1">
                           {pendingVal > 0 ? (
-                            <span className="text-amber-700">{formatCurrency(pendingVal)} outstanding</span>
+                            <span className="text-[#D97706] font-semibold">{formatCurrency(pendingVal)} pending</span>
                           ) : (
-                            <span className="text-emerald-700">₹0 outstanding</span>
+                            <span className="text-[#059669] font-semibold">₹0 pending</span>
                           )}
                         </div>
                       </td>
 
-                      {/* 8. Actions (Record Payment / View + Floating Portal Menu) */}
-                      <td className="py-3 px-3 text-right whitespace-nowrap">
+                      {/* 8. Actions */}
+                      <td
+                        className="py-3 px-3 text-right whitespace-nowrap"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <MemoActionMenu
                           memo={m}
                           memoStatus={memoStatus}
@@ -837,37 +830,35 @@ export const MemoListPage = () => {
         </div>
       </div>
 
-      {/* ========================================================================= */}
       {/* ACTION CONFIRMATION MODALS (Portal Dialogs) */}
-      {/* ========================================================================= */}
 
       {/* DISPATCH MODAL */}
       {dispatchModalMemo &&
         createPortal(
           <div
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[9999] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-[#0F172A]/40 backdrop-blur-xs z-[9999] flex items-center justify-center p-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-sm w-full p-5 space-y-4 animate-in zoom-in-95 duration-150 text-left">
+            <div className="bg-white rounded-xl border border-[#E2E8F0] shadow-xl max-w-sm w-full p-5 space-y-4 animate-in zoom-in-95 duration-150 text-left select-none">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
-                  <Send className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center shrink-0 border border-[#BFDBFE]">
+                  <Send className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-slate-800 text-base">
+                  <h3 className="font-bold text-[#0F172A] text-sm">
                     Dispatch Manifest?
                   </h3>
-                  <p className="text-xs text-slate-500 font-medium">
+                  <p className="text-xs text-[#64748B]">
                     {dispatchModalMemo.memoNumber}
                   </p>
                 </div>
               </div>
 
-              <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 space-y-1.5 text-xs text-slate-700">
-                <p className="font-medium leading-relaxed">
+              <div className="bg-[#F8FAFC] p-3 rounded-lg border border-[#E2E8F0] space-y-1 text-xs text-[#0F172A]">
+                <p className="font-medium">
                   Mark this memo as <b>In Transit</b> to <b>{dispatchModalMemo.toBranch?.name}</b>?
                 </p>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-[#64748B]">
                   Total {dispatchModalMemo.totalBookings ?? dispatchModalMemo.bookingsCount ?? 0} bilties will be set on route.
                 </p>
               </div>
@@ -877,7 +868,7 @@ export const MemoListPage = () => {
                   type="button"
                   onClick={() => setDispatchModalMemo(null)}
                   disabled={actionLoading}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl border border-slate-200 transition-colors cursor-pointer"
+                  className="px-3.5 py-1.5 text-xs font-semibold text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -885,7 +876,7 @@ export const MemoListPage = () => {
                   type="button"
                   onClick={handleConfirmDispatch}
                   disabled={actionLoading}
-                  className="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md shadow-blue-600/20 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  className="px-3.5 py-1.5 text-xs font-semibold text-white bg-[#2563EB] hover:bg-blue-700 rounded-lg shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   {actionLoading ? (
                     <>
@@ -905,26 +896,26 @@ export const MemoListPage = () => {
       {receiveModalMemo &&
         createPortal(
           <div
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[9999] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-[#0F172A]/40 backdrop-blur-xs z-[9999] flex items-center justify-center p-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-sm w-full p-5 space-y-4 animate-in zoom-in-95 duration-150 text-left">
+            <div className="bg-white rounded-xl border border-[#E2E8F0] shadow-xl max-w-sm w-full p-5 space-y-4 animate-in zoom-in-95 duration-150 text-left select-none">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-lg bg-[#ECFDF5] text-[#059669] flex items-center justify-center shrink-0 border border-[#A7F3D0]">
+                  <CheckCircle2 className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-slate-800 text-base">
+                  <h3 className="font-bold text-[#0F172A] text-sm">
                     Receive Manifest?
                   </h3>
-                  <p className="text-xs text-slate-500 font-medium">
+                  <p className="text-xs text-[#64748B]">
                     {receiveModalMemo.memoNumber}
                   </p>
                 </div>
               </div>
 
-              <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 space-y-1.5 text-xs text-slate-700">
-                <p className="font-medium leading-relaxed">
+              <div className="bg-[#F8FAFC] p-3 rounded-lg border border-[#E2E8F0] space-y-1 text-xs text-[#0F172A]">
+                <p className="font-medium">
                   Confirm arrival and acknowledge receipt of goods at your branch?
                 </p>
               </div>
@@ -934,7 +925,7 @@ export const MemoListPage = () => {
                   type="button"
                   onClick={() => setReceiveModalMemo(null)}
                   disabled={actionLoading}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl border border-slate-200 transition-colors cursor-pointer"
+                  className="px-3.5 py-1.5 text-xs font-semibold text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -942,7 +933,7 @@ export const MemoListPage = () => {
                   type="button"
                   onClick={handleConfirmReceive}
                   disabled={actionLoading}
-                  className="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md shadow-emerald-600/20 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  className="px-3.5 py-1.5 text-xs font-semibold text-white bg-[#059669] hover:bg-emerald-700 rounded-lg shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   {actionLoading ? (
                     <>
@@ -962,43 +953,43 @@ export const MemoListPage = () => {
       {collectionModalMemo &&
         createPortal(
           <div
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[9999] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-[#0F172A]/40 backdrop-blur-xs z-[9999] flex items-center justify-center p-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-sm w-full p-5 space-y-4 animate-in zoom-in-95 duration-150 text-left">
+            <div className="bg-white rounded-xl border border-[#E2E8F0] shadow-xl max-w-sm w-full p-5 space-y-4 animate-in zoom-in-95 duration-150 text-left select-none">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                  <IndianRupee className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-lg bg-[#ECFDF5] text-[#059669] flex items-center justify-center shrink-0 border border-[#A7F3D0]">
+                  <IndianRupee className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-slate-800 text-base">
+                  <h3 className="font-bold text-[#0F172A] text-sm">
                     Record Payment
                   </h3>
-                  <p className="text-xs text-slate-500 font-medium">
+                  <p className="text-xs text-[#64748B]">
                     {collectionModalMemo.memoNumber}
                   </p>
                 </div>
               </div>
 
               <form onSubmit={handleConfirmCollection} className="space-y-3">
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs space-y-1">
-                  <div className="flex justify-between text-slate-500 font-medium">
+                <div className="bg-[#F8FAFC] p-3 rounded-lg border border-[#E2E8F0] text-xs space-y-1">
+                  <div className="flex justify-between text-[#64748B] font-medium">
                     <span>Total To-Pay:</span>
-                    <span className="font-mono font-bold text-slate-800">
+                    <span className="font-mono font-bold text-[#0F172A]">
                       {formatCurrency(collectionModalMemo.totalAmount ?? collectionModalMemo.totalToPay ?? 0)}
                     </span>
                   </div>
-                  <div className="flex justify-between text-slate-500 font-medium">
+                  <div className="flex justify-between text-[#64748B] font-medium">
                     <span>Pending To-Pay:</span>
-                    <span className="font-mono font-black text-amber-700">
+                    <span className="font-mono font-bold text-[#D97706]">
                       {formatCurrency(collectionModalMemo.pendingAmount ?? 0)}
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                    Amount Received (₹) <span className="text-rose-500">*</span>
+                  <label className="block text-[11px] font-semibold text-[#0F172A] mb-1">
+                    Amount Received (₹) <span className="text-[#DC2626]">*</span>
                   </label>
                   <input
                     type="number"
@@ -1008,7 +999,7 @@ export const MemoListPage = () => {
                     value={settlementAmount}
                     onChange={(e) => setSettlementAmount(e.target.value)}
                     placeholder="Enter received amount in ₹..."
-                    className="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-hidden focus:border-orange-500 font-black font-mono text-slate-900"
+                    className="w-full px-3 py-2 text-xs bg-white border border-[#E2E8F0] rounded-lg focus:outline-none focus:border-[#F97316] font-bold font-mono text-[#0F172A]"
                   />
                 </div>
 
@@ -1017,14 +1008,14 @@ export const MemoListPage = () => {
                     type="button"
                     onClick={() => setCollectionModalMemo(null)}
                     disabled={actionLoading}
-                    className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl border border-slate-200 transition-colors cursor-pointer"
+                    className="px-3.5 py-1.5 text-xs font-semibold text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={actionLoading}
-                    className="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md shadow-emerald-600/20 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    className="px-3.5 py-1.5 text-xs font-semibold text-white bg-[#059669] hover:bg-emerald-700 rounded-lg shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                   >
                     {actionLoading ? (
                       <>
@@ -1045,29 +1036,29 @@ export const MemoListPage = () => {
       {deleteModalMemo &&
         createPortal(
           <div
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[9999] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-[#0F172A]/40 backdrop-blur-xs z-[9999] flex items-center justify-center p-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-sm w-full p-5 space-y-4 animate-in zoom-in-95 duration-150 text-left">
+            <div className="bg-white rounded-xl border border-[#E2E8F0] shadow-xl max-w-sm w-full p-5 space-y-4 animate-in zoom-in-95 duration-150 text-left select-none">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
-                  <Trash2 className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-lg bg-[#FEF2F2] text-[#DC2626] flex items-center justify-center shrink-0 border border-[#FECACA]">
+                  <Trash2 className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-slate-800 text-base">
+                  <h3 className="font-bold text-[#0F172A] text-sm">
                     Delete Manifest?
                   </h3>
-                  <p className="text-xs text-slate-500 font-medium">
+                  <p className="text-xs text-[#64748B]">
                     {deleteModalMemo.memoNumber}
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-1.5 bg-rose-50/60 p-3.5 rounded-2xl border border-rose-100">
-                <p className="text-xs text-slate-700 font-bold">
+              <div className="space-y-1 bg-[#FEF2F2]/60 p-3 rounded-lg border border-[#FECACA]">
+                <p className="text-xs text-[#0F172A] font-semibold">
                   Are you sure you want to delete this draft manifest?
                 </p>
-                <p className="text-[11px] text-rose-600 font-medium">
+                <p className="text-[11px] text-[#DC2626] font-medium">
                   Associated bilties will be unlinked and returned to pending dispatch.
                 </p>
               </div>
@@ -1077,7 +1068,7 @@ export const MemoListPage = () => {
                   type="button"
                   onClick={() => setDeleteModalMemo(null)}
                   disabled={actionLoading}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl border border-slate-200 transition-colors cursor-pointer"
+                  className="px-3.5 py-1.5 text-xs font-semibold text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] rounded-lg border border-[#E2E8F0] transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -1085,7 +1076,7 @@ export const MemoListPage = () => {
                   type="button"
                   onClick={handleConfirmDelete}
                   disabled={actionLoading}
-                  className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-md shadow-rose-600/20 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  className="px-3.5 py-1.5 text-xs font-semibold text-white bg-[#DC2626] hover:bg-red-700 rounded-lg shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   {actionLoading ? (
                     <>

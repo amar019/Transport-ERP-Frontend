@@ -11,6 +11,7 @@ import styles from './Header.module.css';
  * Accepts props: company, booking, type, qrCode, upiId
  */
 
+
 export const Header = ({
   company = {},
   booking = {},
@@ -19,20 +20,31 @@ export const Header = ({
   upiId = "mahakaltransport@okaxis"
 }) => {
   const {
-    name = "महाकाल",
-    subtitle = "ट्रान्सपोर्ट",
-    tagline = "आपली सेवा, आमची जबाबदारी",
-    shree = "॥ श्री ॥",
+    name = "Mahakal",
+    subtitle = "Transport",
+    tagline = "Delivering Trust, Every Single Mile...",
+    shree = "॥ Shree ॥",
     logo = "/LOGO.jpg",
     phones = ["9766149280", "8483817081"],
     branches = [
-      { title: "शाखा - अ.नगर", address: "जुना दाणे डबरा, अ.नगर 9766149280" },
-      { title: "शाखा - बीड", address: "जिजामाता चौक, जानुळे हॉस्पिटलजवळ" },
-      { title: "शाखा - जामखेड", address: "खर्डा रोड, बोराटे वस्ती 9270848545" }
+      {
+        title: "Branch - Ahilyanagar",
+        address: "Juna Dane Dabra, Ahilyanagar 9766149280"
+      },
+      {
+        title: "Branch - Beed",
+        address: "Jijamata Chowk, Near Janule Hospital"
+      },
+      {
+        title: "Branch - Jamkhed",
+        address: "Kharda Road, Borate Vasti 9270848545"
+      }
     ],
-    serviceAreas = "अ.नगर • बीड • जामखेड • कडा • आष्टी • भूम • पाटोदा • खर्डा • इ.",
-
+    serviceAreas =
+    "Ahilyanagar • Beed • Jamkhed • Kada • Ashti • Bhum • Patoda • Kharda ",
   } = company;
+
+
 
   const isOffice = type === "office";
   const ribbonText = isOffice ? "OFFICE COPY" : "CUSTOMER COPY";
@@ -104,7 +116,7 @@ export const Header = ({
 
         {/* Service Coverage */}
         <div className={styles.serviceRow}>
-          <span className={styles.serviceTitle}>सेवा क्षेत्र :</span>
+          <span className={styles.serviceTitle}>Service Areas :</span>
           <span className={styles.serviceLocations}>{serviceAreas}</span>
         </div>
       </div>

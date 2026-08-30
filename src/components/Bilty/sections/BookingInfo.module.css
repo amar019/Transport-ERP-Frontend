@@ -1,80 +1,83 @@
 /* ==========================================================================
    Booking Info Card CSS Module
-   - Width: ~42mm, Height: 23mm (Compact pass)
-   - Clean, compact typography fitting within A4 Header grid
+   - Styled to strictly match SenderSection, ReceiverSection & RouteSection
    ========================================================================== */
 
 .bookingCard {
-  flex: 0 0 42mm;
+  flex: 0 0 46mm;
   height: 23mm;
-  border: 1px solid #777777;
-  border-radius: 5px;
-  padding: 1mm 1.8mm;
+  border: 1px solid #CFCFCF !important;
+  border-radius: 4px;
+  padding: 1.2mm 2.5mm;
   box-sizing: border-box;
-  background: #FFFFFF;
+  background-color: #FFFFFF !important;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: hidden;
 }
 
-.fieldGroup {
+.biltyRow {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1mm;
 }
 
 .biltyLabel {
-  font-size: 7pt;
-  font-weight: 700;
+  font-size: 6.8pt;
+  font-weight: 800;
   color: #222222;
-  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
 }
 
 .biltyNumber {
-  font-size: 12pt;
+  font-size: 11.5pt;
   font-weight: 900;
   color: #EB5A00;
-  line-height: 1.05;
-  letter-spacing: 0.3px;
+  line-height: 1;
+  letter-spacing: 0.4px;
   font-family: 'Poppins', sans-serif;
-  margin-top: 0.1mm;
 }
 
 .divider {
   height: 1px;
-  background-color: #E2E8F0;
-  margin: 0.2mm 0;
+  background-color: #E5E7EB !important;
+  margin: 0.1mm 0;
   width: 100%;
 }
 
 .dateRow {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1mm;
-  font-size: 7pt;
+  font-size: 6.8pt;
 }
 
 .dateLabel {
-  font-weight: 700;
+  font-weight: 800;
   color: #222222;
 }
 
 .dateValue {
   font-weight: 900;
   color: #111111;
-  font-size: 7.5pt;
+  font-size: 7.2pt;
   font-family: 'Poppins', sans-serif;
+  font-variant-numeric: tabular-nums;
 }
 
-.statusGroup {
+.statusRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1mm;
-  margin-top: 0.1mm;
 }
 
 .statusLabel {
-  font-size: 6.2pt;
+  font-size: 6pt;
   font-weight: 800;
   color: #222222;
   letter-spacing: 0.3px;
@@ -82,14 +85,34 @@
   white-space: nowrap;
 }
 
-/* Plain bold text status for B&W printing (no background fill) */
-.statusText {
-  font-size: 6.5pt;
+.paidBadge {
+  font-size: 6pt;
   font-weight: 900;
-  color: #000000;
+  color: #059669;
+  background-color: #ECFDF5 !important;
+  border: 0.8px solid #A7F3D0 !important;
+  padding: 0.5px 5px;
+  border-radius: 3px;
   letter-spacing: 0.3px;
   text-transform: uppercase;
+  white-space: nowrap;
   line-height: 1.1;
   font-family: 'Poppins', sans-serif;
-  white-space: nowrap;
 }
+
+.toPayBadge {
+  font-size: 6pt;
+  font-weight: 900;
+  color: #C2410C;
+  background-color: #FFF7ED !important;
+  border: 0.8px solid #FFEDD5 !important;
+  padding: 0.5px 5px;
+  border-radius: 3px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  line-height: 1.1;
+  font-family: 'Poppins', sans-serif;
+}
+
+

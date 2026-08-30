@@ -5,15 +5,14 @@
 .chargesCard {
   flex: 0 0 114mm;
   height: 29mm;
-  border: 1px solid var(--border, #CFCFCF);
+  border: 1px solid #CFCFCF !important;
   border-radius: 4px;
   padding: 1mm 2mm 0.8mm 2mm;
   box-sizing: border-box;
-  background: var(--bg, #FFFFFF);
+  background-color: #FFFFFF !important;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
 }
 
 /* Section Header */
@@ -119,8 +118,8 @@
 /* Total Amount Box */
 .totalBox {
   height: 7.2mm;
-  background-color: var(--bg-table-header, #FFF3E0);
-  border: 0.8px solid #F0B896;
+  background-color: #FFF3E0 !important;
+  border: 0.8px solid #F0B896 !important;
   border-radius: 4px;
   padding: 0 2.5mm;
   display: flex;

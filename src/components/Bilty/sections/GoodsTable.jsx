@@ -40,8 +40,8 @@ export const GoodsTable = ({
         {/* Goods Header */}
         <div className={styles.titleRow}>
           <Package size={15} strokeWidth={2.2} color="#EB5A00" className={styles.titleIcon} />
-          <span className={styles.titleMarathi}>मालाचे तपशील</span>
-          <span className={styles.titleEnglish}>(GOODS DETAILS)</span>
+          {/* <span className={styles.titleMarathi}>मालाचे तपशील</span> */}
+          <span className={styles.titleEnglish}>GOODS DETAILS</span>
         </div>
 
         {/* HTML Goods Table */}
@@ -49,11 +49,11 @@ export const GoodsTable = ({
           <table className={styles.table}>
             <thead>
               <tr>
-                <th style={{ width: '10%' }}>अ.नं.</th>
+                <th style={{ width: '10%' }}>NO.</th>
                 <th className={styles.alignLeft} style={{ width: '70%' }}>
-                  मालाचे नाव (DESCRIPTION)
+                  DESCRIPTION
                 </th>
-                <th style={{ width: '20%' }}>नग (QTY)</th>
+                <th style={{ width: '20%' }}>QTY</th>
               </tr>
             </thead>
             <tbody>
@@ -78,7 +78,7 @@ export const GoodsTable = ({
 
         {/* Disclaimer Note */}
         <div className={styles.disclaimerBox}>
-          <span className={styles.disclaimerTitle}>टीप :</span>
+          <span className={styles.disclaimerTitle}>NOTE :</span>
           <span className={styles.disclaimerText}>{displayDisclaimer}</span>
         </div>
       </div>
@@ -101,7 +101,7 @@ export const GoodsTable = ({
               <div className={styles.chargeLeft}>
                 <span className={styles.chargeLabel}>{item.label}</span>
               </div>
-              
+
               <div className={styles.chargeDots} />
 
               <div className={styles.chargeRight}>
