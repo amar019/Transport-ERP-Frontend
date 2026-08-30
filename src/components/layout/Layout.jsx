@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout as logoutAction } from "@/store/slices/authSlice";
-import { ChevronLeft, ChevronRight, Menu, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import Sidebar from "./Sidebar";
+import TopNavbar from "./TopNavbar";
 import { ROUTES } from "@/constants/paths";
 import { MENU_GROUPS } from "@/constants/navigation";
 
@@ -47,29 +48,10 @@ export const Layout = ({ children }) => {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50/70 font-sans antialiased text-slate-800 selection:bg-orange-100 selection:text-orange-900">
-      {/* Mobile Top Bar */}
-      <header className="md:hidden w-full bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 py-2.5 flex items-center justify-between fixed top-0 left-0 right-0 z-30 shadow-xs">
-        <div className="flex items-center space-x-2.5">
-          <img
-            src="/top-navbar.png"
-            alt="Mahakal Transport ERP"
-            className="h-8 w-auto object-contain select-none"
-          />
-        </div>
-        <button
-          type="button"
-          onClick={() => setIsMobileOpen(!isMobileOpen)}
-          className="p-2 rounded-xl border border-slate-200/80 bg-slate-50/50 text-slate-700 hover:text-orange-600 hover:border-orange-200 hover:bg-orange-50/50 active:scale-95 transition-all cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40"
-          aria-label="Toggle Navigation Menu"
-        >
-          {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
-      </header>
-
+    <div className="flex min-h-screen bg-[#F8FAFC] font-sans antialiased text-[#0F172A] selection:bg-[#FFF7ED] selection:text-[#C2410C]">
       {/* Sidebar: Desktop Sticky Container */}
       <aside
-        className={`hidden md:block shrink-0 bg-white border-r border-slate-200/80 h-screen sticky top-0 transition-all duration-300 ease-in-out z-20 shadow-[1px_0_10px_rgba(0,0,0,0.02)] ${
+        className={`hidden md:block shrink-0 bg-white border-r border-[#E2E8F0] h-screen sticky top-0 transition-all duration-300 ease-in-out z-20 shadow-[1px_0_10px_rgba(0,0,0,0.02)] ${
           isCollapsed ? "w-20" : "w-64"
         }`}
       >
@@ -84,7 +66,7 @@ export const Layout = ({ children }) => {
         <button
           type="button"
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="hidden md:flex absolute -right-3.5 top-16 w-7 h-7 bg-white border border-slate-200/90 rounded-full shadow-md items-center justify-center cursor-pointer text-slate-500 hover:text-orange-600 hover:border-orange-300 hover:scale-110 active:scale-95 transition-all duration-200 z-30 outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 group"
+          className="hidden md:flex absolute -right-3.5 top-16 w-7 h-7 bg-white border border-[#E2E8F0] rounded-full shadow-md items-center justify-center cursor-pointer text-[#64748B] hover:text-[#FF5500] hover:border-[#FF5500] hover:scale-110 active:scale-95 transition-all duration-200 z-30 outline-none group"
           title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
           aria-label={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
@@ -126,13 +108,23 @@ export const Layout = ({ children }) => {
         </>
       )}
 
-      {/* Main Page Content Container */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-x-hidden min-h-screen md:pt-0 pt-14 transition-all duration-300">
-        {children || <Outlet />}
-      </main>
+      {/* Main Container */}
+      <div className="flex-1 flex flex-col min-w-0 min-h-screen">
+        {/* Top Navbar */}
+        <TopNavbar
+          isCollapsed={isCollapsed}
+          setIsCollapsed={setIsCollapsed}
+          isMobileOpen={isMobileOpen}
+          setIsMobileOpen={setIsMobileOpen}
+        />
+
+        {/* Main Page Content */}
+        <main className="flex-1 flex flex-col min-w-0 overflow-x-hidden transition-all duration-300">
+          {children || <Outlet />}
+        </main>
+      </div>
     </div>
   );
 };
 
 export default Layout;
-
