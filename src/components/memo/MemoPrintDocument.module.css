@@ -1,17 +1,20 @@
 /* ==========================================================================
    A4 Printable Memo / Manifest CSS Module
-   Optimized for full A4 portrait width (210mm x 297mm) with crisp borders.
+   Optimized for full A4 Landscape (297mm x 210mm) with crisp borders.
    ========================================================================== */
 
+/* Screen / Modal Layout (A4 Landscape aspect ratio) */
 .page {
-  width: 210mm;
-  min-height: 297mm;
-  padding: 6mm 7mm;
+  width: 285mm;
+  min-height: 195mm;
+  padding: 5mm 6mm;
   margin: 0 auto;
   background: #ffffff;
   box-sizing: border-box;
   font-family: 'Noto Sans Devanagari', 'Poppins', -apple-system, sans-serif;
   color: #111111;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
 }
 
 /* ==========================================================================
@@ -73,6 +76,28 @@
   color: #EB5A00;
   line-height: 1;
   letter-spacing: -0.3px;
+}
+
+.companySubtitle {
+  font-size: 7.5pt;
+  font-weight: 700;
+  color: #333333;
+  line-height: 1.2;
+}
+
+.companyTagline {
+  font-size: 6.5pt;
+  font-weight: 600;
+  color: #666666;
+  line-height: 1.1;
+}
+
+.phoneStrip {
+  font-size: 6.5pt;
+  font-weight: 700;
+  color: #222222;
+  line-height: 1.1;
+  margin-top: 2mm;
 }
 
 .memoDocBadge {
@@ -172,7 +197,6 @@
   border-spacing: 0;
   border: 1.2px solid #222222;
   font-size: 7pt;
-  page-break-inside: auto;
 }
 
 .table thead {
@@ -185,8 +209,8 @@
 }
 
 .table th {
-  background-color: #FFF3E0;
-  color: #EB5A00;
+  background-color: #FFF3E0 !important;
+  color: #EB5A00 !important;
   font-weight: 900;
   padding: 1.5mm 1mm;
   border: 0.8px solid #D9D9D9;
@@ -245,8 +269,8 @@
 }
 
 .toPayBadge {
-  background: #FFF3E0;
-  color: #C04A00;
+  background: #FFF3E0 !important;
+  color: #C04A00 !important;
   font-weight: 900;
   padding: 0.4mm 1.5mm;
   border-radius: 2px;
@@ -256,8 +280,8 @@
 }
 
 .paidBadge {
-  background: #E8F5E9;
-  color: #2E7D32;
+  background: #E8F5E9 !important;
+  color: #2E7D32 !important;
   font-weight: 900;
   padding: 0.4mm 1.5mm;
   border-radius: 2px;
@@ -266,11 +290,9 @@
   white-space: nowrap;
 }
 
-/* ==========================================================================
-   Summary Totals Bar
-   ========================================================================== */
+/* Summary Totals Bar */
 .summaryRow {
-  background: #F9F9F9;
+  background: #F9F9F9 !important;
   font-weight: 900;
   border-top: 1.2px solid #222222 !important;
   border-bottom: 1.2px solid #222222 !important;
@@ -284,7 +306,7 @@
 
 .totalHighlight {
   font-size: 8.5pt;
-  color: #EB5A00;
+  color: #EB5A00 !important;
   font-weight: 900;
 }
 
@@ -294,14 +316,12 @@
 .footerContainer {
   width: 100%;
   box-sizing: border-box;
-  margin-top: 3mm;
+  margin-top: 2mm;
   page-break-inside: avoid;
   break-inside: avoid;
 }
 
-/* ==========================================================================
-   Notes & Financial Summary Box
-   ========================================================================== */
+/* Notes & Financial Summary Box */
 .bottomSection {
   display: flex;
   gap: 3mm;
@@ -318,7 +338,7 @@
   border-radius: 3px;
   padding: 1.5mm 2.5mm;
   font-size: 6.5pt;
-  background: #FAFAFA;
+  background: #FAFAFA !important;
 }
 
 .notesTitle {
@@ -335,7 +355,7 @@
 }
 
 .financialSummary {
-  width: 80mm;
+  width: 90mm;
   flex-shrink: 0;
   box-sizing: border-box;
   border: 1px solid #222222;
@@ -354,15 +374,13 @@
 
 .finRow:last-child {
   border-bottom: none;
-  background: #FFF3E0;
+  background: #FFF3E0 !important;
   font-weight: 900;
-  color: #EB5A00;
+  color: #EB5A00 !important;
   font-size: 8pt;
 }
 
-/* ==========================================================================
-   Signatures Footer
-   ========================================================================== */
+/* Signatures Footer */
 .signatureSection {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -399,4 +417,58 @@
   color: #777777;
   text-align: center;
   margin-top: 1.5mm;
+}
+
+/* ==========================================================================
+   EXPLICIT A4 LANDSCAPE PRINT RULES
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 5mm 8mm;
+  }
+
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .page {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Prevent awkward page splits inside structural blocks */
+  .headerWrapper,
+  .tableContainer,
+  .summaryRow,
+  .footerContainer,
+  .bottomSection,
+  .signatureSection {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Force background colors to print exactly */
+  .headerMetaBox,
+  .routeBadge,
+  .table th,
+  .toPayBadge,
+  .paidBadge,
+  .summaryRow,
+  .notesCard,
+  .finRow:last-child {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }

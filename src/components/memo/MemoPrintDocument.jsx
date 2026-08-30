@@ -3,7 +3,7 @@ import styles from './MemoPrintDocument.module.css';
 
 /**
  * MemoPrintDocument Component
- * Renders complete Memo / Manifest in A4 Table Structure:
+ * Renders complete Memo / Manifest in A4 Landscape Table Structure:
  * - Company Header & Transport Info
  * - Memo Meta Details (No, Date, Route, Branches, CreatedBy, Driver/Vehicle)
  * - Consignments Table (Sr, Bilty No, Consignee Shop, City/Address, Mobile, Item, Qty, Freight, Total, Payment, Sign)
@@ -13,12 +13,10 @@ import styles from './MemoPrintDocument.module.css';
 
 export const MemoPrintDocument = ({ memo = {}, company = {} }) => {
   const {
-    name = "महाकाल",
-    subtitle = "ट्रान्सपोर्ट & पार्सल सर्व्हिस",
-    tagline = "आपली सेवा, आमची जबाबदारी",
-    shree = "॥ श्री ॥",
+    name = "Mahakal Transport",
+
     logo = "/LOGO.jpg",
-    phones = "अ.नगर: 9766149280 • बीड: 8483817081 • जामखेड: 9270848545",
+    phones = "A.Nagar: 9766149280 • Jamkhed: 9270848545",
   } = company;
 
   const bookingsList = Array.isArray(memo.bookings) ? memo.bookings : [];
@@ -77,11 +75,13 @@ export const MemoPrintDocument = ({ memo = {}, company = {} }) => {
               <img src={logo} alt="MTS Logo" className={styles.logoImg} />
             ) : null}
             <div className={styles.brandInfo}>
-              <span className={styles.shree}>{shree}</span>
               <div className={styles.titleRow}>
-                <span className={styles.companyTitle}>{name} ट्रान्सपोर्ट</span>
+                <span className={styles.companyTitle}>{name}</span>
 
               </div>
+
+
+              <span className={styles.phoneStrip}>{phones}</span>
             </div>
           </div>
 
@@ -89,24 +89,24 @@ export const MemoPrintDocument = ({ memo = {}, company = {} }) => {
           <div className={styles.headerMetaBox}>
             <div className={styles.metaRow}>
               <div className={styles.metaItem}>
-                <span className={styles.metaLabel}>मेमो क्र. (Memo No):</span>
+                <span className={styles.metaLabel}>Memo No:</span>
                 <span className={styles.highlightValue}>{memo.memoNumber || "MEM-0000"}</span>
               </div>
               <div className={styles.metaItem}>
-                <span className={styles.metaLabel}>दिनांक (Date):</span>
+                <span className={styles.metaLabel}>Date:</span>
                 <span className={styles.metaValue}>{formatDate(memo.memoDate || memo.date || memo.createdAt)}</span>
               </div>
             </div>
 
             <div className={styles.metaRow}>
               <div className={styles.metaItem}>
-                <span className={styles.metaLabel}>मार्ग (Route):</span>
+                <span className={styles.metaLabel}>Route:</span>
                 <span className={styles.routeBadge}>
                   {memo.fromBranch?.name || "Origin"} <span className={styles.routeArrow}>→</span> {memo.toBranch?.name || "Destination"}
                 </span>
               </div>
               <div className={styles.metaItem}>
-                <span className={styles.metaLabel}>पेमेंट स्थिती:</span>
+                <span className={styles.metaLabel}>Payment Status:</span>
                 <span className={styles.statusValue}>{memo.collectionStatus || "PENDING"}</span>
               </div>
             </div>
@@ -114,22 +114,22 @@ export const MemoPrintDocument = ({ memo = {}, company = {} }) => {
         </div>
       </div>
 
-      {/* 3. CONSIGNMENTS TABLE */}
+      {/* 2. CONSIGNMENTS TABLE */}
       <div className={styles.tableContainer}>
         <table className={styles.table}>
           <thead>
             <tr>
               <th style={{ width: '3.5%' }}>अ.नं.<br />(Sr)</th>
               <th style={{ width: '9.5%' }}>बिल्टी क्र.<br />(Bilty No)</th>
-              <th className={styles.alignLeft} style={{ width: '18%' }}>घेणारा / दुकान<br />(Consignee Shop)</th>
-              <th className={styles.alignLeft} style={{ width: '16%' }}>पत्ता / शहर<br />(Delivery Address)</th>
+              <th className={styles.alignLeft} style={{ width: '19%' }}>घेणारा / दुकान<br />(Consignee Shop)</th>
+              <th className={styles.alignLeft} style={{ width: '17%' }}>पत्ता / शहर<br />(Delivery Address)</th>
               <th style={{ width: '9.5%' }}>मोबाईल<br />(Mobile)</th>
-              <th className={styles.alignLeft} style={{ width: '12%' }}>मालाचे नाव<br />(Description)</th>
+              <th className={styles.alignLeft} style={{ width: '13.5%' }}>मालाचे नाव<br />(Description)</th>
               <th style={{ width: '4.5%' }}>नग<br />(Qty)</th>
-              <th className={styles.alignRight} style={{ width: '7%' }}>भाडे<br />(Freight)</th>
+              <th className={styles.alignRight} style={{ width: '6.5%' }}>भाडे<br />(Freight)</th>
               <th className={styles.alignRight} style={{ width: '7.5%' }}>एकूण<br />(Total)</th>
-              <th style={{ width: '6.5%' }}>पेमेंट<br />(Type)</th>
-              <th style={{ width: '6%' }}>सही<br />(Sign)</th>
+              <th style={{ width: '5.5%' }}>पेमेंट<br />(Type)</th>
+              <th style={{ width: '4%' }}>सही<br />(Sign)</th>
             </tr>
           </thead>
           <tbody>
@@ -187,7 +187,7 @@ export const MemoPrintDocument = ({ memo = {}, company = {} }) => {
             {/* SUMMARY TOTALS ROW */}
             <tr className={styles.summaryRow}>
               <td colSpan="6" className={styles.alignRight}>
-                एकूण बेरीज (TOTAL SUMMARY):
+                TOTAL SUMMARY :
               </td>
               <td className={styles.alignCenter}>{totalQuantity}</td>
               <td className={styles.alignRight}>{formatCurrency(totalFreight)}</td>
@@ -202,14 +202,14 @@ export const MemoPrintDocument = ({ memo = {}, company = {} }) => {
         </table>
       </div>
 
-      {/* 4. FOOTER WRAPPER (Renders only once at the end of last page) */}
+      {/* 3. FOOTER WRAPPER */}
       <div className={styles.footerContainer}>
         {/* BOTTOM NOTES & FINANCIAL SUMMARY */}
         <div className={styles.bottomSection}>
           {/* Notes Card */}
           <div className={styles.notesCard}>
             <span className={styles.notesTitle}>
-              सूचना / रिमार्क (Driver & Delivery Instructionsx):
+              सूचना / रिमार्क (Driver & Delivery Instructions):
             </span>
 
             <span className={styles.notesContent}>
@@ -272,7 +272,7 @@ export const MemoPrintDocument = ({ memo = {}, company = {} }) => {
         </div>
 
         <div className={styles.disclaimerText}>
-          हे संगणकीकृत ट्रान्सपोर्ट मेमो आहे (Computer Generated Transport Memo).
+          Computer Generated Transport Memo.
         </div>
       </div>
     </div>
