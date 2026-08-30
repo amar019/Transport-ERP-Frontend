@@ -95,45 +95,7 @@ export const DashboardPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans selection:bg-orange-100 antialiased">
-      {/* Top Navbar */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
-        {/* Page Title */}
-        <div className="text-left select-none">
-          <h2 className="font-extrabold text-slate-800 text-sm md:text-base tracking-tight m-0">
-            Dashboard Overview
-          </h2>
-          <p className="text-[10px] text-slate-400 font-semibold tracking-wide uppercase mt-0.5">
-            Control Center
-          </p>
-        </div>
 
-        {/* User Profile & Logout */}
-        <div className="flex items-center space-x-4">
-          <div className="hidden md:flex flex-col text-right">
-            <span className="font-semibold text-slate-800 text-xs">
-              {user?.name || "ERP Administrator"}
-            </span>
-            <span className="text-[10px] text-slate-400 font-medium">
-              @{user?.username || "admin"}
-            </span>
-          </div>
-          <div className="w-8 h-8 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center font-bold text-xs select-none">
-            {user?.name
-              ? user.name.charAt(0).toUpperCase()
-              : user?.username
-              ? user.username.charAt(0).toUpperCase()
-              : "A"}
-          </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-rose-600 px-3 py-1.5 rounded-lg hover:bg-rose-50 border border-slate-200 hover:border-rose-100 transition-all duration-200 cursor-pointer"
-            title="Log Out"
-          >
-            <LogOut className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Sign Out</span>
-          </button>
-        </div>
-      </header>
 
       {/* Main Layout Grid */}
       <main className="p-6 max-w-7xl mx-auto space-y-6">
@@ -242,13 +204,12 @@ export const DashboardPage = () => {
                       </td>
                       <td className="py-3.5 px-3 text-right">
                         <span
-                          className={`inline-block px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase ${
-                            ship.status === "Delivered"
-                              ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
-                              : ship.status === "In Transit"
+                          className={`inline-block px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase ${ship.status === "Delivered"
+                            ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                            : ship.status === "In Transit"
                               ? "bg-blue-50 text-blue-600 border border-blue-100"
                               : "bg-amber-50 text-amber-600 border border-amber-100"
-                          }`}
+                            }`}
                         >
                           {ship.status}
                         </span>

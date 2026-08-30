@@ -18,6 +18,8 @@ import MemoPreviewPage from "@/pages/memos/MemoPreviewPage";
 import CustomerListPage from "@/pages/customers/CustomerListPage";
 import CustomerFormPage from "@/pages/customers/CustomerFormPage";
 import CustomerDetailsPage from "@/pages/customers/CustomerDetailsPage";
+import SettingsPage from "@/pages/settings/SettingsPage";
+import BranchListPage from "@/pages/masters/BranchListPage";
 import PlaceholderPage from "@/pages/placeholder/PlaceholderPage";
 
 export const AppRoutes = () => {
@@ -54,10 +56,10 @@ export const AppRoutes = () => {
           <Route path={ROUTES.OPERATIONS.DELIVERY} element={<PlaceholderPage />} />
           <Route path={ROUTES.OPERATIONS.TRIPS} element={<PlaceholderPage />} />
 
-          {/* Masters Placeholders */}
+          {/* Masters */}
           <Route path={ROUTES.MASTERS.VEHICLES} element={<PlaceholderPage />} />
           <Route path={ROUTES.MASTERS.DRIVERS} element={<PlaceholderPage />} />
-          <Route path={ROUTES.MASTERS.BRANCHES} element={<PlaceholderPage />} />
+          <Route path={ROUTES.MASTERS.BRANCHES} element={<BranchListPage />} />
           <Route path={ROUTES.MASTERS.LOCATIONS} element={<PlaceholderPage />} />
 
           {/* Finance Placeholders */}
@@ -70,10 +72,10 @@ export const AppRoutes = () => {
           <Route path={ROUTES.REPORTS.DELIVERY} element={<PlaceholderPage />} />
           <Route path={ROUTES.REPORTS.FINANCIAL} element={<PlaceholderPage />} />
 
-          {/* Settings Placeholders */}
+          {/* Settings */}
           <Route path={ROUTES.SETTINGS.USERS} element={<PlaceholderPage />} />
           <Route path={ROUTES.SETTINGS.ROLES} element={<PlaceholderPage />} />
-          <Route path={ROUTES.SETTINGS.SETTINGS} element={<PlaceholderPage />} />
+          <Route path={ROUTES.SETTINGS.SETTINGS} element={<SettingsPage />} />
         </Route>
 
         {/* Full-Screen Print Previews (Protected, Standalone Shell) */}
