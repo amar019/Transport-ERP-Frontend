@@ -20,6 +20,7 @@ import CustomerFormPage from "@/pages/customers/CustomerFormPage";
 import CustomerDetailsPage from "@/pages/customers/CustomerDetailsPage";
 import SettingsPage from "@/pages/settings/SettingsPage";
 import BranchListPage from "@/pages/masters/BranchListPage";
+import ExpensesPage from "@/pages/expenses/Expenses";
 import PlaceholderPage from "@/pages/placeholder/PlaceholderPage";
 
 export const AppRoutes = () => {
@@ -65,7 +66,7 @@ export const AppRoutes = () => {
           {/* Finance Placeholders */}
           <Route path={ROUTES.FINANCE.BILLING} element={<PlaceholderPage />} />
           <Route path={ROUTES.FINANCE.PAYMENTS} element={<PlaceholderPage />} />
-          <Route path={ROUTES.FINANCE.EXPENSES} element={<PlaceholderPage />} />
+          <Route path={ROUTES.FINANCE.EXPENSES} element={<ExpensesPage />} />
 
           {/* Reports Placeholders */}
           <Route path={ROUTES.REPORTS.BOOKING} element={<PlaceholderPage />} />
