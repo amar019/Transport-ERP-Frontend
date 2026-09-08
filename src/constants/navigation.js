@@ -5,6 +5,7 @@ import {
   Truck,
   Users,
   User,
+  UserCheck,
   Building2,
   Receipt,
   CreditCard,
@@ -36,14 +37,13 @@ export const MENU_GROUPS = [
     items: [
       { name: "Customers", icon: Users, path: ROUTES.CUSTOMERS.LIST },
       { name: "Vehicles", icon: Truck, path: ROUTES.MASTERS.VEHICLES },
-      { name: "Drivers", icon: User, path: ROUTES.MASTERS.DRIVERS },
+      { name: "Delivery Boys", icon: UserCheck, path: ROUTES.MASTERS.DELIVERY_BOYS },
       { name: "Branches", icon: Building2, path: ROUTES.MASTERS.BRANCHES },
     ],
   },
   {
     group: "FINANCE",
     items: [
-      { name: "Billing", icon: Receipt, path: ROUTES.FINANCE.BILLING },
       { name: "Payments", icon: CreditCard, path: ROUTES.FINANCE.PAYMENTS },
       { name: "Expenses", icon: Coins, path: ROUTES.FINANCE.EXPENSES },
     ],
@@ -59,8 +59,7 @@ export const MENU_GROUPS = [
   {
     group: "SETTINGS",
     items: [
-      { name: "Users", icon: Users, path: ROUTES.SETTINGS.USERS },
-      { name: "Roles & Permissions", icon: Shield, path: ROUTES.SETTINGS.ROLES },
+
       { name: "Settings", icon: Settings, path: ROUTES.SETTINGS.SETTINGS },
     ],
   },

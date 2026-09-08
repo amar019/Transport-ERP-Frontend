@@ -73,8 +73,7 @@ export const Sidebar = ({
               <div className="space-y-1">
                 {group.items.map((item, itemIdx) => {
                   const Icon = item.icon;
-                  const isActive =
-                    activeItem === item.name || location.pathname === item.path;
+                  const isActive = activeItem === item.name;
 
                   return (
                     <Link

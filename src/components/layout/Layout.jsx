@@ -23,18 +23,35 @@ export const Layout = ({ children }) => {
     const currentPath = location.pathname;
     let foundMatch = false;
 
+    // 1. Try exact path match first
     for (const group of MENU_GROUPS) {
       for (const item of group.items) {
-        if (
-          item.path === currentPath ||
-          (item.path !== "/" && item.path !== "/dashboard" && currentPath.startsWith(item.path))
-        ) {
+        if (item.path && currentPath === item.path) {
           setActiveItem(item.name);
           foundMatch = true;
           break;
         }
       }
       if (foundMatch) break;
+    }
+
+    // 2. If no exact match, try nested route match with strict slash boundary
+    if (!foundMatch) {
+      for (const group of MENU_GROUPS) {
+        for (const item of group.items) {
+          if (
+            item.path &&
+            item.path !== "/" &&
+            item.path !== "/dashboard" &&
+            currentPath.startsWith(item.path + "/")
+          ) {
+            setActiveItem(item.name);
+            foundMatch = true;
+            break;
+          }
+        }
+        if (foundMatch) break;
+      }
     }
 
     if (!foundMatch && currentPath.includes("dashboard")) {

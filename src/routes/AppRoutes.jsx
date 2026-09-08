@@ -20,6 +20,7 @@ import CustomerFormPage from "@/pages/customers/CustomerFormPage";
 import CustomerDetailsPage from "@/pages/customers/CustomerDetailsPage";
 import SettingsPage from "@/pages/settings/SettingsPage";
 import BranchListPage from "@/pages/masters/BranchListPage";
+import DeliveryBoyListPage from "@/pages/deliveryBoy/DeliveryBoyListPage";
 import ExpensesPage from "@/pages/expenses/Expenses";
 import PaymentListPage from "@/pages/finance/PaymentListPage";
 import PlaceholderPage from "@/pages/placeholder/PlaceholderPage";
@@ -61,6 +62,7 @@ export const AppRoutes = () => {
           {/* Masters */}
           <Route path={ROUTES.MASTERS.VEHICLES} element={<PlaceholderPage />} />
           <Route path={ROUTES.MASTERS.DRIVERS} element={<PlaceholderPage />} />
+          <Route path={ROUTES.MASTERS.DELIVERY_BOYS} element={<DeliveryBoyListPage />} />
           <Route path={ROUTES.MASTERS.BRANCHES} element={<BranchListPage />} />
           <Route path={ROUTES.MASTERS.LOCATIONS} element={<PlaceholderPage />} />
 

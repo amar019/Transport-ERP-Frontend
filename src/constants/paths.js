@@ -37,6 +37,7 @@ export const ROUTES = {
     DRIVERS: "/drivers",
     BRANCHES: "/branches",
     LOCATIONS: "/locations",
+    DELIVERY_BOYS: "/delivery-boys",
   },
   FINANCE: {
     BILLING: "/billing",

@@ -25,17 +25,22 @@ export const MemoPreviewPage = () => {
     documentTitle: memo?.memoNumber ? `Manifest-${memo.memoNumber}` : "Dispatch-Manifest",
     pageStyle: `
       @page {
-        size: A4 portrait;
-        margin: 0;
+        size: A4 landscape;
+        margin: 6mm;
       }
       @media print {
         html, body {
-          width: 210mm !important;
+          width: 100% !important;
+          height: 100% !important;
+          max-height: 100% !important;
+          overflow: hidden !important;
           margin: 0 !important;
           padding: 0 !important;
           background: #ffffff !important;
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
+          transform: none !important;
+          writing-mode: horizontal-tb !important;
         }
         .no-print, .no-print * {
           display: none !important;
@@ -45,7 +50,15 @@ export const MemoPreviewPage = () => {
           border: none !important;
           margin: 0 !important;
           padding: 0 !important;
-          width: 210mm !important;
+          width: 100% !important;
+          height: auto !important;
+          max-height: 198mm !important;
+          transform: none !important;
+          writing-mode: horizontal-tb !important;
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+          page-break-after: avoid !important;
+          break-after: avoid !important;
         }
       }
     `,
@@ -148,7 +161,7 @@ export const MemoPreviewPage = () => {
           <div
             ref={printRef}
             className="print-sheet-wrapper shadow-lg bg-white border border-slate-300 rounded-xs my-4"
-            style={{ width: "210mm" }}
+            style={{ width: "285mm", maxWidth: "100%" }}
           >
             <MemoPrintDocument memo={memo} />
           </div>

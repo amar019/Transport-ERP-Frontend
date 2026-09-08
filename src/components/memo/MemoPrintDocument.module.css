@@ -1,33 +1,37 @@
 /* ==========================================================================
    A4 Printable Memo / Manifest CSS Module
-   Optimized for full A4 Landscape (297mm x 210mm) with crisp borders.
+   Optimized for strictly 1-Page A4 Landscape (297mm x 210mm) with 6mm margins.
+   Top-to-bottom flow, zero content rotation, professional commercial layout.
    ========================================================================== */
 
-/* Screen / Modal Layout (A4 Landscape aspect ratio) */
+/* Screen / Printable Page Layout (A4 Landscape: 297mm x 210mm) */
 .page {
-  width: 285mm;
-  min-height: 195mm;
-  padding: 5mm 6mm;
+  width: 285mm; /* 297mm minus 2x 6mm margins */
+  max-width: 100%;
+  padding: 1.5mm 2mm;
   margin: 0 auto;
   background: #ffffff;
   box-sizing: border-box;
-  font-family: 'Noto Sans Devanagari', 'Poppins', -apple-system, sans-serif;
+  font-family: 'Noto Sans Devanagari', 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
   color: #111111;
   -webkit-print-color-adjust: exact !important;
   print-color-adjust: exact !important;
+  transform: none !important;
+  writing-mode: horizontal-tb !important;
+  direction: ltr !important;
 }
 
 /* ==========================================================================
-   Unified Header & Metadata Section
+   1. Unified Header & Metadata Section
    ========================================================================== */
 .headerWrapper {
   width: 100%;
   box-sizing: border-box;
   border: 1.2px solid #222222;
-  border-radius: 3px;
-  padding: 2mm 3.5mm;
-  margin-bottom: 2mm;
-  background: #FFFFFF;
+  border-radius: 4px;
+  padding: 1.5mm 3mm;
+  margin-bottom: 1.5mm;
+  background: #ffffff;
 }
 
 .headerContent {
@@ -47,8 +51,8 @@
 }
 
 .logoImg {
-  width: 12mm;
-  height: 12mm;
+  width: 11mm;
+  height: 11mm;
   object-fit: contain;
 }
 
@@ -58,9 +62,9 @@
 }
 
 .shree {
-  font-size: 6.5pt;
+  font-size: 6pt;
   font-weight: 800;
-  color: #EB5A00;
+  color: #eb5a00;
   line-height: 1;
 }
 
@@ -71,41 +75,41 @@
 }
 
 .companyTitle {
-  font-size: 15pt;
+  font-size: 14.5pt;
   font-weight: 900;
-  color: #EB5A00;
+  color: #eb5a00;
   line-height: 1;
   letter-spacing: -0.3px;
 }
 
 .companySubtitle {
-  font-size: 7.5pt;
+  font-size: 7pt;
   font-weight: 700;
   color: #333333;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 .companyTagline {
-  font-size: 6.5pt;
+  font-size: 6pt;
   font-weight: 600;
   color: #666666;
-  line-height: 1.1;
+  line-height: 1;
 }
 
 .phoneStrip {
-  font-size: 6.5pt;
+  font-size: 6.8pt;
   font-weight: 700;
   color: #222222;
   line-height: 1.1;
-  margin-top: 2mm;
+  margin-top: 1mm;
 }
 
 .memoDocBadge {
-  background: #EB5A00;
-  color: #FFFFFF;
-  font-size: 7.2pt;
+  background: #eb5a00;
+  color: #ffffff;
+  font-size: 7pt;
   font-weight: 900;
-  padding: 0.8mm 2.2mm;
+  padding: 0.8mm 2mm;
   border-radius: 3px;
   letter-spacing: 0.3px;
   white-space: nowrap;
@@ -116,10 +120,10 @@
   display: flex;
   flex-direction: column;
   gap: 1.2mm;
-  background: #FAFAFA;
-  border: 1px solid #D9D9D9;
+  background: #fafafa;
+  border: 1px solid #d9d9d9;
   border-radius: 3px;
-  padding: 1.5mm 3mm;
+  padding: 1.2mm 3mm;
   flex: 1;
   min-width: 0;
   max-width: none;
@@ -154,7 +158,7 @@
 }
 
 .highlightValue {
-  color: #EB5A00;
+  color: #eb5a00;
   font-weight: 900;
   font-family: monospace;
   font-size: 8.5pt;
@@ -163,31 +167,33 @@
 .routeBadge {
   font-weight: 800;
   color: #111111;
-  background: #FFF3E0;
-  border: 0.5px solid #F0B896;
-  padding: 0.3mm 2mm;
-  border-radius: 2px;
+  background: #fff3e0;
+  border: 0.8px solid #f0b896;
+  padding: 0.4mm 2mm;
+  border-radius: 3px;
   font-size: 7pt;
   white-space: nowrap;
 }
 
 .routeArrow {
-  color: #EB5A00;
+  color: #eb5a00;
   font-weight: 900;
+  margin: 0 0.8mm;
 }
 
 .statusValue {
   font-weight: 900;
-  color: #2E7D32;
+  color: #2e7d32;
+  text-transform: uppercase;
 }
 
 /* ==========================================================================
-   Consignments Table
+   2. Consignments Table
    ========================================================================== */
 .tableContainer {
   width: 100%;
   box-sizing: border-box;
-  margin-bottom: 2mm;
+  margin-bottom: 1.5mm;
 }
 
 .table {
@@ -209,11 +215,11 @@
 }
 
 .table th {
-  background-color: #FFF3E0 !important;
-  color: #EB5A00 !important;
+  background-color: #fff3e0 !important;
+  color: #eb5a00 !important;
   font-weight: 900;
-  padding: 1.5mm 1mm;
-  border: 0.8px solid #D9D9D9;
+  padding: 1.2mm 0.8mm;
+  border: 0.8px solid #cccccc;
   border-bottom: 1.2px solid #222222;
   text-align: center;
   white-space: nowrap;
@@ -223,12 +229,12 @@
 }
 
 .table td {
-  padding: 1.5mm 1mm;
-  border: 0.8px solid #D9D9D9;
+  padding: 1mm 0.8mm;
+  border: 0.8px solid #d9d9d9;
   color: #111111;
   font-weight: 600;
   vertical-align: middle;
-  line-height: 1.2;
+  line-height: 1.18;
   box-sizing: border-box;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -251,7 +257,7 @@
 .biltyNo {
   font-family: monospace;
   font-weight: 900;
-  color: #EB5A00;
+  color: #eb5a00;
   white-space: nowrap;
 }
 
@@ -262,61 +268,64 @@
 }
 
 .subText {
-  font-size: 6pt;
-  color: #666666;
+  font-size: 5.8pt;
+  color: #555555;
   font-weight: 500;
   display: block;
 }
 
 .toPayBadge {
-  background: #FFF3E0 !important;
-  color: #C04A00 !important;
+  background: #fff3e0 !important;
+  color: #c04a00 !important;
   font-weight: 900;
-  padding: 0.4mm 1.5mm;
+  padding: 0.3mm 1.5mm;
   border-radius: 2px;
   font-size: 6pt;
-  border: 0.5px solid #F0B896;
+  border: 0.5px solid #f0b896;
   white-space: nowrap;
+  display: inline-block;
 }
 
 .paidBadge {
-  background: #E8F5E9 !important;
-  color: #2E7D32 !important;
+  background: #e8f5e9 !important;
+  color: #2e7d32 !important;
   font-weight: 900;
-  padding: 0.4mm 1.5mm;
+  padding: 0.3mm 1.5mm;
   border-radius: 2px;
   font-size: 6pt;
-  border: 0.5px solid #A5D6A7;
+  border: 0.5px solid #a5d6a7;
   white-space: nowrap;
+  display: inline-block;
 }
 
-/* Summary Totals Bar */
+/* Summary Totals Row */
 .summaryRow {
-  background: #F9F9F9 !important;
+  background: #f9f9f9 !important;
   font-weight: 900;
   border-top: 1.2px solid #222222 !important;
   border-bottom: 1.2px solid #222222 !important;
 }
 
 .summaryRow td {
-  padding: 1.8mm 1mm;
+  padding: 1.2mm 0.8mm;
   font-weight: 900;
   color: #111111;
+  font-size: 7.5pt;
 }
 
 .totalHighlight {
   font-size: 8.5pt;
-  color: #EB5A00 !important;
+  color: #eb5a00 !important;
   font-weight: 900;
 }
 
 /* ==========================================================================
-   Footer Wrapper (Only appears once at the end of last page)
+   3. Footer Wrapper (Notes, Summary & Signatures directly below table)
    ========================================================================== */
 .footerContainer {
   width: 100%;
   box-sizing: border-box;
-  margin-top: 2mm;
+  margin-top: 1.2mm;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -327,57 +336,58 @@
   gap: 3mm;
   width: 100%;
   box-sizing: border-box;
-  margin-bottom: 3mm;
+  margin-bottom: 1.5mm;
 }
 
 .notesCard {
   flex: 1;
   min-width: 0;
   box-sizing: border-box;
-  border: 1px solid #D9D9D9;
+  border: 1px solid #d9d9d9;
   border-radius: 3px;
-  padding: 1.5mm 2.5mm;
-  font-size: 6.5pt;
-  background: #FAFAFA !important;
+  padding: 1.2mm 2.2mm;
+  font-size: 6.2pt;
+  background: #fafafa !important;
 }
 
 .notesTitle {
   font-weight: 800;
-  color: #333333;
+  color: #222222;
   margin-bottom: 0.5mm;
   display: block;
 }
 
 .notesContent {
-  color: #555555;
+  color: #444444;
   font-weight: 600;
   line-height: 1.2;
 }
 
 .financialSummary {
-  width: 90mm;
+  width: 85mm;
   flex-shrink: 0;
   box-sizing: border-box;
-  border: 1px solid #222222;
+  border: 1.2px solid #222222;
   border-radius: 3px;
   overflow: hidden;
+  background: #ffffff;
 }
 
 .finRow {
   display: flex;
   justify-content: space-between;
-  padding: 1mm 2.5mm;
-  font-size: 7.5pt;
+  padding: 0.8mm 2.2mm;
+  font-size: 7.2pt;
   font-weight: 800;
-  border-bottom: 0.5px solid #E0E0E0;
+  border-bottom: 0.5px solid #e0e0e0;
 }
 
 .finRow:last-child {
   border-bottom: none;
-  background: #FFF3E0 !important;
+  background: #fff3e0 !important;
   font-weight: 900;
-  color: #EB5A00 !important;
-  font-size: 8pt;
+  color: #eb5a00 !important;
+  font-size: 7.8pt;
 }
 
 /* Signatures Footer */
@@ -386,9 +396,9 @@
   grid-template-columns: repeat(3, 1fr);
   width: 100%;
   box-sizing: border-box;
-  gap: 4mm;
+  gap: 3mm;
   border-top: 1px solid #222222;
-  padding-top: 3mm;
+  padding-top: 2mm;
   margin-top: 1mm;
   text-align: center;
 }
@@ -397,66 +407,83 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6mm;
+  gap: 4.5mm;
 }
 
 .signLine {
-  width: 75%;
+  width: 70%;
   border-top: 1px dashed #777777;
 }
 
 .signLabel {
-  font-size: 6.8pt;
+  font-size: 6.5pt;
   font-weight: 800;
   color: #222222;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .disclaimerText {
   font-size: 5.5pt;
   color: #777777;
   text-align: center;
-  margin-top: 1.5mm;
+  margin-top: 0.8mm;
 }
 
 /* ==========================================================================
-   EXPLICIT A4 LANDSCAPE PRINT RULES
+   EXPLICIT SINGLE-PAGE A4 LANDSCAPE PRINT RULES
    ========================================================================== */
 @media print {
   @page {
     size: A4 landscape;
-    margin: 5mm 8mm;
+    margin: 6mm;
   }
 
   html,
   body {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    transform: none !important;
+    writing-mode: horizontal-tb !important;
   }
 
   .page {
     width: 100% !important;
     max-width: 100% !important;
-    min-height: 0 !important;
+    height: auto !important;
+    max-height: 198mm !important;
     padding: 0 !important;
     margin: 0 !important;
     box-shadow: none !important;
     background: #ffffff !important;
     box-sizing: border-box !important;
+    transform: none !important;
+    writing-mode: horizontal-tb !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-before: avoid !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 
-  /* Prevent awkward page splits inside structural blocks */
+  /* Force all structural components to stay on page 1 */
   .headerWrapper,
   .tableContainer,
+  .table,
   .summaryRow,
   .footerContainer,
   .bottomSection,
   .signatureSection {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 
   /* Force background colors to print exactly */
