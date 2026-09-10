@@ -22,7 +22,12 @@ export const Sidebar = ({
     return MENU_GROUPS.map((group) => ({
       ...group,
       items: group.items.filter((item) => {
-        if (item.path === ROUTES.OPERATIONS.DELIVERY) {
+        if (
+          item.path === ROUTES.OPERATIONS.DELIVERY ||
+          item.path === ROUTES.FINANCE.CUSTOMER_LEDGER ||
+          item.path === ROUTES.FINANCE.DELIVERY_BOY_LEDGER ||
+          item.path === ROUTES.FINANCE.PAYMENT_TRANSACTIONS
+        ) {
           return branchType === "DELIVERY";
         }
         return true;

@@ -24,6 +24,9 @@ import DeliveryBoyListPage from "@/pages/deliveryBoy/DeliveryBoyListPage";
 import DeliveryPage from "@/pages/delivery/DeliveryPage";
 import ExpensesPage from "@/pages/expenses/Expenses";
 import PaymentListPage from "@/pages/finance/PaymentListPage";
+import CustomerLedgerPage from "@/pages/finance/CustomerLedgerPage";
+import DeliveryBoyLedgerPage from "@/pages/finance/DeliveryBoyLedgerPage";
+import PaymentTransactionsPage from "@/pages/finance/PaymentTransactionsPage";
 import PlaceholderPage from "@/pages/placeholder/PlaceholderPage";
 
 export const AppRoutes = () => {
@@ -67,8 +70,11 @@ export const AppRoutes = () => {
           <Route path={ROUTES.MASTERS.BRANCHES} element={<BranchListPage />} />
           <Route path={ROUTES.MASTERS.LOCATIONS} element={<PlaceholderPage />} />
 
-          {/* Finance Placeholders */}
+          {/* Finance Routes */}
           <Route path={ROUTES.FINANCE.BILLING} element={<PlaceholderPage />} />
+          <Route path={ROUTES.FINANCE.CUSTOMER_LEDGER} element={<CustomerLedgerPage />} />
+          <Route path={ROUTES.FINANCE.DELIVERY_BOY_LEDGER} element={<DeliveryBoyLedgerPage />} />
+          <Route path={ROUTES.FINANCE.PAYMENT_TRANSACTIONS} element={<PaymentTransactionsPage />} />
           <Route path={ROUTES.FINANCE.PAYMENTS} element={<PaymentListPage />} />
           <Route path={ROUTES.FINANCE.EXPENSES} element={<ExpensesPage />} />
 

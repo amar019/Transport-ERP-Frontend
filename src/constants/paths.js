@@ -42,6 +42,9 @@ export const ROUTES = {
   FINANCE: {
     BILLING: "/billing",
     PAYMENTS: "/payments",
+    CUSTOMER_LEDGER: "/finance/customer-ledger",
+    DELIVERY_BOY_LEDGER: "/finance/delivery-boy-ledger",
+    PAYMENT_TRANSACTIONS: "/finance/payment-transactions",
     EXPENSES: "/expenses",
   },
   REPORTS: {

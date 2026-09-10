@@ -15,6 +15,8 @@ import {
   LineChart,
   Shield,
   Settings,
+  BookOpen,
+  Wallet,
 } from "lucide-react";
 import { ROUTES } from "./paths";
 
@@ -44,6 +46,9 @@ export const MENU_GROUPS = [
   {
     group: "FINANCE",
     items: [
+      { name: "Customer Ledger", icon: BookOpen, path: ROUTES.FINANCE.CUSTOMER_LEDGER },
+      { name: "Delivery Boy Ledger", icon: Wallet, path: ROUTES.FINANCE.DELIVERY_BOY_LEDGER },
+      { name: "Transactions", icon: Receipt, path: ROUTES.FINANCE.PAYMENT_TRANSACTIONS },
       { name: "Payments", icon: CreditCard, path: ROUTES.FINANCE.PAYMENTS },
       { name: "Expenses", icon: Coins, path: ROUTES.FINANCE.EXPENSES },
     ],
