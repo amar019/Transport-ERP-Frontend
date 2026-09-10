@@ -21,6 +21,7 @@ import CustomerDetailsPage from "@/pages/customers/CustomerDetailsPage";
 import SettingsPage from "@/pages/settings/SettingsPage";
 import BranchListPage from "@/pages/masters/BranchListPage";
 import DeliveryBoyListPage from "@/pages/deliveryBoy/DeliveryBoyListPage";
+import DeliveryPage from "@/pages/delivery/DeliveryPage";
 import ExpensesPage from "@/pages/expenses/Expenses";
 import PaymentListPage from "@/pages/finance/PaymentListPage";
 import PlaceholderPage from "@/pages/placeholder/PlaceholderPage";
@@ -54,9 +55,9 @@ export const AppRoutes = () => {
           <Route path={ROUTES.CUSTOMERS.EDIT(":id")} element={<CustomerFormPage />} />
           <Route path={ROUTES.CUSTOMERS.DETAILS(":id")} element={<CustomerDetailsPage />} />
 
-          {/* Operations Placeholders */}
+          {/* Operations */}
           <Route path={ROUTES.OPERATIONS.LR_PARCEL} element={<PlaceholderPage />} />
-          <Route path={ROUTES.OPERATIONS.DELIVERY} element={<PlaceholderPage />} />
+          <Route path={ROUTES.OPERATIONS.DELIVERY} element={<DeliveryPage />} />
           <Route path={ROUTES.OPERATIONS.TRIPS} element={<PlaceholderPage />} />
 
           {/* Masters */}

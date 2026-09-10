@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { LogOut } from "lucide-react";
 import { MENU_GROUPS } from "@/constants/navigation";
+import { ROUTES } from "@/constants/paths";
 
 export const Sidebar = ({
   isCollapsed,
@@ -11,6 +13,22 @@ export const Sidebar = ({
   handleLogout,
 }) => {
   const location = useLocation();
+  const { user } = useSelector((state) => state.auth);
+
+  const branchType = user?.branch?.type || user?.branchType;
+
+  // Filter menu items by branch type permissions
+  const filteredMenuGroups = useMemo(() => {
+    return MENU_GROUPS.map((group) => ({
+      ...group,
+      items: group.items.filter((item) => {
+        if (item.path === ROUTES.OPERATIONS.DELIVERY) {
+          return branchType === "DELIVERY";
+        }
+        return true;
+      }),
+    })).filter((group) => group.items.length > 0);
+  }, [branchType]);
 
   return (
     <div className="flex flex-col h-full bg-white select-none relative overflow-hidden">
@@ -52,7 +70,7 @@ export const Sidebar = ({
 
         {/* Scrollable Navigation Menu Item List */}
         <div className="flex-1 overflow-y-auto px-3 pb-4 pt-1 space-y-4 scrollbar-thin scrollbar-thumb-slate-200 hover:scrollbar-thumb-slate-300 scrollbar-track-transparent">
-          {MENU_GROUPS.map((group, groupIdx) => (
+          {filteredMenuGroups.map((group, groupIdx) => (
             <div key={groupIdx} className="space-y-1">
               {/* Group Header */}
               {group.group && !isCollapsed && (

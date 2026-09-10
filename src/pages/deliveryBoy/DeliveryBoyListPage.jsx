@@ -66,7 +66,13 @@ export default function DeliveryBoyListPage() {
     setError("");
     try {
       const res = await getDeliveryBoys();
-      const list = res.data || (Array.isArray(res) ? res : []);
+      const list = Array.isArray(res)
+        ? res
+        : Array.isArray(res?.data)
+        ? res.data
+        : Array.isArray(res?.data?.data)
+        ? res.data.data
+        : [];
       setDeliveryBoys(list);
     } catch (err) {
       setError(
