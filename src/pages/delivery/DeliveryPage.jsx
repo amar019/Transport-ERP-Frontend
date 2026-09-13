@@ -17,6 +17,7 @@ import DeliveryKPICards from "@/components/delivery/DeliveryKPICards";
 import DeliveryFilters from "@/components/delivery/DeliveryFilters";
 import DeliveryTable from "@/components/delivery/DeliveryTable";
 import AssignDeliveryBoyModal from "@/components/delivery/AssignDeliveryBoyModal";
+import CounterDeliveryModal from "@/components/delivery/CounterDeliveryModal";
 import MarkDeliveredModal from "@/components/delivery/MarkDeliveredModal";
 import MarkFailedModal from "@/components/delivery/MarkFailedModal";
 import CollectPaymentModal from "@/components/delivery/CollectPaymentModal";
@@ -25,7 +26,7 @@ import DeliveryDetailsModal from "@/components/delivery/DeliveryDetailsModal";
 import {
   getDeliveryBookings,
   assignDeliveryBoy,
-  startDelivery,
+  counterDelivery,
   markDelivered,
   markDeliveryFailed,
   collectCustomerPayment,
@@ -54,7 +55,7 @@ export const DeliveryPage = () => {
   });
 
   // Active Modals State
-  const [activeModal, setActiveModal] = useState(null); // 'assign' | 'deliver' | 'fail' | 'collect' | 'details'
+  const [activeModal, setActiveModal] = useState(null); // 'assign' | 'counter' | 'deliver' | 'fail' | 'collect' | 'details'
   const [selectedBooking, setSelectedBooking] = useState(null);
 
   // Toast Helper
@@ -167,7 +168,6 @@ export const DeliveryPage = () => {
   const kpiMetrics = useMemo(() => {
     let total = rawBookings.length;
     let pending = 0;
-    let assigned = 0;
     let outForDelivery = 0;
     let delivered = 0;
     let failed = 0;
@@ -178,7 +178,6 @@ export const DeliveryPage = () => {
       const st = rawSt === "BOOKED" ? "PENDING" : rawSt;
 
       if (st === "PENDING") pending++;
-      else if (st === "ASSIGNED") assigned++;
       else if (st === "OUT_FOR_DELIVERY") outForDelivery++;
       else if (st === "DELIVERED") delivered++;
       else if (st === "FAILED") failed++;
@@ -189,7 +188,6 @@ export const DeliveryPage = () => {
     return {
       total,
       pending,
-      assigned,
       outForDelivery,
       delivered,
       failed,
@@ -201,7 +199,6 @@ export const DeliveryPage = () => {
   const statusTabs = [
     { label: "All Deliveries", value: "ALL", count: kpiMetrics.total },
     { label: "Pending", value: "PENDING", count: kpiMetrics.pending },
-    { label: "Assigned", value: "ASSIGNED", count: kpiMetrics.assigned },
     { label: "Out for Delivery", value: "OUT_FOR_DELIVERY", count: kpiMetrics.outForDelivery },
     { label: "Delivered", value: "DELIVERED", count: kpiMetrics.delivered },
     { label: "Failed", value: "FAILED", count: kpiMetrics.failed },
@@ -257,7 +254,7 @@ export const DeliveryPage = () => {
         `"${b.bookingDate ? new Date(b.bookingDate).toLocaleDateString("en-IN") : ""}"`,
         `"${b.customer?.shopName || b.customer?.name || ""}"`,
         `"${b.deliveryAddress || ""}"`,
-        `"${b.delivery?.deliveryBoy?.name || "Unassigned"}"`,
+        `"${b.delivery?.deliveryBoy?.name || "Counter Pickup"}"`,
         `"${b.delivery?.status || b.status || "PENDING"}"`,
         b.totalAmount || 0,
         b.paidAmount || 0,
@@ -283,20 +280,15 @@ export const DeliveryPage = () => {
   // 1. Assign Delivery Boy
   const handleAssignBoy = async (bookingId, deliveryBoyId) => {
     await assignDeliveryBoy(bookingId, deliveryBoyId);
-    showToast("Delivery boy assigned successfully");
+    showToast("Delivery boy assigned & parcel set out for delivery");
     loadDeliveryBookings();
   };
 
-  // 2. Start Delivery (Out for Delivery)
-  const handleStartDelivery = async (booking) => {
-    try {
-      await startDelivery(booking._id);
-      showToast(`LR #${booking.bookingNumber || booking._id} marked out for delivery`);
-      loadDeliveryBookings();
-    } catch (err) {
-      console.error("Start delivery error:", err);
-      showToast(err?.response?.data?.message || err.message || "Failed to start delivery", "error");
-    }
+  // 2. Counter Delivery
+  const handleCounterDeliver = async (bookingId, payload) => {
+    await counterDelivery(bookingId, payload);
+    showToast("Counter delivery completed successfully");
+    loadDeliveryBookings();
   };
 
   // 3. Mark Delivered
@@ -401,7 +393,7 @@ export const DeliveryPage = () => {
             )}
           </div>
           <p className="text-xs text-[#64748B] font-normal">
-            Manage parcel dispatch, delivery boy assignments, out-for-delivery tracking, and customer COD collections
+            Manage parcel dispatch, delivery boy assignments, counter pickup, and customer COD collections
           </p>
         </div>
 
@@ -500,7 +492,7 @@ export const DeliveryPage = () => {
         onToggleSelectAll={handleToggleSelectAll}
         onViewDetails={(b) => handleOpenModal("details", b)}
         onAssignBoy={(b) => handleOpenModal("assign", b)}
-        onStartDelivery={handleStartDelivery}
+        onCounterDeliver={(b) => handleOpenModal("counter", b)}
         onMarkDelivered={(b) => handleOpenModal("deliver", b)}
         onMarkFailed={(b) => handleOpenModal("fail", b)}
         onCollectPayment={(b) => handleOpenModal("collect", b)}
@@ -512,6 +504,13 @@ export const DeliveryPage = () => {
         onClose={handleCloseModal}
         booking={selectedBooking}
         onAssign={handleAssignBoy}
+      />
+
+      <CounterDeliveryModal
+        isOpen={activeModal === "counter"}
+        onClose={handleCloseModal}
+        booking={selectedBooking}
+        onCounterDeliver={handleCounterDeliver}
       />
 
       <MarkDeliveredModal

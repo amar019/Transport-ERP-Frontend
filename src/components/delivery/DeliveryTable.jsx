@@ -29,7 +29,7 @@ export default function DeliveryTable({
   onToggleSelectAll,
   onViewDetails,
   onAssignBoy,
-  onStartDelivery,
+  onCounterDeliver,
   onMarkDelivered,
   onMarkFailed,
   onCollectPayment,
@@ -65,7 +65,7 @@ export default function DeliveryTable({
       });
   };
 
-  // Helper for Delivery Boy Initial Badges
+  // Helpers
   const getInitials = (name) => {
     if (!name) return "DB";
     const parts = name.trim().split(" ");
@@ -83,13 +83,6 @@ export default function DeliveryTable({
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A] shadow-2xs">
             <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] animate-pulse" />
             Pending Delivery
-          </span>
-        );
-      case "ASSIGNED":
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] shadow-2xs">
-            <UserCheck className="w-3.5 h-3.5 text-[#2563EB]" />
-            Assigned
           </span>
         );
       case "OUT_FOR_DELIVERY":
@@ -198,13 +191,13 @@ export default function DeliveryTable({
   }
 
   return (
-    <div className="bg-white rounded-xl border border-[#E2E8F0] shadow-2xs overflow-hidden flex flex-col">
+    <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden flex flex-col w-full">
       {/* Enterprise Data Table */}
-      <div className="overflow-x-auto min-h-[420px]">
-        <table className="w-full text-left border-collapse text-xs">
+      <div className="overflow-x-auto min-h-[480px] w-full">
+        <table className="w-full text-left border-collapse text-xs select-none">
           <thead>
             <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B] font-bold uppercase tracking-wider text-[11px]">
-              <th className="py-3 px-3 w-8 text-center">
+              <th className="py-3.5 px-4 w-12 text-center">
                 <input
                   type="checkbox"
                   checked={isAllSelected}
@@ -213,13 +206,13 @@ export default function DeliveryTable({
                   title="Select All Deliveries"
                 />
               </th>
-              <th className="py-3 px-3">LR / Booking</th>
-              <th className="py-3 px-3">Customer</th>
-              <th className="py-3 px-3">Delivery Address</th>
-              <th className="py-3 px-3">Delivery Boy</th>
-              <th className="py-3 px-3">Delivery Status</th>
-              <th className="py-3 px-3">Payment</th>
-              <th className="py-3 px-3 text-right">Actions</th>
+              <th className="py-3.5 px-4 min-w-[130px]">LR / Booking</th>
+              <th className="py-3.5 px-4 min-w-[190px]">Customer</th>
+              <th className="py-3.5 px-4 min-w-[220px]">Delivery Address</th>
+              <th className="py-3.5 px-4 min-w-[170px]">Delivery Boy</th>
+              <th className="py-3.5 px-4 min-w-[150px]">Delivery Status</th>
+              <th className="py-3.5 px-4 min-w-[140px]">Payment</th>
+              <th className="py-3.5 px-4 text-right min-w-[190px]">Actions</th>
             </tr>
           </thead>
 
@@ -240,11 +233,12 @@ export default function DeliveryTable({
               return (
                 <tr
                   key={b._id || b.id}
-                  className={`transition-colors hover:bg-[#F8FAFC]/90 ${isSelected ? "bg-[#FFF7ED]/70" : ""
-                    }`}
+                  className={`transition-colors duration-150 hover:bg-[#F8FAFC]/90 ${
+                    isSelected ? "bg-[#FFF7ED]/70" : ""
+                  }`}
                 >
                   {/* Select Checkbox */}
-                  <td className="py-3 px-3 text-center">
+                  <td className="py-3.5 px-4 text-center">
                     <input
                       type="checkbox"
                       checked={isSelected}
@@ -254,7 +248,7 @@ export default function DeliveryTable({
                   </td>
 
                   {/* Column 1: LR Number & Date */}
-                  <td className="py-3 px-3 whitespace-nowrap">
+                  <td className="py-3.5 px-4 whitespace-nowrap">
                     <div className="flex items-center gap-1.5">
                       <span className="font-mono font-bold text-xs text-[#0F172A] tracking-tight">
                         #{b.bookingNumber || b._id?.slice(-6)}
@@ -267,7 +261,7 @@ export default function DeliveryTable({
                   </td>
 
                   {/* Column 2: Consignee / Customer Details */}
-                  <td className="py-3 px-3 max-w-[180px]">
+                  <td className="py-3.5 px-4 max-w-[220px]">
                     <div className="font-bold text-[#0F172A] truncate flex items-center gap-1.5" title={b.customer?.shopName || b.customer?.name}>
                       <Building2 className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
                       <span className="truncate">
@@ -288,7 +282,7 @@ export default function DeliveryTable({
                   </td>
 
                   {/* Column 3: Delivery Address */}
-                  <td className="py-3 px-3 max-w-[260px]">
+                  <td className="py-3.5 px-4 max-w-[280px]">
                     <div className="flex items-start gap-1.5">
                       <MapPin className="w-3.5 h-3.5 text-[#F97316] shrink-0 mt-0.5" />
                       <div className="font-medium text-[#0F172A] leading-normal text-xs line-clamp-2" title={b.deliveryAddress || b.customer?.address}>
@@ -298,7 +292,7 @@ export default function DeliveryTable({
                   </td>
 
                   {/* Column 4: Assigned Delivery Boy */}
-                  <td className="py-3 px-3 whitespace-nowrap">
+                  <td className="py-3.5 px-4 whitespace-nowrap">
                     {deliveryBoyName ? (
                       <div className="flex items-center gap-2">
                         <div className="w-7 h-7 rounded-full bg-[#EFF6FF] text-[#2563EB] font-bold text-[11px] flex items-center justify-center border border-[#BFDBFE] shrink-0">
@@ -320,7 +314,7 @@ export default function DeliveryTable({
                       <button
                         type="button"
                         onClick={() => onAssignBoy(b)}
-                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold text-[#D97706] bg-[#FFFBEB] hover:bg-[#FEF3C7] border border-[#FDE68A] transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold text-[#D97706] bg-[#FFFBEB] hover:bg-[#FEF3C7] border border-[#FDE68A] transition-colors cursor-pointer"
                         title="Click to assign delivery boy"
                       >
                         <UserPlus className="w-3 h-3 text-[#D97706]" />
@@ -330,12 +324,12 @@ export default function DeliveryTable({
                   </td>
 
                   {/* Column 5: Delivery Status Badge */}
-                  <td className="py-3 px-3 whitespace-nowrap">
+                  <td className="py-3.5 px-4 whitespace-nowrap">
                     {getStatusBadge(deliveryStatus)}
                   </td>
 
                   {/* Column 6: Financials & Payment Status */}
-                  <td className="py-3 px-3 whitespace-nowrap">
+                  <td className="py-3.5 px-4 whitespace-nowrap">
                     <div className="flex items-center gap-1">
                       {getPaymentBadge(b)}
                     </div>
@@ -350,12 +344,12 @@ export default function DeliveryTable({
                   </td>
 
                   {/* Column 7: Action Menu */}
-                  <td className="py-3 px-3 text-right whitespace-nowrap">
+                  <td className="py-3.5 px-4 text-right whitespace-nowrap">
                     <DeliveryActionMenu
                       booking={b}
                       onViewDetails={onViewDetails}
                       onAssignBoy={onAssignBoy}
-                      onStartDelivery={onStartDelivery}
+                      onCounterDeliver={onCounterDeliver}
                       onMarkDelivered={onMarkDelivered}
                       onMarkFailed={onMarkFailed}
                       onCollectPayment={onCollectPayment}
@@ -369,7 +363,7 @@ export default function DeliveryTable({
       </div>
 
       {/* Senior UI/UX Pagination Footer */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-5 py-3.5 border-t border-[#E2E8F0] bg-[#F8FAFC] text-xs text-[#64748B] select-none">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-[#E2E8F0] bg-[#F8FAFC] text-xs text-[#64748B] select-none">
         {/* Left: Summary & Items Per Page Selector */}
         <div className="flex items-center gap-4">
           <div className="font-medium text-[#475569]">
@@ -386,7 +380,7 @@ export default function DeliveryTable({
                 setItemsPerPage(Number(e.target.value));
                 setCurrentPage(1);
               }}
-              className="bg-white border border-[#E2E8F0] rounded-md px-2 py-1 text-xs font-semibold text-[#0F172A] focus:ring-1 focus:ring-[#F97316] outline-none cursor-pointer"
+              className="bg-white border border-[#E2E8F0] rounded-md px-2.5 py-1 text-xs font-semibold text-[#0F172A] focus:ring-1 focus:ring-[#F97316] outline-none cursor-pointer"
             >
               <option value={10}>10</option>
               <option value={25}>25</option>
@@ -398,7 +392,7 @@ export default function DeliveryTable({
 
         {/* Right: Page Navigation Controls */}
         {totalPages > 1 && (
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             {/* First Page */}
             <button
               type="button"
@@ -422,7 +416,7 @@ export default function DeliveryTable({
             </button>
 
             {/* Page Indicator Badge */}
-            <div className="px-3 py-1 text-xs font-semibold text-[#0F172A] bg-white rounded-lg border border-[#E2E8F0]">
+            <div className="px-3.5 py-1 text-xs font-semibold text-[#0F172A] bg-white rounded-lg border border-[#E2E8F0]">
               Page <span className="text-[#F97316]">{validCurrentPage}</span> of {totalPages}
             </div>
 
@@ -453,3 +447,4 @@ export default function DeliveryTable({
     </div>
   );
 }
+

@@ -34,12 +34,13 @@ export const assignDeliveryBoy = async (id, deliveryBoyId) => {
 };
 
 /**
- * Start delivery (mark out for delivery)
- * PATCH /delivery/bookings/:id/out-for-delivery
+ * Counter delivery (direct pickup & collection at branch)
+ * POST /delivery/bookings/:id/counter-delivery
  * @param {string} id
+ * @param {Object} payload - { amount, paymentMode, remarks }
  */
-export const startDelivery = async (id) => {
-  const response = await api.patch(`/delivery/bookings/${id}/out-for-delivery`);
+export const counterDelivery = async (id, payload = {}) => {
+  const response = await api.post(`/delivery/bookings/${id}/counter-delivery`, payload);
   return response.data;
 };
 
@@ -80,7 +81,7 @@ export default {
   getDeliveryBookings,
   getDeliveryBookingById,
   assignDeliveryBoy,
-  startDelivery,
+  counterDelivery,
   markDelivered,
   markDeliveryFailed,
   collectCustomerPayment,

@@ -20,13 +20,19 @@ import {
   CreditCard,
   Calendar,
   Clock,
+  CheckSquare,
+  Square,
+  DollarSign,
+  Wallet,
 } from "lucide-react";
 import { getCustomers } from "@/services/customer.service";
 import {
   getCustomerLedger,
   getCustomerBalance,
+  getCustomerOutstandingBookings,
 } from "@/services/customerLedger.service";
 import CustomerLedgerSelect from "@/components/finance/CustomerLedgerSelect";
+import CollectCustomerOutstandingModal from "@/components/finance/CollectCustomerOutstandingModal";
 import { ROUTES } from "@/constants/paths";
 
 export default function CustomerLedgerPage() {
@@ -38,10 +44,17 @@ export default function CustomerLedgerPage() {
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [ledgerEntries, setLedgerEntries] = useState([]);
   const [balanceInfo, setBalanceInfo] = useState({ balance: 0 });
+  const [outstandingData, setOutstandingData] = useState({
+    bookings: [],
+    totalOutstanding: 0,
+  });
+  const [selectedBookingIds, setSelectedBookingIds] = useState([]);
+  const [activeTab, setActiveTab] = useState("OUTSTANDING"); // "OUTSTANDING" | "STATEMENT"
   const [loadingCustomers, setLoadingCustomers] = useState(false);
   const [loadingLedger, setLoadingLedger] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("ALL");
+  const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false);
   const [toast, setToast] = useState(null);
 
   const showToast = useCallback((msg, type = "success") => {
@@ -71,26 +84,41 @@ export default function CustomerLedgerPage() {
     fetchCustomerList();
   }, [fetchCustomerList]);
 
-  // Fetch selected customer ledger & balance
+  // Fetch selected customer ledger, balance, and outstanding bookings
   const fetchLedgerData = useCallback(async () => {
     if (!selectedCustomerId) {
       setLedgerEntries([]);
       setBalanceInfo({ balance: 0 });
+      setOutstandingData({ bookings: [], totalOutstanding: 0 });
+      setSelectedBookingIds([]);
       return;
     }
     setLoadingLedger(true);
     try {
-      const [ledgerRes, balanceRes] = await Promise.all([
+      const [ledgerRes, balanceRes, outstandingRes] = await Promise.all([
         getCustomerLedger(selectedCustomerId),
         getCustomerBalance(selectedCustomerId),
+        getCustomerOutstandingBookings(selectedCustomerId),
       ]);
+
       setLedgerEntries(Array.isArray(ledgerRes.data) ? ledgerRes.data : []);
+
       if (balanceRes.data) {
         setBalanceInfo(balanceRes.data);
       }
+
+      if (outstandingRes.data) {
+        setOutstandingData({
+          bookings: Array.isArray(outstandingRes.data.bookings)
+            ? outstandingRes.data.bookings
+            : [],
+          totalOutstanding: Number(outstandingRes.data.totalOutstanding || 0),
+        });
+      }
+      setSelectedBookingIds([]);
     } catch (err) {
       console.error("Error fetching customer ledger:", err);
-      showToast("Failed to load customer ledger.", "error");
+      showToast("Failed to load customer ledger & outstanding data.", "error");
     } finally {
       setLoadingLedger(false);
     }
@@ -103,6 +131,39 @@ export default function CustomerLedgerPage() {
   const selectedCustomerObj = useMemo(() => {
     return customers.find((c) => (c._id || c.id) === selectedCustomerId);
   }, [customers, selectedCustomerId]);
+
+  // Handle Outstanding Booking Checkbox Selection
+  const handleToggleSelectBooking = (bookingId) => {
+    setSelectedBookingIds((prev) =>
+      prev.includes(bookingId)
+        ? prev.filter((id) => id !== bookingId)
+        : [...prev, bookingId]
+    );
+  };
+
+  const handleSelectAllOutstanding = () => {
+    if (
+      selectedBookingIds.length === outstandingData.bookings.length &&
+      outstandingData.bookings.length > 0
+    ) {
+      setSelectedBookingIds([]);
+    } else {
+      setSelectedBookingIds(outstandingData.bookings.map((b) => b._id));
+    }
+  };
+
+  const selectedBookingsList = useMemo(() => {
+    return outstandingData.bookings.filter((b) =>
+      selectedBookingIds.includes(b._id)
+    );
+  }, [outstandingData.bookings, selectedBookingIds]);
+
+  const selectedTotalAmount = useMemo(() => {
+    return selectedBookingsList.reduce(
+      (sum, b) => sum + Number(b.remainingAmount || 0),
+      0
+    );
+  }, [selectedBookingsList]);
 
   // Calculate summary totals
   const totals = useMemo(() => {
@@ -119,7 +180,7 @@ export default function CustomerLedgerPage() {
     };
   }, [ledgerEntries, balanceInfo]);
 
-  // Filtered entries
+  // Filtered statement entries
   const filteredLedger = useMemo(() => {
     return ledgerEntries.filter((entry) => {
       const matchesType = typeFilter === "ALL" || entry.type === typeFilter;
@@ -130,6 +191,15 @@ export default function CustomerLedgerPage() {
       return matchesType && matchesSearch;
     });
   }, [ledgerEntries, typeFilter, searchQuery]);
+
+  // Filtered outstanding bookings
+  const filteredOutstandingBookings = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return outstandingData.bookings;
+    return outstandingData.bookings.filter((b) =>
+      (b.bookingNumber || "").toLowerCase().includes(q)
+    );
+  }, [outstandingData.bookings, searchQuery]);
 
   const formatCurrency = (val) => {
     return new Intl.NumberFormat("en-IN", {
@@ -180,7 +250,7 @@ export default function CustomerLedgerPage() {
             Customer Ledger Access Restricted
           </h2>
           <p className="text-xs text-[#64748B] max-w-lg mx-auto leading-relaxed">
-            Customer ledger statements are available exclusively for <strong className="text-[#0F172A]">DELIVERY</strong> branches. Your current branch ({user?.branch?.name || "Logged-in Branch"}) is registered as a <strong className="text-[#D97706]">BOOKING</strong> branch.
+            Customer ledger statements and outstanding collection are available exclusively for <strong className="text-[#0F172A]">DELIVERY</strong> branches. Your current branch ({user?.branch?.name || "Logged-in Branch"}) is registered as a <strong className="text-[#D97706]">BOOKING</strong> branch.
           </p>
         </div>
         <div className="flex items-center justify-center gap-3 pt-2">
@@ -232,10 +302,10 @@ export default function CustomerLedgerPage() {
             <span className="font-semibold text-[#0F172A]">Customer Ledger</span>
           </div>
           <h1 className="text-[28px] font-bold text-[#0F172A] tracking-tight leading-tight m-0 p-0">
-            Customer Ledger
+            Customer Ledger & Outstanding Collection
           </h1>
           <p className="text-xs text-[#64748B] font-normal">
-            View customer billing debits, payment credits, and outstanding balances
+            View customer billing debits, outstanding TO_PAY bills, collect payments, and manage ledger entries
           </p>
         </div>
 
@@ -265,22 +335,22 @@ export default function CustomerLedgerPage() {
 
       {/* STATISTICS CARDS SECTION */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Card 1: Outstanding Balance Due */}
+        {/* Card 1: Total Outstanding Balance */}
         <div className="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-[#64748B]">
-              Outstanding Balance Due
+              Total Outstanding Due
             </span>
-            <div className="w-8 h-8 rounded-lg bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-orange-50 text-orange-600 border border-orange-200 flex items-center justify-center shrink-0">
               <BookOpen className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <span className="text-2xl font-bold text-[#0F172A] tracking-tight font-mono block">
-              {formatCurrency(totals.balance)}
+            <span className="text-2xl font-bold text-orange-600 tracking-tight font-mono block">
+              {formatCurrency(outstandingData.totalOutstanding)}
             </span>
             <span className="text-xs text-[#64748B] font-medium block mt-0.5 truncate max-w-[220px]">
-              {selectedCustomerObj?.shopName || selectedCustomerObj?.name || "Select Customer"}
+              {selectedCustomerObj?.shopName || selectedCustomerObj?.ownerName || selectedCustomerObj?.name || "Select Customer"}
             </span>
           </div>
         </div>
@@ -326,166 +396,377 @@ export default function CustomerLedgerPage() {
         </div>
       </div>
 
-      {/* FILTER TOOLBAR SECTION */}
-      <div className="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3">
-        {/* Search */}
-        <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-2.5 text-[#94A3B8]" />
-          <input
-            type="text"
-            placeholder="Search bilty #, remarks..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 text-xs bg-[#F8FAFC]/50 hover:bg-white border border-[#E2E8F0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20 focus:border-[#2563EB] font-medium text-[#0F172A]"
-          />
-        </div>
-
-        {/* Filter Segment / Dropdown */}
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <span className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">
-            Type:
-          </span>
-          <select
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-            className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-[#E2E8F0] bg-white text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20 focus:border-[#2563EB] cursor-pointer"
+      {/* TABS NAVIGATION & SEARCH */}
+      <div className="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col md:flex-row items-center justify-between gap-4">
+        {/* Tab Buttons */}
+        <div className="flex items-center bg-slate-100/80 p-1 rounded-xl gap-1 w-full md:w-auto">
+          <button
+            type="button"
+            onClick={() => setActiveTab("OUTSTANDING")}
+            className={`flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              activeTab === "OUTSTANDING"
+                ? "bg-white text-orange-600 shadow-2xs"
+                : "text-slate-600 hover:text-slate-900"
+            }`}
           >
-            <option value="ALL">All Statement Entries</option>
-            <option value="BOOKING_DEBIT">Invoiced Debit</option>
-            <option value="PAYMENT_CREDIT">Payment Credit</option>
-            <option value="ADJUSTMENT">Adjustment</option>
-          </select>
+            <Receipt className="w-4 h-4" />
+            <span>Outstanding Bills</span>
+            <span
+              className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${
+                activeTab === "OUTSTANDING"
+                  ? "bg-orange-100 text-orange-700"
+                  : "bg-slate-200 text-slate-700"
+              }`}
+            >
+              {outstandingData.bookings.length}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab("STATEMENT")}
+            className={`flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              activeTab === "STATEMENT"
+                ? "bg-white text-blue-600 shadow-2xs"
+                : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            <span>Statement History</span>
+            <span
+              className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${
+                activeTab === "STATEMENT"
+                  ? "bg-blue-100 text-blue-700"
+                  : "bg-slate-200 text-slate-700"
+              }`}
+            >
+              {ledgerEntries.length}
+            </span>
+          </button>
+        </div>
+
+        {/* Right Search & Filter */}
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="relative w-full md:w-72">
+            <Search className="w-4 h-4 absolute left-3 top-2.5 text-[#94A3B8]" />
+            <input
+              type="text"
+              placeholder={
+                activeTab === "OUTSTANDING"
+                  ? "Search bilty number..."
+                  : "Search bilty #, remarks..."
+              }
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-3 py-1.5 text-xs bg-[#F8FAFC]/50 hover:bg-white border border-[#E2E8F0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20 focus:border-[#2563EB] font-medium text-[#0F172A]"
+            />
+          </div>
+
+          {activeTab === "STATEMENT" && (
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-[#E2E8F0] bg-white text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20 focus:border-[#2563EB] cursor-pointer"
+            >
+              <option value="ALL">All Entries</option>
+              <option value="BOOKING_DEBIT">Invoiced Debit</option>
+              <option value="PAYMENT_CREDIT">Payment Credit</option>
+              <option value="ADJUSTMENT">Adjustment</option>
+            </select>
+          )}
         </div>
       </div>
 
-      {/* MAIN DATA TABLE SECTION */}
-      <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center border border-[#BFDBFE]">
-              <FileText className="w-4 h-4" />
+      {/* OUTSTANDING BILLS TAB CONTENT */}
+      {activeTab === "OUTSTANDING" && (
+        <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden space-y-0">
+          {/* Action Header & Selection Summary */}
+          <div className="px-5 py-3.5 border-b border-[#E2E8F0] bg-[#F8FAFC] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handleSelectAllOutstanding}
+                disabled={outstandingData.bookings.length === 0}
+                className="flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-slate-900 cursor-pointer disabled:opacity-50"
+              >
+                {selectedBookingIds.length > 0 &&
+                selectedBookingIds.length === outstandingData.bookings.length ? (
+                  <CheckSquare className="w-4 h-4 text-orange-600" />
+                ) : (
+                  <Square className="w-4 h-4 text-slate-400" />
+                )}
+                <span>Select All ({outstandingData.bookings.length})</span>
+              </button>
+
+              {selectedBookingIds.length > 0 && (
+                <span className="text-xs font-semibold text-slate-500 border-l border-slate-200 pl-3">
+                  Selected: <strong className="text-slate-800 font-mono">{selectedBookingIds.length} Bills</strong>
+                </span>
+              )}
             </div>
-            <h2 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider m-0">
-              Customer Statement History
-            </h2>
+
+            {/* Selected Total & Collect Payment Button */}
+            <div className="flex items-center gap-3">
+              {selectedBookingIds.length > 0 && (
+                <div className="text-right">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 block">
+                    Selected Outstanding
+                  </span>
+                  <span className="text-sm font-bold text-orange-600 font-mono">
+                    {formatCurrency(selectedTotalAmount)}
+                  </span>
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={() => setIsCollectionModalOpen(true)}
+                disabled={selectedBookingIds.length === 0}
+                className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs font-bold shadow-md shadow-orange-500/20 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <Wallet className="w-4 h-4" />
+                <span>Collect Payment {selectedBookingIds.length > 0 ? `(${formatCurrency(selectedTotalAmount)})` : ""}</span>
+              </button>
+            </div>
           </div>
-          <span className="bg-[#EFF6FF] text-[#2563EB] px-3 py-1 rounded-full text-xs font-bold border border-[#BFDBFE]">
-            {filteredLedger.length} {filteredLedger.length === 1 ? "Record" : "Records"}
-          </span>
+
+          {/* Table */}
+          {loadingLedger ? (
+            <div className="p-16 text-center text-[#64748B]">
+              <RefreshCw className="w-7 h-7 animate-spin mx-auto text-orange-600 mb-3" />
+              <p className="text-xs font-semibold text-[#0F172A]">Fetching customer outstanding bookings...</p>
+            </div>
+          ) : filteredOutstandingBookings.length === 0 ? (
+            <div className="p-16 text-center">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3 border border-emerald-200">
+                <CheckCircle2 className="w-6 h-6" />
+              </div>
+              <p className="text-sm font-bold text-[#0F172A]">No Outstanding Bills</p>
+              <p className="text-xs text-[#64748B] mt-1 max-w-sm mx-auto leading-relaxed">
+                This customer has no pending TO_PAY bills at this branch. All consignments are fully settled!
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs text-[#0F172A]">
+                <thead className="bg-[#F1F5F9]/80 text-[#475569] font-bold text-[11px] uppercase tracking-wider border-b border-[#E2E8F0]">
+                  <tr>
+                    <th className="py-3.5 px-4 w-10 text-center font-bold">Select</th>
+                    <th className="py-3.5 px-4 font-bold">Bilty Number</th>
+                    <th className="py-3.5 px-4 font-bold">Booking Date</th>
+                    <th className="py-3.5 px-4 text-right font-bold">Bill Total</th>
+                    <th className="py-3.5 px-4 text-right font-bold">Paid Amount</th>
+                    <th className="py-3.5 px-4 text-right font-bold">Outstanding Due</th>
+                    <th className="py-3.5 px-4 text-center font-bold">Payment Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#E2E8F0]">
+                  {filteredOutstandingBookings.map((b) => {
+                    const isSelected = selectedBookingIds.includes(b._id);
+                    const bDate = new Date(b.bookingDate);
+                    const dateStr = bDate.toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    });
+
+                    return (
+                      <tr
+                        key={b._id}
+                        onClick={() => handleToggleSelectBooking(b._id)}
+                        className={`hover:bg-[#F8FAFC] transition-colors cursor-pointer ${
+                          isSelected ? "bg-orange-50/40" : ""
+                        }`}
+                      >
+                        <td className="py-3.5 px-4 text-center" onClick={(e) => e.stopPropagation()}>
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => handleToggleSelectBooking(b._id)}
+                            className="w-4 h-4 text-orange-600 rounded border-slate-300 focus:ring-orange-500 cursor-pointer"
+                          />
+                        </td>
+                        <td className="py-3.5 px-4 font-mono font-bold text-[#2563EB]">
+                          #{b.bookingNumber}
+                        </td>
+                        <td className="py-3.5 px-4 text-slate-700 font-medium">
+                          {dateStr}
+                        </td>
+                        <td className="py-3.5 px-4 text-right font-mono font-semibold text-slate-800">
+                          {formatCurrency(b.totalAmount)}
+                        </td>
+                        <td className="py-3.5 px-4 text-right font-mono text-emerald-600 font-semibold">
+                          {formatCurrency(b.paidAmount)}
+                        </td>
+                        <td className="py-3.5 px-4 text-right font-mono font-bold text-orange-600">
+                          <span className="bg-orange-50 px-2 py-0.5 rounded border border-orange-200">
+                            {formatCurrency(b.remainingAmount)}
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-4 text-center">
+                          <span
+                            className={`inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider ${
+                              b.paymentStatus === "PARTIAL"
+                                ? "bg-amber-100 text-amber-800 border border-amber-200"
+                                : "bg-rose-100 text-rose-800 border border-rose-200"
+                            }`}
+                          >
+                            {b.paymentStatus || "PENDING"}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
+      )}
 
-        {loadingLedger ? (
-          <div className="p-16 text-center text-[#64748B]">
-            <RefreshCw className="w-7 h-7 animate-spin mx-auto text-[#2563EB] mb-3" />
-            <p className="text-xs font-semibold text-[#0F172A]">Fetching customer ledger statement...</p>
-            <p className="text-[11px] text-[#94A3B8] mt-0.5">Please wait while statement entries are calculated.</p>
-          </div>
-        ) : filteredLedger.length === 0 ? (
-          <div className="p-16 text-center">
-            <div className="w-12 h-12 rounded-2xl bg-[#F1F5F9] text-[#94A3B8] flex items-center justify-center mx-auto mb-3 border border-[#E2E8F0]">
-              <BookOpen className="w-6 h-6 text-[#94A3B8]" />
+      {/* STATEMENT HISTORY TAB CONTENT */}
+      {activeTab === "STATEMENT" && (
+        <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden">
+          <div className="px-5 py-4 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center border border-[#BFDBFE]">
+                <FileText className="w-4 h-4" />
+              </div>
+              <h2 className="text-xs font-bold text-[#0F172A] uppercase tracking-wider m-0">
+                Customer Ledger Statement
+              </h2>
             </div>
-            <p className="text-sm font-bold text-[#0F172A]">No Statement Records Found</p>
-            <p className="text-xs text-[#64748B] mt-1 max-w-sm mx-auto leading-relaxed">
-              Transactions will automatically populate here when bookings or payments are processed for this customer.
-            </p>
+            <span className="bg-[#EFF6FF] text-[#2563EB] px-3 py-1 rounded-full text-xs font-bold border border-[#BFDBFE]">
+              {filteredLedger.length} {filteredLedger.length === 1 ? "Record" : "Records"}
+            </span>
           </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-[#0F172A]">
-              <thead className="bg-[#F1F5F9]/80 text-[#475569] font-bold text-[11px] uppercase tracking-wider border-b border-[#E2E8F0]">
-                <tr>
-                  <th className="py-3.5 px-4 font-bold">Date & Time</th>
-                  <th className="py-3.5 px-4 font-bold">Entry Type</th>
-                  <th className="py-3.5 px-4 font-bold">Linked Ref</th>
-                  <th className="py-3.5 px-4 text-right font-bold">Debit (Invoiced)</th>
-                  <th className="py-3.5 px-4 text-right font-bold">Credit (Paid)</th>
-                  <th className="py-3.5 px-4 text-right font-bold">Running Balance</th>
-                  <th className="py-3.5 px-4 font-bold">Remarks</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#E2E8F0]">
-                {filteredLedger.map((item) => {
-                  const itemDate = new Date(item.createdAt);
-                  const dateStr = itemDate.toLocaleDateString("en-IN", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  });
-                  const timeStr = itemDate.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  });
 
-                  return (
-                    <tr
-                      key={item._id}
-                      className="hover:bg-[#F8FAFC] transition-colors group"
-                    >
-                      <td className="py-3.5 px-4 whitespace-nowrap">
-                        <div className="flex flex-col">
-                          <span className="font-bold text-[#0F172A] text-xs">
-                            {dateStr}
+          {loadingLedger ? (
+            <div className="p-16 text-center text-[#64748B]">
+              <RefreshCw className="w-7 h-7 animate-spin mx-auto text-[#2563EB] mb-3" />
+              <p className="text-xs font-semibold text-[#0F172A]">Fetching customer ledger statement...</p>
+            </div>
+          ) : filteredLedger.length === 0 ? (
+            <div className="p-16 text-center">
+              <div className="w-12 h-12 rounded-2xl bg-[#F1F5F9] text-[#94A3B8] flex items-center justify-center mx-auto mb-3 border border-[#E2E8F0]">
+                <BookOpen className="w-6 h-6 text-[#94A3B8]" />
+              </div>
+              <p className="text-sm font-bold text-[#0F172A]">No Statement Records Found</p>
+              <p className="text-xs text-[#64748B] mt-1 max-w-sm mx-auto leading-relaxed">
+                Transactions will automatically populate here when bookings or payments are processed for this customer.
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs text-[#0F172A]">
+                <thead className="bg-[#F1F5F9]/80 text-[#475569] font-bold text-[11px] uppercase tracking-wider border-b border-[#E2E8F0]">
+                  <tr>
+                    <th className="py-3.5 px-4 font-bold">Date & Time</th>
+                    <th className="py-3.5 px-4 font-bold">Entry Type</th>
+                    <th className="py-3.5 px-4 font-bold">Linked Ref</th>
+                    <th className="py-3.5 px-4 text-right font-bold">Debit (Invoiced)</th>
+                    <th className="py-3.5 px-4 text-right font-bold">Credit (Paid)</th>
+                    <th className="py-3.5 px-4 text-right font-bold">Running Balance</th>
+                    <th className="py-3.5 px-4 font-bold">Remarks</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#E2E8F0]">
+                  {filteredLedger.map((item) => {
+                    const itemDate = new Date(item.createdAt);
+                    const dateStr = itemDate.toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    });
+                    const timeStr = itemDate.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    });
+
+                    return (
+                      <tr
+                        key={item._id}
+                        className="hover:bg-[#F8FAFC] transition-colors group"
+                      >
+                        <td className="py-3.5 px-4 whitespace-nowrap">
+                          <div className="flex flex-col">
+                            <span className="font-bold text-[#0F172A] text-xs">
+                              {dateStr}
+                            </span>
+                            <span className="text-[11px] text-[#94A3B8] font-mono font-medium">
+                              {timeStr}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="py-3.5 px-4">{getTypeBadge(item.type)}</td>
+                        <td className="py-3.5 px-4 whitespace-nowrap">
+                          {item.booking?.bookingNumber ? (
+                            <span className="inline-flex items-center gap-1.5 text-[#2563EB] bg-[#EFF6FF] px-2.5 py-1 rounded-lg text-xs font-mono font-bold border border-[#BFDBFE]">
+                              <Receipt className="w-3.5 h-3.5 text-[#2563EB]" />
+                              Bilty: #{item.booking.bookingNumber}
+                            </span>
+                          ) : item.transaction ? (
+                            <span className="inline-flex items-center gap-1.5 text-[#059669] bg-[#ECFDF5] px-2.5 py-1 rounded-lg text-xs font-mono font-bold border border-[#A7F3D0]">
+                              <CreditCard className="w-3.5 h-3.5 text-[#059669]" />
+                              Txn: #{item.transaction._id?.substring(0, 8)}
+                            </span>
+                          ) : (
+                            <span className="text-[#94A3B8] text-xs font-medium">Direct Entry</span>
+                          )}
+                        </td>
+                        <td className="py-3.5 px-4 text-right font-mono font-bold text-[#DC2626] whitespace-nowrap">
+                          {item.debit > 0 ? (
+                            <span className="bg-[#FEF2F2] px-2 py-0.5 rounded border border-[#FECACA]">
+                              +{formatCurrency(item.debit)}
+                            </span>
+                          ) : (
+                            <span className="text-slate-300">-</span>
+                          )}
+                        </td>
+                        <td className="py-3.5 px-4 text-right font-mono font-bold text-[#059669] whitespace-nowrap">
+                          {item.credit > 0 ? (
+                            <span className="bg-[#ECFDF5] px-2 py-0.5 rounded border border-[#A7F3D0]">
+                              -{formatCurrency(item.credit)}
+                            </span>
+                          ) : (
+                            <span className="text-slate-300">-</span>
+                          )}
+                        </td>
+                        <td className="py-3.5 px-4 text-right font-mono font-bold text-[#0F172A] whitespace-nowrap">
+                          <span className="bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200 text-xs">
+                            {formatCurrency(item.balance || 0)}
                           </span>
-                          <span className="text-[11px] text-[#94A3B8] font-mono font-medium">
-                            {timeStr}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-3.5 px-4">{getTypeBadge(item.type)}</td>
-                      <td className="py-3.5 px-4 whitespace-nowrap">
-                        {item.booking?.bookingNumber ? (
-                          <span className="inline-flex items-center gap-1.5 text-[#2563EB] bg-[#EFF6FF] px-2.5 py-1 rounded-lg text-xs font-mono font-bold border border-[#BFDBFE]">
-                            <Receipt className="w-3.5 h-3.5 text-[#2563EB]" />
-                            Bilty: #{item.booking.bookingNumber}
-                          </span>
-                        ) : item.transaction ? (
-                          <span className="inline-flex items-center gap-1.5 text-[#059669] bg-[#ECFDF5] px-2.5 py-1 rounded-lg text-xs font-mono font-bold border border-[#A7F3D0]">
-                            <CreditCard className="w-3.5 h-3.5 text-[#059669]" />
-                            Txn: #{item.transaction._id?.substring(0, 8)}
-                          </span>
-                        ) : (
-                          <span className="text-[#94A3B8] text-xs font-medium">Direct Entry</span>
-                        )}
-                      </td>
-                      <td className="py-3.5 px-4 text-right font-mono font-bold text-[#DC2626] whitespace-nowrap">
-                        {item.debit > 0 ? (
-                          <span className="bg-[#FEF2F2] px-2 py-0.5 rounded border border-[#FECACA]">
-                            +{formatCurrency(item.debit)}
-                          </span>
-                        ) : (
-                          <span className="text-slate-300">-</span>
-                        )}
-                      </td>
-                      <td className="py-3.5 px-4 text-right font-mono font-bold text-[#059669] whitespace-nowrap">
-                        {item.credit > 0 ? (
-                          <span className="bg-[#ECFDF5] px-2 py-0.5 rounded border border-[#A7F3D0]">
-                            -{formatCurrency(item.credit)}
-                          </span>
-                        ) : (
-                          <span className="text-slate-300">-</span>
-                        )}
-                      </td>
-                      <td className="py-3.5 px-4 text-right font-mono font-bold text-[#0F172A] whitespace-nowrap">
-                        <span className="bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200 text-xs">
-                          {formatCurrency(item.balance || 0)}
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-4 text-xs text-[#64748B] max-w-xs truncate">
-                        {item.remarks ? (
-                          <span title={item.remarks}>{item.remarks}</span>
-                        ) : (
-                          <span className="text-slate-300">--</span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+                        </td>
+                        <td className="py-3.5 px-4 text-xs text-[#64748B] max-w-xs truncate">
+                          {item.remarks ? (
+                            <span title={item.remarks}>{item.remarks}</span>
+                          ) : (
+                            <span className="text-slate-300">--</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* PAYMENT COLLECTION MODAL */}
+      <CollectCustomerOutstandingModal
+        isOpen={isCollectionModalOpen}
+        onClose={() => setIsCollectionModalOpen(false)}
+        customer={selectedCustomerObj}
+        selectedBookings={selectedBookingsList}
+        onSuccess={() => {
+          showToast(
+            `Payment collection completed successfully for ${selectedBookingsList.length} bill(s)!`
+          );
+          fetchLedgerData();
+        }}
+      />
     </div>
   );
 }

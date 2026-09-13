@@ -35,7 +35,6 @@ export default function DeliveryDetailsModal({ isOpen, onClose, booking }) {
 
   const statusConfig = {
     PENDING: { label: "Pending Dispatch", bg: "bg-[#FFFBEB] text-[#D97706] border-[#FDE68A]" },
-    ASSIGNED: { label: "Assigned", bg: "bg-[#EFF6FF] text-[#2563EB] border-[#BFDBFE]" },
     OUT_FOR_DELIVERY: { label: "Out for Delivery", bg: "bg-[#ECFEFF] text-[#0891B2] border-[#CFFAFE]" },
     DELIVERED: { label: "Delivered", bg: "bg-[#ECFDF5] text-[#059669] border-[#A7F3D0]" },
     FAILED: { label: "Delivery Failed", bg: "bg-[#FEF2F2] text-[#DC2626] border-[#FECACA]" },
