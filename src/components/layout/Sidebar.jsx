@@ -30,6 +30,13 @@ export const Sidebar = ({
         ) {
           return branchType === "DELIVERY";
         }
+        if (
+          item.path === ROUTES.FINANCE.PAYMENTS ||
+          item.path === ROUTES.MASTERS.BRANCHES ||
+          item.path == ROUTES.MASTERS.VEHICLES
+        ) {
+          return branchType !== "DELIVERY";
+        }
         return true;
       }),
     })).filter((group) => group.items.length > 0);

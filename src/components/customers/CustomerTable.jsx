@@ -7,6 +7,8 @@ import {
   activateCustomerThunk,
 } from "@/store/slices/customerSlice";
 import { confirmAction } from "@/utils/swal";
+import ShareCustomerLinkModal from "./ShareCustomerLinkModal";
+import BulkImportCustomerModal from "./BulkImportCustomerModal";
 import {
   Users,
   UserCheck,
@@ -25,6 +27,8 @@ import {
   CheckCircle2,
   AlertCircle,
   ChevronRight,
+  QrCode,
+  Upload,
 } from "lucide-react";
 
 export default function CustomerTable() {
@@ -38,6 +42,10 @@ export default function CustomerTable() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL"); // ALL | ACTIVE | INACTIVE
   const [toastMessage, setToastMessage] = useState(null);
+
+  // Quick Onboarding Modal States
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchCustomers());
@@ -185,6 +193,28 @@ export default function CustomerTable() {
 
         {/* Right Toolbar Actions */}
         <div className="flex items-center flex-wrap gap-2 shrink-0 self-start sm:self-auto">
+          {/* Share QR Code / Registration Link */}
+          <button
+            type="button"
+            onClick={() => setIsShareModalOpen(true)}
+            className="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-[#F8FAFC] text-[#0F172A] font-bold px-3 py-2 rounded-lg border border-[#CBD5E1] shadow-2xs transition-colors text-xs select-none cursor-pointer"
+            title="Share Registration Link & Printable QR Code"
+          >
+            <QrCode className="w-4 h-4 text-[#EA580C]" />
+            <span className="hidden sm:inline">QR / Self-Register Link</span>
+          </button>
+
+          {/* Bulk CSV Import Button */}
+          <button
+            type="button"
+            onClick={() => setIsBulkModalOpen(true)}
+            className="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-[#F8FAFC] text-[#2563EB] font-bold px-3 py-2 rounded-lg border border-[#93C5FD] shadow-2xs transition-colors text-xs select-none cursor-pointer"
+            title="Import 1,000+ Customers via CSV"
+          >
+            <Upload className="w-4 h-4" />
+            <span className="hidden sm:inline">Bulk CSV Import</span>
+          </button>
+
           {/* Refresh Button */}
           <button
             type="button"
@@ -558,6 +588,19 @@ export default function CustomerTable() {
           <span>Transport ERP Master Directory</span>
         </div>
       </div>
+
+      {/* Share Registration Link & QR Code Modal */}
+      <ShareCustomerLinkModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+      />
+
+      {/* Bulk CSV Customer Import Modal */}
+      <BulkImportCustomerModal
+        isOpen={isBulkModalOpen}
+        onClose={() => setIsBulkModalOpen(false)}
+        onSuccess={() => dispatch(fetchCustomers())}
+      />
     </div>
   );
 }

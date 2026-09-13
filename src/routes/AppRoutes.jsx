@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import Layout from "@/components/layout/Layout";
@@ -28,12 +29,25 @@ import CustomerLedgerPage from "@/pages/finance/CustomerLedgerPage";
 import DeliveryBoyLedgerPage from "@/pages/finance/DeliveryBoyLedgerPage";
 import PaymentTransactionsPage from "@/pages/finance/PaymentTransactionsPage";
 import PlaceholderPage from "@/pages/placeholder/PlaceholderPage";
+import PublicCustomerRegisterPage from "@/pages/public/PublicCustomerRegisterPage";
+
+// Dynamic Handler for /customers/add (Public form for unauthenticated customers, Full form for logged-in staff)
+const CustomerAddRouteHandler = () => {
+  const { isAuthenticated, token } = useSelector((state) => state.auth);
+  if (!isAuthenticated && !token) {
+    return <PublicCustomerRegisterPage />;
+  }
+  return <CustomerFormPage />;
+};
 
 export const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public Authentication Route */}
+      {/* Public Authentication & Registration Routes */}
       <Route path={ROUTES.AUTH.LOGIN} element={<LoginPage />} />
+      <Route path="/register-customer" element={<PublicCustomerRegisterPage />} />
+      <Route path="/public/register-customer" element={<PublicCustomerRegisterPage />} />
+      <Route path="/customers/add" element={<CustomerAddRouteHandler />} />
 
       {/* Protected Application Routes (with Sidebar & Shell Layout) */}
       <Route element={<ProtectedRoute />}>
