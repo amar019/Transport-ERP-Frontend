@@ -34,15 +34,8 @@ export const MENU_GROUPS = [
       { name: "Delivery", icon: Truck, path: ROUTES.OPERATIONS.DELIVERY },
     ],
   },
-  {
-    group: "MASTERS",
-    items: [
-      { name: "Customers", icon: Users, path: ROUTES.CUSTOMERS.LIST },
-      { name: "Vehicles", icon: Truck, path: ROUTES.MASTERS.VEHICLES },
-      { name: "Delivery Boys", icon: UserCheck, path: ROUTES.MASTERS.DELIVERY_BOYS },
-      { name: "Branches", icon: Building2, path: ROUTES.MASTERS.BRANCHES },
-    ],
-  },
+
+
   {
     group: "FINANCE",
     items: [
@@ -53,6 +46,16 @@ export const MENU_GROUPS = [
       { name: "Expenses", icon: Coins, path: ROUTES.FINANCE.EXPENSES },
     ],
   },
+  {
+    group: "MASTERS",
+    items: [
+      { name: "Customers", icon: Users, path: ROUTES.CUSTOMERS.LIST },
+      { name: "Vehicles", icon: Truck, path: ROUTES.MASTERS.VEHICLES },
+      { name: "Delivery Boys", icon: UserCheck, path: ROUTES.MASTERS.DELIVERY_BOYS },
+      { name: "Branches", icon: Building2, path: ROUTES.MASTERS.BRANCHES },
+    ],
+  },
+
   {
     group: "REPORTS",
     items: [

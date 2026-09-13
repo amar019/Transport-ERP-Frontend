@@ -294,7 +294,7 @@ export default function PaymentListPage() {
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 bg-white py-2.5 px-4 rounded-xl border border-slate-200/80 shadow-sm">
         <div>
-          <h1 className="text-base font-semibold text-slate-900 tracking-tight flex items-center gap-2">
+          <h1 className="!text-xl !my-0 font-bold text-slate-900 tracking-tight flex items-center gap-2">
             <Receipt className="w-4 h-4 text-indigo-600" />
             Payment Transactions
           </h1>

@@ -210,7 +210,7 @@ export default function BranchListPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <h1 className="text-[28px] font-bold text-[#0F172A] tracking-tight leading-tight m-0 p-0">
+            <h1 className="!text-xl !my-0 font-bold text-[#0F172A] tracking-tight leading-snug">
               Branch Directory
             </h1>
             <span className="bg-[#FFF7ED] text-[#C2410C] border border-[#FFEDD5] text-[11px] font-semibold px-2.5 py-0.5 rounded-md shrink-0">

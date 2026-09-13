@@ -313,7 +313,7 @@ export default function DeliveryBoyLedgerPage() {
             <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
             <span className="font-semibold text-[#0F172A]">Delivery Boy Ledger</span>
           </div>
-          <h1 className="text-[28px] font-bold text-[#0F172A] tracking-tight leading-tight m-0 p-0">
+          <h1 className="!text-xl !my-0 font-bold text-[#0F172A] tracking-tight leading-snug">
             Delivery Boy Ledger
           </h1>
           <p className="text-xs text-[#64748B] font-normal">

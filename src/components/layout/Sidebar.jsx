@@ -51,9 +51,7 @@ export const Sidebar = ({
           </div>
         ) : (
           <div className="p-3 py-4 flex items-center justify-center">
-            <div className="w-10 h-10 rounded-xl bg-white/15 border border-white/30 flex items-center justify-center text-white text-sm font-black shadow-lg shadow-black/10 backdrop-blur-xs transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer">
-              🕉️
-            </div>
+
           </div>
         )}
       </div>
@@ -106,23 +104,20 @@ export const Sidebar = ({
                         setActiveItem(item.name);
                         if (setIsMobileOpen) setIsMobileOpen(false);
                       }}
-                      className={`relative flex items-center transition-all duration-200 ease-out group rounded-xl text-xs font-semibold tracking-wide select-none outline-none focus-visible:ring-2 focus-visible:ring-orange-500/50 ${
-                        isCollapsed
-                          ? "justify-center py-2.5 px-0"
-                          : "px-3 py-2.5 space-x-3"
-                      } ${
-                        isActive
+                      className={`relative flex items-center transition-all duration-200 ease-out group rounded-xl text-xs font-semibold tracking-wide select-none outline-none focus-visible:ring-2 focus-visible:ring-orange-500/50 ${isCollapsed
+                        ? "justify-center py-2.5 px-0"
+                        : "px-3 py-2.5 space-x-3"
+                        } ${isActive
                           ? "bg-gradient-to-r from-orange-500/10 via-orange-500/5 to-transparent text-orange-600 font-bold border-l-3 border-orange-500 shadow-xs"
                           : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 hover:translate-x-0.5"
-                      }`}
+                        }`}
                     >
                       {/* Icon with smooth micro-animation */}
                       <Icon
-                        className={`w-4 h-4 shrink-0 transition-all duration-200 ease-out ${
-                          isActive
-                            ? "text-orange-600 scale-110 drop-shadow-[0_2px_4px_rgba(249,115,22,0.25)]"
-                            : "text-slate-400 group-hover:text-slate-700 group-hover:scale-110"
-                        }`}
+                        className={`w-4 h-4 shrink-0 transition-all duration-200 ease-out ${isActive
+                          ? "text-orange-600 scale-110 drop-shadow-[0_2px_4px_rgba(249,115,22,0.25)]"
+                          : "text-slate-400 group-hover:text-slate-700 group-hover:scale-110"
+                          }`}
                       />
 
                       {/* Label Text for Expanded State */}
@@ -156,9 +151,8 @@ export const Sidebar = ({
           <button
             type="button"
             onClick={handleLogout}
-            className={`w-full flex items-center transition-all duration-200 ease-out rounded-xl text-xs font-semibold text-slate-600 hover:text-rose-600 hover:bg-rose-50/80 active:bg-rose-100/70 border border-transparent hover:border-rose-200/50 cursor-pointer group ${
-              isCollapsed ? "justify-center py-2.5 px-0" : "px-3 py-2.5 space-x-3"
-            }`}
+            className={`w-full flex items-center transition-all duration-200 ease-out rounded-xl text-xs font-semibold text-slate-600 hover:text-rose-600 hover:bg-rose-50/80 active:bg-rose-100/70 border border-transparent hover:border-rose-200/50 cursor-pointer group ${isCollapsed ? "justify-center py-2.5 px-0" : "px-3 py-2.5 space-x-3"
+              }`}
             title={isCollapsed ? "Logout" : undefined}
           >
             <LogOut className="w-4 h-4 shrink-0 text-slate-400 group-hover:text-rose-500 group-hover:-translate-x-0.5 transition-all duration-200" />

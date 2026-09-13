@@ -230,7 +230,7 @@ export default function SettingsPage() {
             <ChevronRight className="w-3 h-3 text-[#94A3B8]" />
             <span className="font-semibold text-[#0F172A]">Account & Security</span>
           </div>
-          <h1 className="text-xl font-bold text-[#0F172A] tracking-tight leading-tight m-0 p-0">
+          <h1 className="!text-xl !my-0 font-bold text-[#0F172A] tracking-tight leading-snug">
             Account Settings
           </h1>
         </div>

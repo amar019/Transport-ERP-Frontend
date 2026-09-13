@@ -338,7 +338,7 @@ export const MemoListPage = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <h1 className="text-[28px] font-bold text-[#0F172A] tracking-tight leading-tight m-0 p-0">
+            <h1 className="!text-xl !my-0 font-bold text-[#0F172A] tracking-tight leading-snug">
               Memos
             </h1>
 
