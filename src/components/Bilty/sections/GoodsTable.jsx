@@ -44,7 +44,7 @@ export const GoodsTable = ({
       <div className={styles.goodsSection}>
         {/* Goods Header */}
         <div className={styles.titleRow}>
-          <Package size={15} strokeWidth={2.2} color="#EB5A00" className={styles.titleIcon} />
+          <Package size={15} strokeWidth={2.2} color="#D90429" className={styles.titleIcon} />
           {/* <span className={styles.titleMarathi}>मालाचे तपशील</span> */}
           <span className={styles.titleEnglish}>GOODS DETAILS</span>
         </div>

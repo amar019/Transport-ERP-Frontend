@@ -1,11 +1,11 @@
 /* ==========================================================================
-   Unified Goods Details & Charges Section CSS Module (Corporate ERP Redesign)
+   Unified Goods Details & Charges Section CSS Module (Deep Premium Red & Dark Navy)
    ========================================================================== */
 
 .goodsChargesContainer {
   width: 100%;
   height: 27mm;
-  border: 1px solid #CBD5E1 !important;
+  border: 1px solid #D9E1EA !important;
   border-radius: 4px;
   background-color: #FFFFFF !important;
   display: flex;
@@ -20,7 +20,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-right: 1px solid #CBD5E1 !important;
+  border-right: 1px solid #D9E1EA !important;
   padding: 1mm 2mm 0.8mm 2mm;
   box-sizing: border-box;
   background-color: #FFFFFF !important;
@@ -30,7 +30,7 @@
   display: flex;
   align-items: center;
   gap: 1.2mm;
-  color: #EA580C;
+  color: #D90429;
   font-weight: 800;
   font-size: 7.2pt;
   line-height: 1;
@@ -39,12 +39,12 @@
 
 .titleIcon {
   font-size: 8pt;
-  color: #EA580C;
+  color: #D90429;
 }
 
 .titleEnglish {
   font-size: 6.8pt;
-  color: #EA580C;
+  color: #D90429;
   font-weight: 800;
   letter-spacing: 0.5px;
   font-family: 'Inter', sans-serif;
@@ -64,12 +64,12 @@
 }
 
 .table th {
-  background-color: #F8FAFC !important;
-  color: #1E293B;
+  background-color: #F4F7FA !important;
+  color: #123B63;
   font-weight: 800;
   font-size: 6.2pt;
   padding: 2px 4px;
-  border: 1px solid #CBD5E1 !important;
+  border: 1px solid #D9E1EA !important;
   text-align: center;
   white-space: nowrap;
   line-height: 1.1;
@@ -84,10 +84,10 @@
 
 .table td {
   background-color: #FFFFFF !important;
-  color: #0F172A !important;
+  color: #123B63 !important;
   font-weight: 600;
   padding: 1.5px 4px;
-  border: 1px solid #E2E8F0 !important;
+  border: 1px solid #E8EEF5 !important;
   text-align: center;
   height: 4.8mm;
   box-sizing: border-box;
@@ -102,25 +102,25 @@
 .disclaimerBox {
   margin-top: 0.5mm;
   padding-top: 0.4mm;
-  border-top: 1px solid #E2E8F0 !important;
+  border-top: 1px solid #E8EEF5 !important;
   display: flex;
   align-items: flex-start;
   gap: 1mm;
   font-size: 5.5pt;
   line-height: 1.1;
-  color: #475569;
+  color: #5C738E;
 }
 
 .disclaimerTitle {
   font-weight: 800;
-  color: #1E293B;
+  color: #123B63;
   white-space: nowrap;
   font-family: 'Inter', sans-serif;
 }
 
 .disclaimerText {
   font-weight: 500;
-  color: #475569;
+  color: #2B4C6F;
   font-family: 'Inter', sans-serif;
 }
 
@@ -144,7 +144,7 @@
   transform: translateY(-50%) rotate(-15deg);
   width: 19mm;
   height: 19mm;
-  border: 2px dotted #059669;
+  border: 2px dotted #2EAD72;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -171,7 +171,7 @@
 .stampHeader {
   font-size: 3.4pt;
   font-weight: 800;
-  color: #059669;
+  color: #2EAD72;
   letter-spacing: 0.3px;
   line-height: 1;
   text-transform: uppercase;
@@ -180,12 +180,12 @@
 .stampTitle {
   font-size: 11pt;
   font-weight: 900;
-  color: #059669;
+  color: #2EAD72;
   line-height: 0.9;
   letter-spacing: 1px;
   font-family: 'Inter', sans-serif;
-  border-top: 1.2px dotted #059669;
-  border-bottom: 1.2px dotted #059669;
+  border-top: 1.2px dotted #2EAD72;
+  border-bottom: 1.2px dotted #2EAD72;
   padding: 0.5px 4px;
   margin: 0.4mm 0;
 }
@@ -193,7 +193,7 @@
 .stampSub {
   font-size: 3.2pt;
   font-weight: 800;
-  color: #059669;
+  color: #2EAD72;
   letter-spacing: 0.2px;
   line-height: 1;
   text-transform: uppercase;
@@ -203,7 +203,7 @@
   display: flex;
   align-items: center;
   gap: 1.2mm;
-  color: #EA580C;
+  color: #D90429;
   font-weight: 800;
   font-size: 7.2pt;
   line-height: 1;
@@ -214,7 +214,7 @@
   width: 3.5mm;
   height: 3.5mm;
   border-radius: 50%;
-  background-color: #EA580C;
+  background-color: #D90429;
   color: #FFFFFF;
   display: flex;
   align-items: center;
@@ -245,7 +245,7 @@
   display: flex;
   align-items: baseline;
   gap: 0.8mm;
-  color: #334155;
+  color: #2B4C6F;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -257,7 +257,7 @@
 
 .chargeDots {
   flex: 1;
-  border-bottom: 1px dotted #CBD5E1;
+  border-bottom: 1px dotted #D9E1EA;
   margin: 0 1.2mm;
   height: 1px;
 }
@@ -267,7 +267,7 @@
   align-items: center;
   gap: 0.5mm;
   font-weight: 800;
-  color: #0F172A;
+  color: #123B63;
   font-variant-numeric: tabular-nums;
   min-width: 12mm;
   justify-content: flex-end;
@@ -276,7 +276,7 @@
 
 .currencySymbol {
   font-size: 5.8pt;
-  color: #475569;
+  color: #5C738E;
 }
 
 .amount {
@@ -286,8 +286,8 @@
 /* TOTAL ROW AT BOTTOM OF CHARGES */
 .totalBox {
   height: 6.5mm;
-  background-color: #FFF7ED !important;
-  border-top: 1.2px solid #EA580C !important;
+  background-color: #FFF0F3 !important;
+  border-top: 1.2px solid #D90429 !important;
   margin: 0 -2mm;
   padding: 0 2mm;
   display: flex;
@@ -299,7 +299,7 @@
 .totalLabel {
   font-size: 7pt;
   font-weight: 800;
-  color: #0F172A;
+  color: #123B63;
   letter-spacing: 0.4px;
   font-family: 'Inter', sans-serif;
 }
@@ -313,13 +313,13 @@
 .totalCurrency {
   font-size: 8.5pt;
   font-weight: 900;
-  color: #EA580C;
+  color: #D90429;
 }
 
 .totalAmount {
   font-size: 10.5pt;
   font-weight: 900;
-  color: #0F172A;
+  color: #123B63;
   font-family: 'Inter', sans-serif;
   font-variant-numeric: tabular-nums;
 }

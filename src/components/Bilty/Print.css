@@ -5,23 +5,23 @@
 
 :root {
   /* Brand Colors */
-  --primary: #EA580C;
-  --primary-dark: #C2410C;
-  --primary-light: #FFF7ED;
-  --text-primary: #0F172A;
-  --text-heading: #1E293B;
-  --text-secondary: #334155;
-  --text-muted: #64748B;
-  --border-dark: #1E293B;
-  --border-card: #CBD5E1;
-  --border-light: #E2E8F0;
+  --primary: #D90429;
+  --primary-dark: #B80322;
+  --primary-light: #FFF0F3;
+  --text-primary: #123B63;
+  --text-heading: #123B63;
+  --text-secondary: #2B4C6F;
+  --text-muted: #5C738E;
+  --border-dark: #123B63;
+  --border-card: #D9E1EA;
+  --border-light: #E8EEF5;
 
   /* Background Fills */
   --bg-page: #FFFFFF;
-  --bg-subtle: #F8FAFC;
-  --bg-highlight: #FFF7ED;
-  --bg-office-ribbon: #1E293B;
-  --bg-customer-ribbon: #EA580C;
+  --bg-subtle: #F4F7FA;
+  --bg-highlight: #FFF0F3;
+  --bg-office-ribbon: #123B63;
+  --bg-customer-ribbon: #D90429;
 
   /* Typography */
   --font-family: 'Inter', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -66,14 +66,18 @@
   .bilty-page-container {
     width: 297mm !important;
     height: 210mm !important;
-    margin: 0 !important;
-    padding: 4mm 5mm !important;
+    margin: 0 auto !important;
+    padding: 4mm 8.5mm !important;
     box-shadow: none !important;
     border-radius: 0 !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
     overflow: hidden !important;
     background: #ffffff !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 }
 
@@ -87,14 +91,16 @@
 }
 
 .bilty-page-container {
-  width: var(--page-width);
+  width: 100%;
+  max-width: 297mm;
   height: var(--page-height);
   background: var(--bg-page);
-  color: var(--text-main);
+  color: var(--text-primary);
   margin: 0 auto;
-  padding: 0;
+  padding: 4mm 8.5mm;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
   box-sizing: border-box;
 }

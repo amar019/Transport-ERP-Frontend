@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SignatureSection CSS Module (Corporate Redesign)
+   SignatureSection CSS Module (Deep Premium Red & Dark Navy)
    ========================================================================== */
 
 .signatureWrapper {
@@ -14,7 +14,7 @@
 .sigBox {
   flex: 0 0 85mm;
   height: 9.5mm;
-  border: 1px solid #CBD5E1 !important;
+  border: 1px solid #D9E1EA !important;
   border-radius: 4px;
   box-sizing: border-box;
   background-color: #FFFFFF !important;
@@ -27,7 +27,7 @@
 
 .sigIcon {
   font-size: 8.5pt;
-  color: #1E293B;
+  color: #123B63;
   flex-shrink: 0;
 }
 
@@ -43,7 +43,7 @@
 .marathiText {
   font-size: 6.8pt;
   font-weight: 800;
-  color: #0F172A;
+  color: #123B63;
   font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
   white-space: nowrap;
 }
@@ -51,7 +51,7 @@
 .englishText {
   font-size: 5.8pt;
   font-weight: 600;
-  color: #64748B;
+  color: #5C738E;
   white-space: nowrap;
   font-family: 'Inter', sans-serif;
 }

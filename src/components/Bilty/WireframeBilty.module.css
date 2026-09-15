@@ -34,7 +34,7 @@
   max-width: 280mm;
   height: 93mm;
   max-height: 93mm;
-  border: 1px solid #1E293B;
+  border: 1px solid #123B63;
   border-radius: 4px;
   position: relative;
   display: flex;
@@ -124,13 +124,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 10mm;
-  border-top: 1px dashed #CBD5E1;
-  border-bottom: 1px dashed #CBD5E1;
+  border-top: 1px dashed #D9E1EA;
+  border-bottom: 1px dashed #D9E1EA;
   font-size: 8px;
   font-weight: 800;
   letter-spacing: 1.5px;
-  color: #64748B;
-  background-color: #F8FAFC;
+  color: #5C738E;
+  background-color: #F4F7FA;
   box-sizing: border-box;
   overflow: hidden;
 }

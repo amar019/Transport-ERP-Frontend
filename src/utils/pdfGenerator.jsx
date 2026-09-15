@@ -13,14 +13,16 @@ import WireframeBilty from "@/components/Bilty/WireframeBilty";
 export const downloadBiltyPdfFrontend = async (booking, bookingNumber = "Bilty") => {
   if (!booking) throw new Error("No booking data provided for PDF generation");
 
-  // Create temporary container offscreen
+  // Create temporary container rendered on-DOM but hidden
   const container = document.createElement("div");
   container.style.position = "fixed";
-  container.style.top = "-9999px";
-  container.style.left = "-9999px";
+  container.style.top = "0";
+  container.style.left = "0";
   container.style.width = "297mm";
   container.style.background = "#ffffff";
   container.style.zIndex = "-9999";
+  container.style.opacity = "0";
+  container.style.pointerEvents = "none";
   document.body.appendChild(container);
 
   const root = createRoot(container);
@@ -29,18 +31,39 @@ export const downloadBiltyPdfFrontend = async (booking, bookingNumber = "Bilty")
     // Render Bilty into temporary container
     await new Promise((resolve) => {
       root.render(
-        <div style={{ width: "297mm", padding: "6mm", background: "#ffffff" }}>
+        <div style={{ width: "297mm", padding: "4mm 8.5mm", background: "#ffffff" }}>
           <WireframeBilty booking={booking} />
         </div>
       );
-      setTimeout(resolve, 300);
+      setTimeout(resolve, 400);
     });
+
+    // Wait for all <img> elements inside container to load & decode
+    const images = Array.from(container.querySelectorAll("img"));
+    await Promise.all(
+      images.map((img) => {
+        if (img.complete && img.naturalWidth !== 0) {
+          return img.decode ? img.decode().catch(() => {}) : Promise.resolve();
+        }
+        return new Promise((res) => {
+          img.onload = async () => {
+            if (img.decode) {
+              try { await img.decode(); } catch (e) {}
+            }
+            res();
+          };
+          img.onerror = res;
+        });
+      })
+    );
 
     const targetEl = container.querySelector(".bilty-page-container") || container;
 
     const canvas = await html2canvas(targetEl, {
       scale: 2,
       useCORS: true,
+      allowTaint: true,
+      imageTimeout: 15000,
       logging: false,
       backgroundColor: "#ffffff",
     });

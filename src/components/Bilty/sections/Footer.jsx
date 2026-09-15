@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Globe, PhoneCall } from 'lucide-react';
+import { Bot, Globe, PhoneCall } from 'lucide-react';
 import styles from './Footer.module.css';
 
 /**
@@ -19,7 +19,7 @@ export const Footer = ({
     <footer className={styles.footerStrip}>
       {/* 1. STARTING CORNER (LEFT AD TEXT) */}
       <div className={styles.adLeft}>
-        <Sparkles size={9} strokeWidth={2.2} color="#EA580C" className={styles.sparkleIcon} />
+        <Bot size={10} strokeWidth={2.2} color="#D90429" className={styles.sparkleIcon} />
         <span className={styles.adText}>Build AI-Powered Softwares for your Business</span>
       </div>
 
@@ -32,7 +32,7 @@ export const Footer = ({
 
       {/* 3. END CORNER (RIGHT CONTACT NUMBER) */}
       <div className={styles.contactRight}>
-        <PhoneCall size={9} strokeWidth={2.2} color="#EA580C" />
+        <PhoneCall size={9} strokeWidth={2.2} color="#D90429" />
         <span className={styles.contactNumber}>{contactNumber}</span>
       </div>
     </footer>

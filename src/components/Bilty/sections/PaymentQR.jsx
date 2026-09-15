@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './PaymentQR.module.css';
 
 /**
@@ -14,6 +14,7 @@ export const PaymentQR = ({
   qrCode = "/qr.jpeg",
   upiId = "mahakaltransport@okaxis"
 }) => {
+  const [qrError, setQrError] = useState(false);
   const isOffice = type === "office";
   const ribbonText = isOffice ? "OFFICE COPY" : "CUSTOMER COPY";
   const ribbonClass = isOffice ? styles.copyRibbonOffice : styles.copyRibbon;
@@ -35,8 +36,13 @@ export const PaymentQR = ({
 
         {/* QR Code Container */}
         <div className={styles.qrContainer}>
-          {qrCode ? (
-            <img src={qrCode} alt="Payment QR" className={styles.qrImage} />
+          {qrCode && !qrError ? (
+            <img 
+              src={qrCode} 
+              alt="Payment QR" 
+              className={styles.qrImage} 
+              onError={() => setQrError(true)}
+            />
           ) : (
             <svg viewBox="0 0 100 100" className={styles.qrImage}>
               <rect width="100" height="100" fill="#FFFFFF" />

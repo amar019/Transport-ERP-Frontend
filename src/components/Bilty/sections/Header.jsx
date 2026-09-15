@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Phone, MapPin, Globe } from 'lucide-react';
 import BookingInfo from './BookingInfo';
 import styles from './Header.module.css';
@@ -19,6 +19,8 @@ export const Header = ({
   qrCode = "",
   upiId = "mahakaltransport@okaxis"
 }) => {
+  const [logoError, setLogoError] = useState(false);
+
   const {
     name = "MAHAKAL",
     subtitle = "TRANSPORT",
@@ -38,18 +40,23 @@ export const Header = ({
       {/* 1. LEFT SECTION: Corporate Logo & Branding */}
       <div className={styles.logoCompanyBox}>
         <div className={styles.logoArea}>
-          {logo ? (
-            <img src={logo} alt="MTS Logo" className={styles.logoSvg} />
+          {logo && !logoError ? (
+            <img 
+              src={logo} 
+              alt="MTS Logo" 
+              className={styles.logoSvg} 
+              onError={() => setLogoError(true)}
+            />
           ) : (
             <svg viewBox="0 0 100 100" className={styles.logoSvg}>
-              <path d="M 18 24 L 18 12 M 14 12 L 14 18 C 14 21 22 21 22 18 L 22 12 M 18 8 L 18 12" stroke="#EA580C" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-              <path d="M 15 50 A 35 35 0 1 1 85 50 A 35 35 0 0 1 15 50" fill="none" stroke="#0F172A" strokeWidth="6" />
-              <path d="M 10 50 A 40 40 0 0 1 85 30" fill="none" stroke="#EA580C" strokeWidth="4" strokeDasharray="6 3" />
-              <rect x="35" y="40" width="26" height="18" fill="#0F172A" rx="2" />
-              <path d="M 61 45 L 72 45 L 75 50 L 75 58 L 61 58 Z" fill="#0F172A" />
-              <circle cx="43" cy="58" r="4.5" fill="#FFFFFF" stroke="#0F172A" strokeWidth="2.5" />
-              <circle cx="67" cy="58" r="4.5" fill="#FFFFFF" stroke="#0F172A" strokeWidth="2.5" />
-              <text x="50" y="80" textAnchor="middle" fill="#EA580C" fontSize="22" fontWeight="900" fontFamily="Inter, sans-serif">MTS</text>
+              <path d="M 18 24 L 18 12 M 14 12 L 14 18 C 14 21 22 21 22 18 L 22 12 M 18 8 L 18 12" stroke="#D90429" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+              <path d="M 15 50 A 35 35 0 1 1 85 50 A 35 35 0 0 1 15 50" fill="none" stroke="#123B63" strokeWidth="6" />
+              <path d="M 10 50 A 40 40 0 0 1 85 30" fill="none" stroke="#D90429" strokeWidth="4" strokeDasharray="6 3" />
+              <rect x="35" y="40" width="26" height="18" fill="#123B63" rx="2" />
+              <path d="M 61 45 L 72 45 L 75 50 L 75 58 L 61 58 Z" fill="#123B63" />
+              <circle cx="43" cy="58" r="4.5" fill="#FFFFFF" stroke="#123B63" strokeWidth="2.5" />
+              <circle cx="67" cy="58" r="4.5" fill="#FFFFFF" stroke="#123B63" strokeWidth="2.5" />
+              <text x="50" y="80" textAnchor="middle" fill="#D90429" fontSize="22" fontWeight="900" fontFamily="Inter, sans-serif">MTS</text>
             </svg>
           )}
         </div>

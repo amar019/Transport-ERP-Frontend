@@ -1,11 +1,11 @@
 /* ==========================================================================
-   Booking Info Card CSS Module (Corporate ERP Redesign)
+   Booking Info Card CSS Module (Deep Premium Red & Dark Navy)
    ========================================================================== */
 
 .bookingCard {
   flex: 0 0 44mm;
   height: 24.5mm;
-  border: 1px solid #CBD5E1;
+  border: 1px solid #D9E1EA;
   border-radius: 4px;
   padding: 1.2mm 2.2mm;
   box-sizing: border-box;
@@ -26,7 +26,7 @@
 .biltyLabel {
   font-size: 6.2pt;
   font-weight: 800;
-  color: #475569;
+  color: #2B4C6F;
   text-transform: uppercase;
   letter-spacing: 0.4px;
 }
@@ -34,7 +34,7 @@
 .biltyNumber {
   font-size: 11.5pt;
   font-weight: 900;
-  color: #EA580C;
+  color: #D90429;
   line-height: 1;
   letter-spacing: 0.4px;
   font-family: 'Inter', sans-serif;
@@ -42,7 +42,7 @@
 
 .divider {
   height: 1px;
-  background-color: #E2E8F0;
+  background-color: #E8EEF5;
   margin: 0.1mm 0;
   width: 100%;
 }
@@ -58,13 +58,13 @@
 .dateLabel {
   font-weight: 700;
   font-size: 6.2pt;
-  color: #475569;
+  color: #2B4C6F;
   letter-spacing: 0.3px;
 }
 
 .dateValue {
   font-weight: 800;
-  color: #0F172A;
+  color: #123B63;
   font-size: 7.2pt;
   font-family: 'Inter', sans-serif;
   font-variant-numeric: tabular-nums;
@@ -80,7 +80,7 @@
 .statusLabel {
   font-size: 6.2pt;
   font-weight: 700;
-  color: #475569;
+  color: #2B4C6F;
   letter-spacing: 0.3px;
   text-transform: uppercase;
   white-space: nowrap;
@@ -89,9 +89,9 @@
 .paidBadge {
   font-size: 6pt;
   font-weight: 800;
-  color: #047857;
-  background-color: #ECFDF5;
-  border: 1px solid #A7F3D0;
+  color: #2EAD72;
+  background-color: #EAF8F1;
+  border: 1px solid #A2E3C4;
   padding: 1px 6px;
   border-radius: 3px;
   letter-spacing: 0.3px;
@@ -104,9 +104,9 @@
 .toPayBadge {
   font-size: 6pt;
   font-weight: 800;
-  color: #C2410C;
-  background-color: #FFF7ED;
-  border: 1px solid #FFEDD5;
+  color: #D90429;
+  background-color: #FFF0F3;
+  border: 1px solid #FCD3DB;
   padding: 1px 6px;
   border-radius: 3px;
   letter-spacing: 0.3px;

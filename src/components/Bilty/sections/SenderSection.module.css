@@ -1,11 +1,11 @@
 /* ==========================================================================
-   SenderSection CSS Module (Corporate Redesign)
+   SenderSection CSS Module (Deep Premium Red & Dark Navy)
    ========================================================================== */
 
 .senderCard {
   flex: 1;
   height: 22mm;
-  border: 1px solid #CBD5E1 !important;
+  border: 1px solid #D9E1EA !important;
   border-radius: 4px;
   padding: 1.2mm 2.2mm;
   box-sizing: border-box;
@@ -24,7 +24,7 @@
 
 .titleEnglish {
   font-size: 7.2pt;
-  color: #EA580C;
+  color: #D90429;
   font-weight: 800;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -48,7 +48,7 @@
 .label {
   width: 13mm;
   flex-shrink: 0;
-  color: #475569;
+  color: #5C738E;
   font-weight: 700;
   font-size: 6.8pt;
   letter-spacing: 0.2px;
@@ -58,12 +58,12 @@
 .colon {
   margin-right: 1.2mm;
   flex-shrink: 0;
-  color: #475569;
+  color: #5C738E;
   font-weight: 700;
 }
 
 .nameValue {
-  color: #0F172A;
+  color: #123B63;
   font-weight: 800;
   font-size: 8.2pt;
   white-space: nowrap;
@@ -75,7 +75,7 @@
 }
 
 .value {
-  color: #1E293B;
+  color: #2B4C6F;
   font-weight: 600;
   font-size: 7.8pt;
   white-space: nowrap;

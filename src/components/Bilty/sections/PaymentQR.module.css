@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Payment QR Card CSS Module (Corporate Redesign)
+   Payment QR Card CSS Module (Deep Premium Red & Dark Navy)
    ========================================================================== */
 
 .paymentQrPanel {
@@ -16,7 +16,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  background-color: #EA580C;
+  background-color: #D90429;
   color: #FFFFFF;
   font-size: 6.5pt;
   font-weight: 800;
@@ -34,7 +34,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  background-color: #1E293B;
+  background-color: #123B63;
   color: #FFFFFF;
   font-size: 6.5pt;
   font-weight: 800;
@@ -52,7 +52,7 @@
   width: 100%;
   height: 42.5mm;
   margin-top: 5mm;
-  border: 1px solid #CBD5E1;
+  border: 1px solid #D9E1EA;
   border-radius: 4px;
   background: #FFFFFF;
   display: flex;
@@ -72,7 +72,7 @@
 .scanPayTitle {
   font-size: 7.2pt;
   font-weight: 800;
-  color: #1E293B;
+  color: #123B63;
   text-align: center;
   line-height: 1.1;
   letter-spacing: 0.4px;
@@ -81,7 +81,7 @@
 .upiTitle {
   font-size: 6pt;
   font-weight: 700;
-  color: #475569;
+  color: #5C738E;
   text-align: center;
   line-height: 1.1;
   letter-spacing: 0.3px;
@@ -110,7 +110,7 @@
 
 .upiId {
   font-size: 5.5pt;
-  color: #334155;
+  color: #2B4C6F;
   font-weight: 700;
   line-height: 1.1;
   word-break: break-all;

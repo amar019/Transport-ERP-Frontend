@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Header Section CSS Module (Corporate ERP Redesign)
+   Header Section CSS Module (Deep Premium Red & Dark Navy Redesign)
    ========================================================================== */
 
 .headerWrapper {
@@ -21,7 +21,7 @@
   padding: 0 1.5mm;
   box-sizing: border-box;
   background-color: #FFFFFF;
-  border: 1px solid #CBD5E1;
+  border: 1px solid #D9E1EA;
   border-radius: 4px;
 }
 
@@ -57,7 +57,7 @@
 .shree {
   font-size: 6.5pt;
   font-weight: 700;
-  color: #64748B;
+  color: #5C738E;
   letter-spacing: 0.5px;
   line-height: 1;
 }
@@ -72,7 +72,7 @@
 .companyName {
   font-size: 20pt;
   font-weight: 900;
-  color: #EA580C;
+  color: #D90429;
   line-height: 0.95;
   letter-spacing: 0.5px;
   font-family: 'Inter', sans-serif;
@@ -81,7 +81,7 @@
 .companySubtitle {
   font-size: 13pt;
   font-weight: 800;
-  color: #0F172A;
+  color: #123B63;
   line-height: 1;
   letter-spacing: 1px;
   font-family: 'Inter', sans-serif;
@@ -90,7 +90,7 @@
 .tagline {
   font-size: 6.8pt;
   font-weight: 600;
-  color: #475569;
+  color: #2B4C6F;
   margin-top: 0.6mm;
   white-space: nowrap;
   letter-spacing: 0.2px;
@@ -106,8 +106,8 @@
   gap: 1.5mm;
   padding: 1.5mm 2.5mm;
   box-sizing: border-box;
-  background-color: #F8FAFC;
-  border: 1px solid #CBD5E1;
+  background-color: #F4F7FA;
+  border: 1px solid #D9E1EA;
   border-radius: 4px;
 }
 
@@ -120,14 +120,14 @@
 }
 
 .infoIcon {
-  color: #EA580C;
+  color: #D90429;
   flex-shrink: 0;
 }
 
 .infoLabel {
   font-weight: 800;
   font-size: 6.5pt;
-  color: #1E293B;
+  color: #123B63;
   letter-spacing: 0.4px;
   flex-shrink: 0;
 }
@@ -144,7 +144,7 @@
 .phoneNumber {
   font-weight: 700;
   font-size: 7.8pt;
-  color: #0F172A;
+  color: #123B63;
   line-height: 1;
   font-family: 'Inter', sans-serif;
   letter-spacing: 0.2px;
@@ -153,14 +153,14 @@
 .branchName {
   font-size: 7.2pt;
   font-weight: 700;
-  color: #334155;
+  color: #2B4C6F;
   white-space: nowrap;
   line-height: 1.1;
   font-family: 'Inter', sans-serif;
 }
 
 .bullet {
-  color: #EA580C;
+  color: #D90429;
   font-size: 6.5pt;
   font-weight: 900;
 }
