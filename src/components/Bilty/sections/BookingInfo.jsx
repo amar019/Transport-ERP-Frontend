@@ -24,17 +24,31 @@ export const BookingInfo = ({ booking = {} }) => {
       : bookingDate)
     : "-";
 
-  // Operational payment collection status
-  const isPaid =
-    (collectionType || "").toUpperCase().replace(/[\s-]+/g, '_') === "PAID_AT_BOOKING" ||
-    (paymentStatus || "").toUpperCase() === "PAID";
-  const paymentText = isPaid ? "PAID AT BOOKING" : "TO PAY";
+  const formattedCollectionType = (collectionType || "").toUpperCase().replace(/[\s-]+/g, '_');
+  const formattedPaymentStatus = (paymentStatus || "").toUpperCase();
+
+  const isPaidAtBooking = formattedCollectionType === "PAID_AT_BOOKING";
+  const isPaidOnDelivery = formattedCollectionType === "TO_PAY" && formattedPaymentStatus === "PAID";
+
+  let paymentText = "TO PAY";
+  let isGreenBadge = false;
+
+  if (isPaidAtBooking) {
+    paymentText = "PAID AT BOOKING";
+    isGreenBadge = true;
+  } else if (isPaidOnDelivery) {
+    paymentText = "PAID ON DELIVERY";
+    isGreenBadge = true;
+  } else {
+    paymentText = "TO PAY";
+    isGreenBadge = false;
+  }
 
   return (
     <div className={styles.bookingCard}>
       {/* Top Row: Bilty Number */}
       <div className={styles.biltyRow}>
-        <span className={styles.biltyLabel}>Bilty No.</span>
+        <span className={styles.biltyLabel}>BILTY NO</span>
         <span className={styles.biltyNumber}>{bookingNumber || "-"}</span>
       </div>
 
@@ -42,7 +56,7 @@ export const BookingInfo = ({ booking = {} }) => {
 
       {/* Middle Row: Date */}
       <div className={styles.dateRow}>
-        <span className={styles.dateLabel}>Date :</span>
+        <span className={styles.dateLabel}>DATE</span>
         <span className={styles.dateValue}>{formattedDate}</span>
       </div>
 
@@ -50,8 +64,8 @@ export const BookingInfo = ({ booking = {} }) => {
 
       {/* Bottom Row: Payment Collection Badge */}
       <div className={styles.statusRow}>
-        <span className={styles.statusLabel}>PAYMENT :</span>
-        <span className={isPaid ? styles.paidBadge : styles.toPayBadge}>
+        <span className={styles.statusLabel}>PAYMENT</span>
+        <span className={isGreenBadge ? styles.paidBadge : styles.toPayBadge}>
           {paymentText}
         </span>
       </div>

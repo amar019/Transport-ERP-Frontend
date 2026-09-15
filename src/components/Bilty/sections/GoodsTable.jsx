@@ -13,7 +13,8 @@ export const GoodsTable = ({
   goodsItems = [],
   charges = {},
   notes = "",
-  disclaimer = "सदरहू कुठल्याही मालाची तक्रार ७ दिवसाच्या आत करावी. काचेचे सामान तुट-फुटला ट्रान्सपोर्ट जबाबदार राहणार नाही."
+  disclaimer = "Any complaint regarding the goods must be reported within 7 days of receipt. Complaints received after this period may not be accepted.",
+  booking = {}
 }) => {
   // Format numeric values to 2 decimal places
   const formatVal = (val) => {
@@ -21,12 +22,16 @@ export const GoodsTable = ({
     return isNaN(num) ? "0.00" : num.toFixed(2);
   };
 
+  // Display rubber stamp strictly when customer paid upfront at booking
+  const isPaidAtBooking =
+    (booking.collectionType || "").toUpperCase().replace(/[\s-]+/g, '_') === "PAID_AT_BOOKING";
+
   const chargesRows = [
-    { label: "१. क्रॉसिंग (CROSSING)", amount: charges.crossing ?? 0 },
-    { label: "२. भाडे (FREIGHT)", amount: charges.freight ?? 0 },
-    { label: "३. हमाली (HAMALI)", amount: charges.hamali ?? 0 },
-    { label: "४. बिल्टी चार्ज (BILTY CHARGE)", amount: charges.biltyCharge ?? 0 },
-    { label: "५. इतर (OTHER CHARGES)", amount: charges.otherCharges ?? 0 }
+    { label: "1.CROSSING", amount: charges.crossing ?? 0 },
+    { label: "2.FREIGHT", amount: charges.freight ?? 0 },
+    { label: "3.HAMALI", amount: charges.hamali ?? 0 },
+    { label: "4.PLATFORM CHARGES", amount: charges.biltyCharge ?? 0 },
+    { label: "5.OTHER CHARGES", amount: charges.otherCharges ?? 0 }
   ];
 
   const total = charges.totalAmount ?? 0;
@@ -85,13 +90,23 @@ export const GoodsTable = ({
 
       {/* RIGHT SIDE: Charges Breakdown (80mm Compact) */}
       <div className={styles.chargesSection}>
+        {/* Circular Green Paid Stamp (Only when paid upfront at booking) */}
+        {isPaidAtBooking && (
+          <div className={styles.paidStamp}>
+            <div className={styles.paidStampInner}>
+              <span className={styles.stampHeader}>MAHAKAL TRANSPORT</span>
+              <span className={styles.stampTitle}>PAID</span>
+              <span className={styles.stampSub}>PAID AT BOOKING</span>
+            </div>
+          </div>
+        )}
         {/* Charges Header */}
         <div className={styles.chargesTitleRow}>
           <div className={styles.rupeeCircleIcon}>
             <IndianRupee size={10} strokeWidth={2.5} color="#FFFFFF" />
           </div>
-          <span className={styles.titleMarathi}>भाडे तपशील</span>
-          <span className={styles.titleEnglish}>(CHARGES)</span>
+          <span className={styles.titleMarathi}></span>
+          <span className={styles.titleEnglish}>CHARGES</span>
         </div>
 
         {/* Charges List */}
@@ -115,7 +130,7 @@ export const GoodsTable = ({
         {/* TOTAL AMOUNT BOX AT BOTTOM OF CHARGES */}
         <div className={styles.totalBox}>
           <span className={styles.totalLabel}>
-            एकूण रक्कम (TOTAL AMOUNT)
+            TOTAL AMOUNT
           </span>
 
           <div className={styles.totalRight}>

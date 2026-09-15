@@ -1,12 +1,13 @@
 import React from 'react';
-import { User } from 'lucide-react';
 import styles from './SenderSection.module.css';
 
 /**
- * SenderSection Component (~90mm width)
- * Displays Consignor (Sender) details card dynamically:
- * - Lucide User vector icon & Marathi title "पाठविणार (SENDER)"
- * - नाव (Name), मोबाईल (Mobile), पत्ता (Address) rows
+ * SenderSection Component (~104mm width)
+ * Corporate ERP Consignor Card:
+ * - Clear hierarchy: CONSIGNOR heading
+ * - Name (High visual importance bold dark navy text)
+ * - Mobile (Aligned label & value)
+ * - Address (Aligned label & value)
  */
 
 export const SenderSection = ({ sender = {} }) => {
@@ -18,19 +19,17 @@ export const SenderSection = ({ sender = {} }) => {
 
   return (
     <div className={styles.senderCard}>
-      {/* Title */}
+      {/* Section Title */}
       <div className={styles.titleRow}>
-        <User size={14} strokeWidth={2.2} color="#EB5A00" className={styles.titleIcon} />
-        {/* <span className={styles.titleMarathi}>पाठविणार</span> */}
-        <span className={styles.titleEnglish}>SENDER</span>
+        <span className={styles.titleEnglish}>CONSIGNOR</span>
       </div>
 
-      {/* Details */}
+      {/* Details List */}
       <div className={styles.detailsList}>
         <div className={styles.detailRow}>
           <span className={styles.label}>Name</span>
           <span className={styles.colon}>:</span>
-          <span className={styles.value}>{name || "-"}</span>
+          <span className={styles.nameValue}>{name || "-"}</span>
         </div>
 
         <div className={styles.detailRow}>

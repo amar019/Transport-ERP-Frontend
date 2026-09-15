@@ -1,18 +1,18 @@
 /* ==========================================================================
    Wireframe Bilty CSS Modules
-   Strict Height Budgeting to prevent any overflow or overlapping:
-   Copy Container = 95mm height (1.5mm padding top/bottom)
-   Row 1 = 27mm
-   Row 2 = 18mm
-   Row 3 = 29mm
-   Row 4 = 11mm
-   Row 5 = 5mm
-   Total = 90mm + 3mm padding = 93mm (Fits perfectly in 95mm)
+   Strict A4 Landscape Height Budgeting (297mm x 210mm paper):
+   Customer Copy = 93mm (max-height: 93mm, overflow: hidden)
+   Cut Line = 4.5mm (max-height: 4.5mm, overflow: hidden)
+   Office Copy = 93mm (max-height: 93mm, overflow: hidden)
+   Total Page Height = 93mm + 4.5mm + 93mm = 190.5mm
+   Outer Width = 285mm (max-width: 285mm, box-sizing: border-box)
    ========================================================================== */
 
 .page {
-  width: 285mm;
-  height: 198mm;
+  width: 280mm;
+  max-width: 280mm;
+  height: 190.5mm;
+  max-height: 190.5mm;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -20,83 +20,126 @@
   background: #ffffff;
   padding: 0;
   margin: 0 auto;
+  overflow: hidden;
+}
+
+.singlePage {
+  height: 93mm !important;
+  max-height: 93mm !important;
+  justify-content: center;
 }
 
 .copyContainer {
-  width: 285mm;
-  height: 96mm;
-  border: 1.2px solid #333333;
+  width: 100%;
+  max-width: 280mm;
+  height: 93mm;
+  max-height: 93mm;
+  border: 1px solid #1E293B;
+  border-radius: 4px;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 1.5mm;
+  padding: 1.2mm 1.5mm;
   box-sizing: border-box;
   background: #ffffff;
   overflow: hidden;
+  break-inside: avoid;
+  page-break-inside: avoid;
 }
 
 .topSection {
   display: flex;
-  height: 48.5mm;
+  height: 47.5mm;
+  max-height: 47.5mm;
   gap: 1mm;
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .leftColumn {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  height: 48.5mm;
+  height: 47.5mm;
+  max-height: 47.5mm;
   gap: 1mm;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .row1 {
   display: flex;
-  height: 27mm;
+  height: 24.5mm;
+  max-height: 24.5mm;
   gap: 1mm;
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .row2 {
   display: flex;
-  height: 20mm;
+  height: 22mm;
+  max-height: 22mm;
   gap: 1mm;
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .row3 {
   display: flex;
-  height: 29mm;
+  height: 27mm;
+  max-height: 27mm;
   gap: 1mm;
   width: 100%;
-}
-
-.row4 {
-  display: flex;
-  height: 9.5mm;
-  gap: 1mm;
-  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .row5 {
   display: flex;
   height: 5.5mm;
+  max-height: 5.5mm;
   gap: 1mm;
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .cutLine {
-  height: 6mm;
-  width: 285mm;
+  height: 4.5mm;
+  max-height: 4.5mm;
+  width: 100%;
+  max-width: 280mm;
   display: flex;
   align-items: center;
-  justify-content: center;
-  border-top: 1px dashed #666666;
-  border-bottom: 1px dashed #666666;
-  font-size: 9px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  color: #444444;
+  justify-content: space-between;
+  padding: 0 10mm;
+  border-top: 1px dashed #CBD5E1;
+  border-bottom: 1px dashed #CBD5E1;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #64748B;
+  background-color: #F8FAFC;
   box-sizing: border-box;
+  overflow: hidden;
+}
+
+.cutIcon {
+  font-size: 10px;
+}
+
+.cutText {
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
 }

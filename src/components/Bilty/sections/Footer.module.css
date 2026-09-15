@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Premium Software Advertisement Footer CSS Module
+   Full Footer Strip (Corporate Redesign)
    ========================================================================== */
 
 .footerStrip {
@@ -10,88 +10,79 @@
   justify-content: space-between;
   box-sizing: border-box;
   padding: 0 2mm;
-  background-color: #FFF7ED !important;
-  border: 1px solid #FFEDD5 !important;
-  border-radius: 3px;
-  font-size: 8pt;
+  background: transparent !important;
+  border: 1px solid #CBD5E1 !important;
+  border-radius: 4px;
   line-height: 1;
   page-break-inside: avoid;
   break-inside: avoid;
   overflow: hidden;
 }
 
+/* Starting Corner (Left) */
 .adLeft {
   display: flex;
   align-items: center;
-  gap: 1.5mm;
-  overflow: hidden;
+  gap: 1mm;
+  flex-shrink: 0;
+}
+
+.sparkleIcon {
+  flex-shrink: 0;
+}
+
+.adText {
+  font-size: 5.5pt;
+  font-weight: 700;
+  color: #EA580C;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.1px;
   white-space: nowrap;
 }
 
-.badgeIcon {
+/* Middle Section: Service Areas */
+.serviceMiddle {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.adTag {
-  font-size: 5.5pt;
-  font-weight: 900;
-  color: #FFFFFF;
-  background-color: #EA580C !important;
-  padding: 0.5px 4px;
-  border-radius: 2px;
-  letter-spacing: 0.3px;
-  font-family: 'Poppins', sans-serif;
-  flex-shrink: 0;
-}
-
-.adTextEnglish {
-  font-weight: 800;
-  color: #C2410C;
-  font-family: 'Poppins', sans-serif;
-  letter-spacing: 0.1px;
-  font-size: 6pt;
-}
-
-.dotDivider {
-  color: #F97316;
-  font-weight: 900;
-}
-
-.adTextMarathi {
-  font-weight: 700;
-  color: #431407;
-  font-family: 'Noto Sans Devanagari', sans-serif;
-  font-size: 6pt;
+  gap: 1mm;
+  font-size: 6.5pt;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+.globeIcon {
+  color: #EA580C;
+  flex-shrink: 0;
+}
+
+.serviceTitle {
+  font-weight: 800;
+  color: #1E293B;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.2px;
+  flex-shrink: 0;
+}
+
+.serviceLocations {
+  font-weight: 600;
+  color: #334155;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.1px;
+}
+
+/* End Corner (Right) */
 .contactRight {
   display: flex;
   align-items: center;
   gap: 1mm;
-  font-weight: 800;
-  color: #C2410C;
   flex-shrink: 0;
-  background-color: #FFFFFF !important;
-  border: 0.8px solid #FFEDD5 !important;
-  padding: 0.5px 4px;
-  border-radius: 3px;
-}
-
-.contactLabel {
-  font-size: 5.5pt;
-  color: #7C2D12;
-  font-weight: 700;
 }
 
 .contactNumber {
-  font-size: 6.8pt;
-  font-weight: 900;
+  font-size: 6.5pt;
+  font-weight: 800;
   color: #EA580C;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   letter-spacing: 0.3px;
 }

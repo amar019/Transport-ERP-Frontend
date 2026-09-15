@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SignatureSection CSS Module (Height Budget: 11mm)
+   SignatureSection CSS Module (Corporate Redesign)
    ========================================================================== */
 
 .signatureWrapper {
@@ -14,7 +14,7 @@
 .sigBox {
   flex: 0 0 85mm;
   height: 9.5mm;
-  border: 1px solid #CFCFCF !important;
+  border: 1px solid #CBD5E1 !important;
   border-radius: 4px;
   box-sizing: border-box;
   background-color: #FFFFFF !important;
@@ -27,13 +27,7 @@
 
 .sigIcon {
   font-size: 8.5pt;
-  color: #222222;
-  flex-shrink: 0;
-}
-
-.tridentIcon {
-  font-size: 9.5pt;
-  color: #111111;
+  color: #1E293B;
   flex-shrink: 0;
 }
 
@@ -49,14 +43,15 @@
 .marathiText {
   font-size: 6.8pt;
   font-weight: 800;
-  color: #111111;
-  font-family: 'Noto Sans Devanagari', sans-serif;
+  color: #0F172A;
+  font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
   white-space: nowrap;
 }
 
 .englishText {
   font-size: 5.8pt;
-  font-weight: 700;
-  color: #444444;
+  font-weight: 600;
+  color: #64748B;
   white-space: nowrap;
+  font-family: 'Inter', sans-serif;
 }

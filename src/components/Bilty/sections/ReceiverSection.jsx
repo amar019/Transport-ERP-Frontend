@@ -1,18 +1,50 @@
-import React from 'react';
-import { User } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import styles from './ReceiverSection.module.css';
+import { transliterateToMarathi } from '../../../utils/transliterate';
 
 /**
- * ReceiverSection Component (~75mm width)
- * Displays Consignee (Receiver) details card dynamically:
- * - Lucide User vector icon & Marathi title "घेणारा (RECEIVER)"
- * - shopName, ownerName, mobile, deliveryAddress
+ * ReceiverSection Component (~126mm width)
+ * Corporate ERP Consignee Card:
+ * - Clear hierarchy: CONSIGNEE heading
+ * - Name (High visual importance bold dark navy text)
+ * - Mobile (Aligned label & value)
+ * - Address (Aligned label & value)
  */
 
 export const ReceiverSection = ({ customer = {}, deliveryAddress = "", receiver = {} }) => {
   const shopName = customer?.shopName || receiver?.shopName || receiver?.name || customer?.name || "-";
-  const ownerName = customer?.ownerName || receiver?.ownerName || "";
+  const explicitMarathi = customer?.shopNameMarathi || receiver?.shopNameMarathi;
   const mobile = customer?.mobile || customer?.phone || receiver?.mobile || receiver?.phone || "-";
+
+  const [marathiShopName, setMarathiShopName] = useState(explicitMarathi || '');
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (explicitMarathi) {
+      setMarathiShopName(explicitMarathi);
+      return;
+    }
+
+    if (shopName && shopName !== '-') {
+      transliterateToMarathi(shopName).then((translated) => {
+        if (isMounted && translated) {
+          setMarathiShopName(translated);
+        }
+      });
+    } else {
+      setMarathiShopName('');
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [shopName, explicitMarathi]);
+
+  // Format display: English shop name followed by Marathi in brackets
+  const displayShopName = marathiShopName && marathiShopName !== shopName
+    ? `${shopName} (${marathiShopName})`
+    : shopName;
 
   // Build structured address from customer/receiver if available
   const customerFullAddress = [
@@ -43,28 +75,18 @@ export const ReceiverSection = ({ customer = {}, deliveryAddress = "", receiver 
 
   return (
     <div className={styles.receiverCard}>
-      {/* Title */}
+      {/* Section Title */}
       <div className={styles.titleRow}>
-        <User size={14} strokeWidth={2.2} color="#EB5A00" className={styles.titleIcon} />
-        {/* <span className={styles.titleMarathi}>घेणारा</span> */}
-        <span className={styles.titleEnglish}>RECEIVER</span>
+        <span className={styles.titleEnglish}>CONSIGNEE</span>
       </div>
 
-      {/* Details */}
+      {/* Details List */}
       <div className={styles.detailsList}>
         <div className={styles.detailRow}>
           <span className={styles.label}>Name</span>
           <span className={styles.colon}>:</span>
-          <span className={styles.value}>{shopName}</span>
+          <span className={styles.nameValue}>{displayShopName}</span>
         </div>
-
-        {ownerName ? (
-          <div className={styles.detailRow}>
-            <span className={styles.label}>Owner</span>
-            <span className={styles.colon}>:</span>
-            <span className={styles.value}>{ownerName}</span>
-          </div>
-        ) : null}
 
         <div className={styles.detailRow}>
           <span className={styles.label}>Mobile</span>

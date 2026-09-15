@@ -50,7 +50,7 @@ const WireframeCopy = ({ type, booking = {} }) => {
           {/* Row 2: Sender, Route & Receiver Sections */}
           <div className={styles.row2}>
             <SenderSection sender={sender} />
-            <RouteSection fromCity={booking.fromBranch?.name || booking.from || "-"} toCity={booking.toBranch?.name || booking.to || "-"} />
+            {/* <RouteSection fromCity={booking.fromBranch?.name || booking.from || "-"} toCity={booking.toBranch?.name || booking.to || "-"} /> */}
             <ReceiverSection customer={customer} deliveryAddress={booking.deliveryAddress} receiver={booking.receiver} />
           </div>
         </div>
@@ -61,7 +61,7 @@ const WireframeCopy = ({ type, booking = {} }) => {
 
       {/* Row 3: Unified Goods Details & Charges Table */}
       <div className={styles.row3}>
-        <GoodsTable goodsItems={goodsItems} charges={charges} notes={booking.notes} />
+        <GoodsTable goodsItems={goodsItems} charges={charges} notes={booking.notes} booking={booking} />
       </div>
 
       {/* Row 4: Signature Section */}
@@ -75,20 +75,28 @@ const WireframeCopy = ({ type, booking = {} }) => {
   );
 };
 
-export const WireframeBilty = ({ booking = {} }) => {
+export const WireframeBilty = ({ booking = {}, viewMode = "both" }) => {
+  const showCustomer = viewMode === "both" || viewMode === "customer";
+  const showOffice = viewMode === "both" || viewMode === "office";
+  const isSingleCopy = viewMode !== "both";
+
   return (
     <div className="bilty-page-container">
-      <div className={styles.page}>
+      <div className={`${styles.page} ${isSingleCopy ? styles.singlePage : ""}`}>
         {/* Customer Copy Wireframe */}
-        <WireframeCopy type="customer" booking={booking} />
+        {showCustomer && <WireframeCopy type="customer" booking={booking} />}
 
         {/* Dashed Cut Line Divider */}
-        <div className={styles.cutLine}>
-          ✂ ------------------------------------------ CUT HERE ------------------------------------------ ✂
-        </div>
+        {viewMode === "both" && (
+          <div className={styles.cutLine}>
+            <span className={styles.cutIcon}>✂</span>
+            <span className={styles.cutText}>CUT HERE FOR OFFICE COPY</span>
+            <span className={styles.cutIcon}>✂</span>
+          </div>
+        )}
 
         {/* Office Copy Wireframe */}
-        <WireframeCopy type="office" booking={booking} />
+        {showOffice && <WireframeCopy type="office" booking={booking} />}
       </div>
     </div>
   );

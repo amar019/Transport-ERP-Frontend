@@ -1,51 +1,40 @@
 /* ==========================================================================
-   SenderSection CSS Module (Compact Width: 104mm)
+   SenderSection CSS Module (Corporate Redesign)
    ========================================================================== */
 
 .senderCard {
   flex: 1;
-  height: 20mm;
-  border: 1px solid #CFCFCF !important;
+  height: 22mm;
+  border: 1px solid #CBD5E1 !important;
   border-radius: 4px;
-  padding: 1mm 2.5mm 1mm calc(2.5mm + 4px);
+  padding: 1.2mm 2.2mm;
   box-sizing: border-box;
   background-color: #FFFFFF !important;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: hidden;
 }
 
 .titleRow {
   display: flex;
   align-items: center;
-  gap: 1.5mm;
-  color: #EB5A00;
-  font-weight: 800;
-  font-size: 7.2pt;
-  line-height: 1;
-  margin-bottom: 0.3mm;
-}
-
-.titleIcon {
-  font-size: 8pt;
-  color: #EB5A00;
-}
-
-.titleMarathi {
-  font-family: 'Noto Sans Devanagari', sans-serif;
-  color: #EB5A00;
+  margin-bottom: 0.5mm;
 }
 
 .titleEnglish {
-  font-size: 8.5pt;
-  color: #EB5A00;
-  font-weight: 700;
+  font-size: 7.2pt;
+  color: #EA580C;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
 }
 
 .detailsList {
   display: flex;
   flex-direction: column;
-  gap: 0.8mm;
+  gap: 0.5mm;
   font-size: 7.8pt;
   line-height: 1.15;
 }
@@ -53,25 +42,46 @@
 .detailRow {
   display: flex;
   align-items: baseline;
+  min-width: 0;
 }
 
 .label {
-  width: 14mm;
-  color: #222222;
+  width: 13mm;
+  flex-shrink: 0;
+  color: #475569;
   font-weight: 700;
-  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: 6.8pt;
+  letter-spacing: 0.2px;
+  font-family: 'Inter', sans-serif;
 }
 
 .colon {
-  margin-right: 1.5mm;
-  color: #222222;
+  margin-right: 1.2mm;
+  flex-shrink: 0;
+  color: #475569;
   font-weight: 700;
 }
 
-.value {
-  color: #111111;
-  font-weight: 700;
+.nameValue {
+  color: #0F172A;
+  font-weight: 800;
+  font-size: 8.2pt;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.value {
+  color: #1E293B;
+  font-weight: 600;
+  font-size: 7.8pt;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+  font-family: 'Inter', sans-serif;
 }

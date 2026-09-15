@@ -5,28 +5,32 @@
 
 :root {
   /* Brand Colors */
-  --primary: #E85A1F;
-  --primary-dark: #D84315;
-  --text-main: #222222;
-  --text-muted: #555555;
-  --border-dark: #222222;
-  --border-card: #CFCFCF;
-  --border-light: #E5E5E5;
-  
+  --primary: #EA580C;
+  --primary-dark: #C2410C;
+  --primary-light: #FFF7ED;
+  --text-primary: #0F172A;
+  --text-heading: #1E293B;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --border-dark: #1E293B;
+  --border-card: #CBD5E1;
+  --border-light: #E2E8F0;
+
   /* Background Fills */
   --bg-page: #FFFFFF;
-  --bg-highlight: #FFF3E0;
-  --bg-office-ribbon: #333333;
-  --bg-customer-ribbon: #E85A1F;
+  --bg-subtle: #F8FAFC;
+  --bg-highlight: #FFF7ED;
+  --bg-office-ribbon: #1E293B;
+  --bg-customer-ribbon: #EA580C;
 
   /* Typography */
-  --font-family: 'Noto Sans Devanagari', 'Poppins', -apple-system, sans-serif;
+  --font-family: 'Inter', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, sans-serif;
 
   /* Strict A4 Landscape Dimensions */
-  --page-width: 285mm;
-  --page-height: 198mm;
-  --copy-height: 95mm;
-  --cut-height: 6mm;
+  --page-width: 280mm;
+  --page-height: 190.5mm;
+  --copy-height: 93mm;
+  --cut-height: 4.5mm;
 }
 
 /* Page Print Settings */
@@ -36,13 +40,15 @@
 }
 
 @media print {
+
   /* Hide non-printable elements */
   .no-print,
   .no-print * {
     display: none !important;
   }
 
-  html, body {
+  html,
+  body {
     width: 297mm !important;
     height: 210mm !important;
     margin: 0 !important;
@@ -53,11 +59,15 @@
     print-color-adjust: exact !important;
   }
 
+  * {
+    box-sizing: border-box !important;
+  }
+
   .bilty-page-container {
     width: 297mm !important;
     height: 210mm !important;
     margin: 0 !important;
-    padding: 6mm 6mm !important;
+    padding: 4mm 5mm !important;
     box-shadow: none !important;
     border-radius: 0 !important;
     page-break-inside: avoid !important;

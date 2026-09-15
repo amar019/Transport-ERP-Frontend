@@ -3,11 +3,11 @@
    ========================================================================== */
 
 .routeCard {
-  flex: 0 0 48mm;
-  height: 20mm;
+  flex: 0 0 46mm;
+  height: 19mm;
   border: 1px solid #CFCFCF !important;
   border-radius: 4px;
-  padding: 1mm 2.5mm;
+  padding: 0.8mm 2mm;
   box-sizing: border-box;
   background-color: #FFFFFF !important;
   display: flex;

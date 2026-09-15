@@ -1,34 +1,38 @@
 import React from 'react';
-import { Sparkles, PhoneCall } from 'lucide-react';
+import { Sparkles, Globe, PhoneCall } from 'lucide-react';
 import styles from './Footer.module.css';
 
 /**
  * Footer Component (~285mm width, ~5.5mm height)
- * Low-contrast tech credit bar / Advertisement Strip:
- * ✨ AI-POWERED SOFTWARE • Build Custom Software & Websites for your Business | Call/WhatsApp: 7744949305
+ * - Starting Corner (Left): Build AI-Powered Softwares for your Business
+ * - Middle: Service Areas
+ * - End Corner (Right): 7744949305
  */
 
 export const Footer = ({
-  contactNumber = "7744949305"
+  contactNumber = "7744949305",
+  serviceAreas = "Ahilyanagar • Beed • Jamkhed • Kada • Ashti • Bhum • Patoda • Kharda"
 }) => {
+  const formattedServiceAreas = typeof serviceAreas === 'string' ? serviceAreas.trim() : serviceAreas;
+
   return (
     <footer className={styles.footerStrip}>
-      {/* Left: Software Offer Text */}
+      {/* 1. STARTING CORNER (LEFT AD TEXT) */}
       <div className={styles.adLeft}>
-        <div className={styles.badgeIcon}>
-          <Sparkles size={10} strokeWidth={2.4} color="#EA580C" />
-        </div>
-        <span className={styles.adTag}>AI-POWERED SOFTWARE</span>
-        <span className={styles.dotDivider}>•</span>
-        <span className={styles.adTextEnglish}>
-          Build Custom Software & Websites for your Business
-        </span>
+        <Sparkles size={9} strokeWidth={2.2} color="#EA580C" className={styles.sparkleIcon} />
+        <span className={styles.adText}>Build AI-Powered Softwares for your Business</span>
       </div>
 
-      {/* Right: Contact Number */}
+      {/* 2. MIDDLE SECTION (SERVICE AREAS) */}
+      <div className={styles.serviceMiddle}>
+        <Globe size={10} strokeWidth={2.4} className={styles.globeIcon} />
+        <span className={styles.serviceTitle}>Service Areas :</span>
+        <span className={styles.serviceLocations}>{formattedServiceAreas}</span>
+      </div>
+
+      {/* 3. END CORNER (RIGHT CONTACT NUMBER) */}
       <div className={styles.contactRight}>
-        <PhoneCall size={10} strokeWidth={2.4} color="#EA580C" />
-        <span className={styles.contactLabel}>Call / WhatsApp:</span>
+        <PhoneCall size={9} strokeWidth={2.2} color="#EA580C" />
         <span className={styles.contactNumber}>{contactNumber}</span>
       </div>
     </footer>
@@ -36,5 +40,3 @@ export const Footer = ({
 };
 
 export default Footer;
-
-
