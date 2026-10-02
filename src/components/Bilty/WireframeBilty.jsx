@@ -39,24 +39,16 @@ const WireframeCopy = ({ type, booking = {} }) => {
 
   return (
     <div className={styles.copyContainer}>
-      {/* Top Section: Header & Sender/Route/Receiver on Left, PaymentQR Panel on Right */}
-      <div className={styles.topSection}>
-        <div className={styles.leftColumn}>
-          {/* Row 1: Header (Logo, Company, Branches, Booking Info) */}
-          <div className={styles.row1}>
-            <Header type={type} booking={booking} />
-          </div>
-
-          {/* Row 2: Sender, Route & Receiver Sections */}
-          <div className={styles.row2}>
-            <SenderSection sender={sender} />
-            {/* <RouteSection fromCity={booking.fromBranch?.name || booking.from || "-"} toCity={booking.toBranch?.name || booking.to || "-"} /> */}
-            <ReceiverSection customer={customer} deliveryAddress={booking.deliveryAddress} receiver={booking.receiver} />
-          </div>
-        </div>
-
-        {/* Right Column: Copy Ribbon + Payment QR Card */}
+      {/* Row 1: Header (Logo, Company, Branches, Booking Info) + Payment QR Card */}
+      <div className={styles.row1}>
+        <Header type={type} booking={booking} />
         <PaymentQR type={type} qrCode={booking.qrCode || "/qr.jpeg"} upiId={booking.upiId} />
+      </div>
+
+      {/* Row 2: Sender & Receiver Sections */}
+      <div className={styles.row2}>
+        <SenderSection sender={sender} />
+        <ReceiverSection customer={customer} deliveryAddress={booking.deliveryAddress} receiver={booking.receiver} />
       </div>
 
       {/* Row 3: Unified Goods Details & Charges Table */}
@@ -64,11 +56,8 @@ const WireframeCopy = ({ type, booking = {} }) => {
         <GoodsTable goodsItems={goodsItems} charges={charges} notes={booking.notes} booking={booking} />
       </div>
 
-      {/* Row 4: Signature Section */}
-
-
-      {/* Row 5: Custom Software Advertisement Footer Strip */}
-      <div className={styles.row5}>
+      {/* Row 4: Custom Software Advertisement Footer Strip */}
+      <div className={styles.row4}>
         <Footer />
       </div>
     </div>

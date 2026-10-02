@@ -1,6 +1,6 @@
 /* ==========================================================================
    Bilty Print Styles & CSS Custom Properties
-   Optimized for Single A4 Landscape Browser Print & PDF Generation
+   Optimized for Single A4 Portrait Browser Print & PDF Generation
    ========================================================================== */
 
 :root {
@@ -26,20 +26,27 @@
   /* Typography */
   --font-family: 'Inter', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  /* Strict A4 Landscape Dimensions */
-  --page-width: 280mm;
-  --page-height: 190.5mm;
-  --copy-height: 93mm;
-  --cut-height: 4.5mm;
+  /* Strict A4 Portrait Dimensions */
+  --page-width: 198mm;
+  --page-height: 280mm;
+  --copy-height: 138mm;
+  --cut-height: 4mm;
 }
 
 /* Page Print Settings */
 @page {
-  size: A4 landscape;
-  margin: 0;
+  size: A4 portrait !important;
+  size: portrait !important;
+  margin: 0 !important;
 }
 
 @media print {
+
+  @page {
+    size: A4 portrait !important;
+    size: portrait !important;
+    margin: 0 !important;
+  }
 
   /* Hide non-printable elements */
   .no-print,
@@ -49,8 +56,8 @@
 
   html,
   body {
-    width: 297mm !important;
-    height: 210mm !important;
+    width: 210mm !important;
+    height: 297mm !important;
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
@@ -64,10 +71,10 @@
   }
 
   .bilty-page-container {
-    width: 297mm !important;
-    height: 210mm !important;
+    width: 210mm !important;
+    height: 297mm !important;
     margin: 0 auto !important;
-    padding: 4mm 8.5mm !important;
+    padding: 4mm 6mm !important;
     box-shadow: none !important;
     border-radius: 0 !important;
     page-break-inside: avoid !important;
@@ -92,12 +99,12 @@
 
 .bilty-page-container {
   width: 100%;
-  max-width: 297mm;
+  max-width: 210mm;
   height: var(--page-height);
   background: var(--bg-page);
   color: var(--text-primary);
   margin: 0 auto;
-  padding: 4mm 8.5mm;
+  padding: 4.5mm 6mm;
   display: flex;
   flex-direction: column;
   align-items: center;

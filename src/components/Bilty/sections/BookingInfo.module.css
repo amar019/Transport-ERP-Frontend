@@ -3,11 +3,11 @@
    ========================================================================== */
 
 .bookingCard {
-  flex: 0 0 44mm;
-  height: 24.5mm;
+  flex: 0 0 42mm;
+  height: 33mm;
   border: 1px solid #D9E1EA;
   border-radius: 4px;
-  padding: 1.2mm 2.2mm;
+  padding: 1.5mm 2mm;
   box-sizing: border-box;
   background-color: #FFFFFF;
   display: flex;

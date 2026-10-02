@@ -18,7 +18,7 @@ export const downloadBiltyPdfFrontend = async (booking, bookingNumber = "Bilty")
   container.style.position = "fixed";
   container.style.top = "0";
   container.style.left = "0";
-  container.style.width = "297mm";
+  container.style.width = "210mm";
   container.style.background = "#ffffff";
   container.style.zIndex = "-9999";
   container.style.opacity = "0";
@@ -31,7 +31,7 @@ export const downloadBiltyPdfFrontend = async (booking, bookingNumber = "Bilty")
     // Render Bilty into temporary container
     await new Promise((resolve) => {
       root.render(
-        <div style={{ width: "297mm", padding: "4mm 8.5mm", background: "#ffffff" }}>
+        <div style={{ width: "210mm", padding: "4.5mm 6mm", background: "#ffffff" }}>
           <WireframeBilty booking={booking} />
         </div>
       );
@@ -71,12 +71,12 @@ export const downloadBiltyPdfFrontend = async (booking, bookingNumber = "Bilty")
     const imgData = canvas.toDataURL("image/png");
 
     const pdf = new jsPDF({
-      orientation: "landscape",
+      orientation: "portrait",
       unit: "mm",
       format: "a4",
     });
 
-    pdf.addImage(imgData, "PNG", 0, 0, 297, 210);
+    pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
     pdf.save(`Bilty-${bookingNumber || "Document"}.pdf`);
   } catch (err) {
     console.error("Frontend PDF generation error:", err);

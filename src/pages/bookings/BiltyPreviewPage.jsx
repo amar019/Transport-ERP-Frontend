@@ -44,13 +44,19 @@ export const BiltyPreviewPage = () => {
     documentTitle: booking?.bookingNumber ? `Bilty-${booking.bookingNumber}` : "Bilty-LR",
     pageStyle: `
       @page {
-        size: A4 landscape;
-        margin: 0;
+        size: A4 portrait !important;
+        size: portrait !important;
+        margin: 0 !important;
       }
       @media print {
+        @page {
+          size: A4 portrait !important;
+          size: portrait !important;
+          margin: 0 !important;
+        }
         html, body {
-          width: 297mm !important;
-          height: 210mm !important;
+          width: 210mm !important;
+          height: 297mm !important;
           margin: 0 !important;
           padding: 0 !important;
           background: #ffffff !important;
@@ -180,7 +186,7 @@ export const BiltyPreviewPage = () => {
                   ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
               }`}
-              title="Show Both Copies (Landscape A4)"
+              title="Show Both Copies (Portrait A4)"
             >
               Both Copies
             </button>

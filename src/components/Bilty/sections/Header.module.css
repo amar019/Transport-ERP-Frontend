@@ -4,20 +4,22 @@
 
 .headerWrapper {
   display: flex;
-  width: 100%;
-  gap: 1.5mm;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 1mm;
   align-items: stretch;
   justify-content: space-between;
   box-sizing: border-box;
-  height: 24.5mm;
+  height: 33mm;
 }
 
 /* 1. Logo & Brand Title Box */
 .logoCompanyBox {
   flex: 1 1 auto;
+  min-width: 0;
   display: flex;
   align-items: center;
-  gap: 2.5mm;
+  gap: 2mm;
   padding: 0 1.5mm;
   box-sizing: border-box;
   background-color: #FFFFFF;
@@ -26,8 +28,8 @@
 }
 
 .logoArea {
-  width: 17mm;
-  height: 17mm;
+  width: 20mm;
+  height: 20mm;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,6 +48,7 @@
   justify-content: center;
   align-items: flex-start;
   text-align: left;
+  min-width: 0;
 }
 
 .topMetaRow {
@@ -65,12 +68,13 @@
 .brandTitleRow {
   display: flex;
   align-items: baseline;
-  gap: 1.8mm;
+  gap: 1.5mm;
   margin-top: 0.2mm;
+  flex-wrap: wrap;
 }
 
 .companyName {
-  font-size: 20pt;
+  font-size: 17pt;
   font-weight: 900;
   color: #D90429;
   line-height: 0.95;
@@ -79,7 +83,7 @@
 }
 
 .companySubtitle {
-  font-size: 13pt;
+  font-size: 11pt;
   font-weight: 800;
   color: #123B63;
   line-height: 1;
@@ -88,7 +92,7 @@
 }
 
 .tagline {
-  font-size: 6.8pt;
+  font-size: 6.2pt;
   font-weight: 600;
   color: #2B4C6F;
   margin-top: 0.6mm;
@@ -98,13 +102,13 @@
 
 /* 2. Middle Section - Contact & Branch Info Block */
 .branchBox {
-  flex: 0 0 65mm;
+  flex: 0 0 48mm;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   gap: 1.5mm;
-  padding: 1.5mm 2.5mm;
+  padding: 1.5mm 2mm;
   box-sizing: border-box;
   background-color: #F4F7FA;
   border: 1px solid #D9E1EA;
@@ -114,7 +118,7 @@
 .infoRow {
   display: flex;
   align-items: center;
-  gap: 1.2mm;
+  gap: 1mm;
   white-space: nowrap;
   width: 100%;
 }
@@ -126,7 +130,7 @@
 
 .infoLabel {
   font-weight: 800;
-  font-size: 6.5pt;
+  font-size: 6.2pt;
   color: #123B63;
   letter-spacing: 0.4px;
   flex-shrink: 0;
@@ -136,14 +140,14 @@
 .branchPills {
   display: flex;
   align-items: center;
-  gap: 0.8mm;
+  gap: 0.6mm;
   white-space: nowrap;
   overflow: hidden;
 }
 
 .phoneNumber {
   font-weight: 700;
-  font-size: 7.8pt;
+  font-size: 7.2pt;
   color: #123B63;
   line-height: 1;
   font-family: 'Inter', sans-serif;
@@ -151,7 +155,7 @@
 }
 
 .branchName {
-  font-size: 7.2pt;
+  font-size: 6.8pt;
   font-weight: 700;
   color: #2B4C6F;
   white-space: nowrap;
@@ -161,6 +165,6 @@
 
 .bullet {
   color: #D90429;
-  font-size: 6.5pt;
+  font-size: 6pt;
   font-weight: 900;
 }

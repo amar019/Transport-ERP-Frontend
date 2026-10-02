@@ -3,8 +3,8 @@
    ========================================================================== */
 
 .paymentQrPanel {
-  flex: 0 0 44mm;
-  height: 47.5mm;
+  flex: 0 0 36mm;
+  height: 33mm;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -18,12 +18,12 @@
   right: 0;
   background-color: #D90429;
   color: #FFFFFF;
-  font-size: 6.5pt;
+  font-size: 5.8pt;
   font-weight: 800;
-  padding: 2px 9px;
-  border-bottom-left-radius: 5px;
+  padding: 1.5px 6px;
+  border-bottom-left-radius: 4px;
   border-top-right-radius: 3px;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   white-space: nowrap;
   line-height: 1.1;
   font-family: 'Inter', sans-serif;
@@ -36,12 +36,12 @@
   right: 0;
   background-color: #123B63;
   color: #FFFFFF;
-  font-size: 6.5pt;
+  font-size: 5.8pt;
   font-weight: 800;
-  padding: 2px 9px;
-  border-bottom-left-radius: 5px;
+  padding: 1.5px 6px;
+  border-bottom-left-radius: 4px;
   border-top-right-radius: 3px;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   white-space: nowrap;
   line-height: 1.1;
   font-family: 'Inter', sans-serif;
@@ -50,8 +50,8 @@
 
 .qrCard {
   width: 100%;
-  height: 42.5mm;
-  margin-top: 5mm;
+  height: 33mm;
+  margin-top: 0;
   border: 1px solid #D9E1EA;
   border-radius: 4px;
   background: #FFFFFF;
@@ -59,7 +59,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5mm 1mm;
+  padding: 4.5mm 1mm 1mm 1mm;
   box-sizing: border-box;
 }
 
@@ -70,30 +70,30 @@
 }
 
 .scanPayTitle {
-  font-size: 7.2pt;
+  font-size: 6.2pt;
   font-weight: 800;
   color: #123B63;
   text-align: center;
-  line-height: 1.1;
-  letter-spacing: 0.4px;
-}
-
-.upiTitle {
-  font-size: 6pt;
-  font-weight: 700;
-  color: #5C738E;
-  text-align: center;
-  line-height: 1.1;
+  line-height: 1;
   letter-spacing: 0.3px;
 }
 
+.upiTitle {
+  font-size: 5.2pt;
+  font-weight: 700;
+  color: #5C738E;
+  text-align: center;
+  line-height: 1;
+  letter-spacing: 0.2px;
+}
+
 .qrContainer {
-  width: 24mm;
-  height: 24mm;
+  width: 17mm;
+  height: 17mm;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0.5mm 0;
+  margin: 0.2mm 0;
 }
 
 .qrImage {
@@ -109,10 +109,10 @@
 }
 
 .upiId {
-  font-size: 5.5pt;
+  font-size: 5pt;
   color: #2B4C6F;
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1;
   word-break: break-all;
   text-align: center;
   font-family: 'Inter', sans-serif;

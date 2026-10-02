@@ -14,12 +14,18 @@ const BulkBiltyPrinter = forwardRef(({ selectedBookings = [] }, ref) => {
       : `Bilty-Bulk-${selectedBookings.length}-Items`,
     pageStyle: `
       @page {
-        size: A4 landscape;
-        margin: 0;
+        size: A4 portrait !important;
+        size: portrait !important;
+        margin: 0 !important;
       }
       @media print {
+        @page {
+          size: A4 portrait !important;
+          size: portrait !important;
+          margin: 0 !important;
+        }
         html, body {
-          width: 297mm !important;
+          width: 210mm !important;
           margin: 0 !important;
           padding: 0 !important;
           background: #ffffff !important;
@@ -33,12 +39,12 @@ const BulkBiltyPrinter = forwardRef(({ selectedBookings = [] }, ref) => {
           position: absolute !important;
           top: 0 !important;
           left: 0 !important;
-          width: 297mm !important;
+          width: 210mm !important;
           opacity: 1 !important;
         }
         .bulk-bilty-item {
-          width: 297mm !important;
-          height: 210mm !important;
+          width: 210mm !important;
+          height: 297mm !important;
           page-break-after: always !important;
           break-after: page !important;
           overflow: hidden !important;
@@ -69,7 +75,7 @@ const BulkBiltyPrinter = forwardRef(({ selectedBookings = [] }, ref) => {
         position: "fixed",
         top: "-9999px",
         left: "-9999px",
-        width: "297mm",
+        width: "210mm",
         opacity: 0,
         pointerEvents: "none",
         zIndex: -9999,

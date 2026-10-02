@@ -1,18 +1,18 @@
 /* ==========================================================================
    Wireframe Bilty CSS Modules
-   Strict A4 Landscape Height Budgeting (297mm x 210mm paper):
-   Customer Copy = 93mm (max-height: 93mm, overflow: hidden)
-   Cut Line = 4.5mm (max-height: 4.5mm, overflow: hidden)
-   Office Copy = 93mm (max-height: 93mm, overflow: hidden)
-   Total Page Height = 93mm + 4.5mm + 93mm = 190.5mm
-   Outer Width = 285mm (max-width: 285mm, box-sizing: border-box)
+   Strict A4 Portrait Height Budgeting (210mm x 297mm paper):
+   Customer Copy = 138mm (max-height: 138mm, overflow: hidden)
+   Cut Line = 4mm (max-height: 4mm, overflow: hidden)
+   Office Copy = 138mm (max-height: 138mm, overflow: hidden)
+   Total Page Height = 138mm + 4mm + 138mm = 280mm
+   Outer Width = 198mm (max-width: 198mm, box-sizing: border-box)
    ========================================================================== */
 
 .page {
-  width: 280mm;
-  max-width: 280mm;
-  height: 190.5mm;
-  max-height: 190.5mm;
+  width: 198mm;
+  max-width: 198mm;
+  height: 280mm;
+  max-height: 280mm;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -24,23 +24,23 @@
 }
 
 .singlePage {
-  height: 93mm !important;
-  max-height: 93mm !important;
+  height: 138mm !important;
+  max-height: 138mm !important;
   justify-content: center;
 }
 
 .copyContainer {
   width: 100%;
-  max-width: 280mm;
-  height: 93mm;
-  max-height: 93mm;
+  max-width: 198mm;
+  height: 138mm;
+  max-height: 138mm;
   border: 1px solid #123B63;
   border-radius: 4px;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 1.2mm 1.5mm;
+  padding: 1mm 1.5mm;
   box-sizing: border-box;
   background: #ffffff;
   overflow: hidden;
@@ -48,66 +48,46 @@
   page-break-inside: avoid;
 }
 
-.topSection {
-  display: flex;
-  height: 47.5mm;
-  max-height: 47.5mm;
-  gap: 1mm;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-.leftColumn {
-  flex: 1 1 auto;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  height: 47.5mm;
-  max-height: 47.5mm;
-  gap: 1mm;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
 .row1 {
   display: flex;
-  height: 24.5mm;
-  max-height: 24.5mm;
+  height: 33mm;
+  max-height: 33mm;
   gap: 1mm;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
   overflow: hidden;
+  align-items: stretch;
 }
 
 .row2 {
   display: flex;
-  height: 22mm;
-  max-height: 22mm;
+  height: 23mm;
+  max-height: 23mm;
   gap: 1mm;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
   overflow: hidden;
+  align-items: stretch;
 }
 
 .row3 {
   display: flex;
-  height: 27mm;
-  max-height: 27mm;
+  height: 69mm;
+  max-height: 69mm;
   gap: 1mm;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
   overflow: hidden;
+  align-items: stretch;
 }
 
-.row5 {
+.row4 {
   display: flex;
-  height: 5.5mm;
-  max-height: 5.5mm;
+  height: 5mm;
+  max-height: 5mm;
   gap: 1mm;
   width: 100%;
   max-width: 100%;
@@ -116,10 +96,10 @@
 }
 
 .cutLine {
-  height: 4.5mm;
-  max-height: 4.5mm;
+  height: 4mm;
+  max-height: 4mm;
   width: 100%;
-  max-width: 280mm;
+  max-width: 198mm;
   display: flex;
   align-items: center;
   justify-content: space-between;
