@@ -98,6 +98,14 @@ export const deleteBookingThunk = createAsyncThunk(
 
 const initialState = {
   list: [],
+  pagination: {
+    currentPage: 1,
+    limit: 20,
+    totalBookings: 0,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPreviousPage: false,
+  },
   currentBooking: null,
   isLoading: false,
   actionLoading: false,
@@ -124,7 +132,22 @@ const bookingSlice = createSlice({
       })
       .addCase(fetchBookings.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.list = action.payload;
+        if (action.payload && Array.isArray(action.payload.bookings)) {
+          state.list = action.payload.bookings;
+          state.pagination = action.payload.pagination || state.pagination;
+        } else if (Array.isArray(action.payload)) {
+          state.list = action.payload;
+          state.pagination = {
+            currentPage: 1,
+            limit: action.payload.length || 20,
+            totalBookings: action.payload.length || 0,
+            totalPages: 1,
+            hasNextPage: false,
+            hasPreviousPage: false,
+          };
+        } else {
+          state.list = [];
+        }
       })
       .addCase(fetchBookings.rejected, (state, action) => {
         state.isLoading = false;

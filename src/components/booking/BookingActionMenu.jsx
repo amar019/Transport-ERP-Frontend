@@ -12,7 +12,9 @@ import {
   AlertTriangle,
   Loader2,
   Lock,
+  MessageCircle,
 } from "lucide-react";
+import WhatsAppShareModal from "./WhatsAppShareModal";
 
 export default function BookingActionMenu({
   booking,
@@ -26,6 +28,7 @@ export default function BookingActionMenu({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   const [isCancelling, setIsCancelling] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -102,11 +105,24 @@ export default function BookingActionMenu({
 
   return (
     <div className="relative inline-flex items-center gap-1.5" ref={menuRef}>
+      {/* Quick Action: Share WhatsApp */}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          setShareModalOpen(true);
+        }}
+        className="p-1.5 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 bg-white rounded-lg border border-emerald-200 hover:border-emerald-300 transition-colors cursor-pointer"
+        title="Share Bilty on WhatsApp"
+      >
+        <MessageCircle className="w-3.5 h-3.5 fill-current text-emerald-600" />
+      </button>
+
       {/* Quick Action: Print */}
       <button
         type="button"
         onClick={handlePrintBilty}
-        className="p-1.5 text-[#64748B] hover:text-[#F97316] hover:bg-[#FFF7ED] bg-white rounded-lg border border-[#E2E8F0] hover:border-[#FFEDD5] transition-colors cursor-pointer"
+        className="p-1.5 text-[#64748B] hover:text-[#D90429] hover:bg-[#FFF0F3] bg-white rounded-lg border border-[#E2E8F0] hover:border-[#FCD3DB] transition-colors cursor-pointer"
         title="Print / Preview Bilty"
       >
         <Printer className="w-3.5 h-3.5" />
@@ -131,16 +147,28 @@ export default function BookingActionMenu({
           <button
             type="button"
             onClick={handleView}
-            className="w-full px-3 py-2 text-left hover:bg-[#FFF7ED] hover:text-[#F97316] flex items-center gap-2 transition-colors cursor-pointer"
+            className="w-full px-3 py-2 text-left hover:bg-slate-100 flex items-center gap-2 transition-colors cursor-pointer"
           >
             <Eye className="w-3.5 h-3.5 text-[#64748B]" /> View Details
+          </button>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setDropdownOpen(false);
+              setShareModalOpen(true);
+            }}
+            className="w-full px-3 py-2 text-left hover:bg-emerald-50 text-emerald-700 flex items-center gap-2 transition-colors cursor-pointer"
+          >
+            <MessageCircle className="w-3.5 h-3.5 text-emerald-600 fill-current" /> Share WhatsApp
           </button>
 
           {canEdit && (
             <button
               type="button"
               onClick={handleEdit}
-              className="w-full px-3 py-2 text-left hover:bg-[#FFF7ED] hover:text-[#F97316] flex items-center gap-2 transition-colors cursor-pointer"
+              className="w-full px-3 py-2 text-left hover:bg-slate-100 flex items-center gap-2 transition-colors cursor-pointer"
             >
               <Pencil className="w-3.5 h-3.5 text-[#64748B]" /> Edit Booking
             </button>
@@ -149,7 +177,7 @@ export default function BookingActionMenu({
           <button
             type="button"
             onClick={handlePrintBilty}
-            className="w-full px-3 py-2 text-left hover:bg-[#FFF7ED] hover:text-[#F97316] flex items-center gap-2 transition-colors cursor-pointer"
+            className="w-full px-3 py-2 text-left hover:bg-slate-100 flex items-center gap-2 transition-colors cursor-pointer"
           >
             <Printer className="w-3.5 h-3.5 text-[#64748B]" /> Print Bilty
           </button>
@@ -308,6 +336,13 @@ export default function BookingActionMenu({
           </div>,
           document.body
         )}
+
+      {/* WhatsApp Sharing Interactive Modal */}
+      <WhatsAppShareModal
+        booking={booking}
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+      />
     </div>
   );
 }

@@ -15,6 +15,7 @@ import {
   Clock,
   TrendingUp,
   ChevronRight,
+  ChevronLeft,
 } from "lucide-react";
 import BookingFilters from "@/components/booking/BookingFilters";
 import BookingTable from "@/components/booking/BookingTable";
@@ -32,9 +33,13 @@ export const BookingListPage = () => {
 
   // Redux state
   const { user } = useSelector((state) => state.auth);
-  const { list: rawBookings, isLoading, error: reduxError } = useSelector(
+  const { list: rawBookings, pagination, isLoading, error: reduxError } = useSelector(
     (state) => state.bookings
   );
+
+  // Pagination State
+  const [page, setPage] = useState(1);
+  const limit = 20;
 
   // Local Toast & Error State
   const [toast, setToast] = useState(null);
@@ -60,87 +65,72 @@ export const BookingListPage = () => {
     setTimeout(() => setToast(null), 3500);
   }, []);
 
-  // Fetch Bookings Data
-  const loadBookings = useCallback(async () => {
-    try {
-      setLocalError(null);
-      await dispatch(fetchBookings()).unwrap();
-    } catch (err) {
-      console.error("Error loading bookings:", err);
-      setLocalError(typeof err === "string" ? err : "Failed to load bookings");
-    }
-  }, [dispatch]);
+  // Fetch Bookings Data with backend pagination & filters
+  const loadBookings = useCallback(
+    async (targetPage = page) => {
+      try {
+        setLocalError(null);
+        const params = {
+          page: targetPage,
+          limit,
+        };
+
+        if (filters.search?.trim()) {
+          params.search = filters.search.trim();
+        }
+        if (filters.status && filters.status !== "ALL") {
+          params.status = filters.status;
+        }
+        if (filters.paymentStatus && filters.paymentStatus !== "ALL") {
+          params.paymentStatus = filters.paymentStatus;
+        }
+        if (filters.collectionType && filters.collectionType !== "ALL") {
+          params.collectionType = filters.collectionType;
+        }
+        if (filters.startDate) {
+          params.startDate = filters.startDate;
+        }
+        if (filters.endDate) {
+          params.endDate = filters.endDate;
+        }
+
+        await dispatch(fetchBookings(params)).unwrap();
+      } catch (err) {
+        console.error("Error loading bookings:", err);
+        setLocalError(typeof err === "string" ? err : "Failed to load bookings");
+      }
+    },
+    [dispatch, filters, page]
+  );
 
   useEffect(() => {
-    loadBookings();
-  }, [loadBookings]);
+    loadBookings(page);
+  }, [loadBookings, page]);
 
-  // Client-side Filter Logic
+  // Handle filter changes (resets pagination to page 1)
+  const handleFilterChange = useCallback((newFilters) => {
+    setFilters(newFilters);
+    setPage(1);
+  }, []);
+
+  // Reset Filters (resets pagination to page 1)
+  const handleResetFilters = useCallback(() => {
+    setFilters({
+      search: "",
+      status: "ALL",
+      paymentStatus: "ALL",
+      collectionType: "ALL",
+      startDate: "",
+      endDate: "",
+    });
+    setPage(1);
+  }, []);
+
+  // Bookings list for table rendering
   const filteredBookings = useMemo(() => {
     if (!Array.isArray(rawBookings)) return [];
-
-    return rawBookings.filter((b) => {
-      // 1. Search text
-      const q = (filters.search || "").toLowerCase().trim();
-      const bookingNo = (b.bookingNumber || "").toLowerCase();
-      const shopName = (b.customer?.shopName || (typeof b.customer === "string" ? b.customer : "")).toLowerCase();
-      const ownerName = (b.customer?.ownerName || "").toLowerCase();
-      const fromLoc = (b.from || "").toLowerCase();
-      const toLoc = (b.to || "").toLowerCase();
-      const deliveryAddress = (b.deliveryAddress || "").toLowerCase();
-      const itemName = (b.itemName || "").toLowerCase();
-
-      const matchSearch =
-        !q ||
-        bookingNo.includes(q) ||
-        shopName.includes(q) ||
-        ownerName.includes(q) ||
-        fromLoc.includes(q) ||
-        toLoc.includes(q) ||
-        (b.fromBranch?.name || "").toLowerCase().includes(q) ||
-        (b.toBranch?.name || "").toLowerCase().includes(q) ||
-        deliveryAddress.includes(q) ||
-        itemName.includes(q);
-
-      // 2. Booking Status
-      let matchStatus = true;
-      if (filters.status !== "ALL") {
-        matchStatus = b.status === filters.status;
-      }
-
-      // 3. Payment Status
-      let matchPaymentStatus = true;
-      if (filters.paymentStatus !== "ALL") {
-        matchPaymentStatus = b.paymentStatus === filters.paymentStatus;
-      }
-
-      // 4. Collection Type
-      let matchCollectionType = true;
-      if (filters.collectionType !== "ALL") {
-        matchCollectionType = b.collectionType === filters.collectionType;
-      }
-
-      // 5. Date Range match
-      let matchDate = true;
-      const bookingTime = new Date(b.bookingDate || b.createdAt).getTime();
-      if (filters.startDate) {
-        const start = new Date(filters.startDate).setHours(0, 0, 0, 0);
-        if (bookingTime < start) matchDate = false;
-      }
-      if (filters.endDate) {
-        const end = new Date(filters.endDate).setHours(23, 59, 59, 999);
-        if (bookingTime > end) matchDate = false;
-      }
-
-      return (
-        matchSearch &&
-        matchStatus &&
-        matchPaymentStatus &&
-        matchCollectionType &&
-        matchDate
-      );
-    });
-  }, [rawBookings, filters]);
+    return rawBookings;
+  }, [rawBookings]);
 
   // Dynamic KPI Summary Metrics Calculation
   const kpiMetrics = useMemo(() => {
@@ -197,18 +187,6 @@ export const BookingListPage = () => {
     } else {
       setSelectedIds(allFilteredIds);
     }
-  };
-
-  // Reset Filters
-  const handleResetFilters = () => {
-    setFilters({
-      search: "",
-      status: "ALL",
-      paymentStatus: "ALL",
-      collectionType: "ALL",
-      startDate: "",
-      endDate: "",
-    });
   };
 
   // Cancel Booking Handler
@@ -302,9 +280,31 @@ export const BookingListPage = () => {
 
   const displayError = localError || reduxError;
 
+  // Pagination Display Calculations
+  const currentPage = pagination?.currentPage ?? page;
+  const totalPages = Math.max(pagination?.totalPages ?? 1, 1);
+  const totalBookings = pagination?.totalBookings ?? (Array.isArray(rawBookings) ? rawBookings.length : 0);
+  const hasNextPage = pagination?.hasNextPage ?? (currentPage < totalPages);
+  const hasPreviousPage = pagination?.hasPreviousPage ?? (currentPage > 1);
+
+  const fromItem = totalBookings > 0 ? (currentPage - 1) * limit + 1 : 0;
+  const toItem = Math.min(currentPage * limit, totalBookings);
+
+  const handlePreviousPage = () => {
+    if (hasPreviousPage && page > 1) {
+      setPage((prev) => prev - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (hasNextPage && page < totalPages) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
   // Quick Status Tab Switch Options
   const statusTabs = [
-    { label: "All Bookings", value: "ALL", count: rawBookings?.length || 0 },
+    { label: "All Bookings", value: "ALL", count: totalBookings },
     {
       label: "Active",
       value: "BOOKED",
@@ -385,7 +385,7 @@ export const BookingListPage = () => {
           {/* Refresh Button */}
           <button
             type="button"
-            onClick={loadBookings}
+            onClick={() => loadBookings(page)}
             disabled={isLoading}
             className="p-2 text-[#64748B] hover:text-[#0F172A] hover:bg-white bg-white rounded-lg border border-[#E2E8F0] shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
             title="Refresh Bookings"
@@ -523,7 +523,7 @@ export const BookingListPage = () => {
               <button
                 key={tab.value}
                 type="button"
-                onClick={() => setFilters((prev) => ({ ...prev, status: tab.value }))}
+                onClick={() => handleFilterChange({ ...filters, status: tab.value })}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs transition-colors cursor-pointer ${
                   isTabActive
                     ? "bg-[#F97316] text-white font-semibold shadow-2xs"
@@ -558,8 +558,11 @@ export const BookingListPage = () => {
       <div className="no-print">
         <BookingFilters
           filters={filters}
-          onChange={setFilters}
-          onSearch={loadBookings}
+          onChange={handleFilterChange}
+          onSearch={() => {
+            setPage(1);
+            loadBookings(1);
+          }}
           onReset={handleResetFilters}
         />
       </div>
@@ -575,6 +578,43 @@ export const BookingListPage = () => {
         onDeleteSuccess={handleDeleteBooking}
         showToast={showToast}
       />
+
+      {/* Pagination Controls */}
+      <div className="bg-white px-4 py-3 border border-[#E2E8F0] rounded-xl shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3 no-print">
+        <div className="text-xs text-[#64748B] font-medium">
+          Showing{" "}
+          <span className="font-semibold text-[#0F172A]">{fromItem}</span>–
+          <span className="font-semibold text-[#0F172A]">{toItem}</span> of{" "}
+          <span className="font-semibold text-[#0F172A]">{totalBookings}</span> bookings
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handlePreviousPage}
+            disabled={!hasPreviousPage || isLoading}
+            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[#0F172A] bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg shadow-2xs transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+            <span>Previous</span>
+          </button>
+
+          <span className="text-xs font-semibold text-[#64748B] px-2">
+            Page <span className="text-[#0F172A]">{currentPage}</span> of{" "}
+            <span className="text-[#0F172A]">{totalPages}</span>
+          </span>
+
+          <button
+            type="button"
+            onClick={handleNextPage}
+            disabled={!hasNextPage || isLoading}
+            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[#0F172A] bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg shadow-2xs transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <span>Next</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
