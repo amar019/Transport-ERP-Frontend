@@ -467,11 +467,15 @@ export const BookingDetailsPage = () => {
                         Receiver (Consignee)
                       </span>
                     </div>
-                    {customer.customerCode && (
+                    {booking.isDirectEntry ? (
+                      <span className="text-[9px] font-black bg-amber-100 text-amber-900 px-2 py-0.5 rounded-md border border-amber-200">
+                        ⚡ Direct Entry
+                      </span>
+                    ) : customer.customerCode ? (
                       <span className="text-[9px] font-mono font-black bg-orange-100 text-orange-800 px-2 py-0.5 rounded-md border border-orange-200/80">
                         {customer.customerCode}
                       </span>
-                    )}
+                    ) : null}
                   </div>
 
                   <div className="space-y-2.5 text-xs">
@@ -480,7 +484,7 @@ export const BookingDetailsPage = () => {
                         Customer / Firm Name
                       </span>
                       <span className="font-black text-slate-800 text-sm">
-                        {customer.shopName || (typeof booking.customer === "string" ? booking.customer : "N/A")}
+                        {customer.shopName || booking.receiver?.shopName || (typeof booking.customer === "string" ? booking.customer : "N/A")}
                       </span>
                     </div>
 
@@ -490,7 +494,7 @@ export const BookingDetailsPage = () => {
                           Owner / Contact
                         </span>
                         <span className="font-bold text-slate-700">
-                          {customer.ownerName || "N/A"}
+                          {customer.ownerName || booking.receiver?.ownerName || "N/A"}
                         </span>
                       </div>
                       <div>
@@ -498,18 +502,18 @@ export const BookingDetailsPage = () => {
                           Phone Number
                         </span>
                         <span className="font-bold text-slate-700 font-mono">
-                          {customer.mobile || "N/A"}
+                          {customer.mobile || booking.receiver?.mobile || "N/A"}
                         </span>
                       </div>
                     </div>
 
-                    {customer.address && (
+                    {(customer.address || booking.deliveryAddress || booking.receiver?.address) && (
                       <div>
                         <span className="text-[10px] font-black uppercase text-slate-400 block">
-                          Registered Firm Address
+                          Address / Drop Location
                         </span>
                         <span className="font-semibold text-slate-600">
-                          {customer.address}
+                          {booking.deliveryAddress || customer.address || booking.receiver?.address}
                         </span>
                       </div>
                     )}
@@ -534,39 +538,91 @@ export const BookingDetailsPage = () => {
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
-                <div className="sm:col-span-8 bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80">
-                  <span className="text-[10px] font-black uppercase text-slate-400 block mb-1">
-                    Item Description / Goods
-                  </span>
-                  <span className="font-black text-slate-800 text-sm md:text-base">
-                    {booking.itemName || "General Transport Goods"}
-                  </span>
+              {/* Items List */}
+              {Array.isArray(booking.items) && booking.items.length > 0 ? (
+                <div className="space-y-2">
+                  <div className="grid grid-cols-12 text-[10px] font-black uppercase text-slate-400 px-3">
+                    <span className="col-span-1">#</span>
+                    <span className="col-span-8">Description of Goods</span>
+                    <span className="col-span-3 text-right">Quantity</span>
+                  </div>
+                  {booking.items.map((item, idx) => (
+                    <div key={idx} className="grid grid-cols-12 items-center bg-slate-50/80 p-3 rounded-2xl border border-slate-200/80 text-xs font-bold text-slate-800">
+                      <span className="col-span-1 font-mono text-slate-400">#{idx + 1}</span>
+                      <span className="col-span-8 font-black text-slate-800">{item.description}</span>
+                      <span className="col-span-3 text-right font-mono text-sm font-black text-slate-900">{item.quantity} Pkgs</span>
+                    </div>
+                  ))}
+                  {booking.invoiceNo && (
+                    <div className="mt-2 bg-slate-50/60 p-3 rounded-2xl border border-slate-200/70 flex items-center justify-between text-xs">
+                      <span className="text-[10px] font-black uppercase text-slate-400">Invoice No. / Bill No.:</span>
+                      <span className="font-mono font-black text-slate-800">{booking.invoiceNo}</span>
+                    </div>
+                  )}
                 </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
+                  <div className="sm:col-span-5 bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80">
+                    <span className="text-[10px] font-black uppercase text-slate-400 block mb-1">
+                      Item Description / Goods
+                    </span>
+                    <span className="font-black text-slate-800 text-sm md:text-base">
+                      {booking.itemName || "General Transport Goods"}
+                    </span>
+                  </div>
 
-                <div className="sm:col-span-4 bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 text-center flex flex-col justify-center">
-                  <span className="text-[10px] font-black uppercase text-slate-400 block mb-1">
-                    Total Quantity
-                  </span>
-                  <span className="font-mono font-black text-xl text-slate-900">
-                    {booking.quantity ?? 1} <span className="text-xs font-bold text-slate-500 font-sans">Packages</span>
-                  </span>
+                  <div className="sm:col-span-4 bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80">
+                    <span className="text-[10px] font-black uppercase text-slate-400 block mb-1">
+                      Invoice No. / Bill No.
+                    </span>
+                    <span className="font-mono font-black text-slate-800 text-sm md:text-base">
+                      {booking.invoiceNo || booking.invoiceNumber || "N/A"}
+                    </span>
+                  </div>
+
+                  <div className="sm:col-span-3 bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 text-center flex flex-col justify-center">
+                    <span className="text-[10px] font-black uppercase text-slate-400 block mb-1">
+                      Total Quantity
+                    </span>
+                    <span className="font-mono font-black text-xl text-slate-900">
+                      {booking.quantity ?? 1} <span className="text-xs font-bold text-slate-500 font-sans">Packages</span>
+                    </span>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
-            {/* CARD 4: NOTES & SPECIAL INSTRUCTIONS (IF ANY) */}
-            {booking.notes && (
-              <div className="bg-white rounded-3xl border border-slate-200/90 shadow-xs p-5 md:p-6 space-y-2">
+            {/* CARD 4: REMARK & NOTES (IF ANY) */}
+            {(booking.remark || booking.notes) && (
+              <div className="bg-white rounded-3xl border border-slate-200/90 shadow-xs p-5 md:p-6 space-y-3">
                 <div className="flex items-center gap-2 pb-2.5 border-b border-slate-100">
                   <FileText className="w-4 h-4 text-orange-600" />
                   <h3 className="font-extrabold text-slate-800 text-sm tracking-tight uppercase">
-                    Notes & Special Handling Instructions
+                    Remark & Handling Instructions
                   </h3>
                 </div>
-                <p className="text-xs font-semibold text-slate-700 bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 leading-relaxed">
-                  {booking.notes}
-                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {booking.remark && (
+                    <div className="bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/80">
+                      <span className="text-[10px] font-black uppercase text-slate-400 block mb-0.5">
+                        Remark (Printed on Bilty)
+                      </span>
+                      <span className="text-xs font-bold text-slate-800">
+                        {booking.remark}
+                      </span>
+                    </div>
+                  )}
+                  {booking.notes && (
+                    <div className="bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/80">
+                      <span className="text-[10px] font-black uppercase text-slate-400 block mb-0.5">
+                        Internal Notes
+                      </span>
+                      <span className="text-xs font-semibold text-slate-700">
+                        {booking.notes}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>

@@ -88,20 +88,25 @@ export default function DeliveryDetailsModal({ isOpen, onClose, booking }) {
             <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
               <div className="flex items-center gap-1.5 font-bold text-[#0F172A] text-xs pb-2 border-b border-[#E2E8F0]">
                 <Building2 className="w-4 h-4 text-[#F97316]" />
-                Consignee / Customer Details
+                <span>Consignee / Customer Details</span>
+                {booking.isDirectEntry && (
+                  <span className="text-[9px] font-black bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded border border-amber-200 ml-auto">
+                    ⚡ Direct Entry
+                  </span>
+                )}
               </div>
               <p className="font-bold text-[#0F172A] text-xs">
-                {booking.customer?.shopName || booking.customer?.ownerName || booking.customer?.name || "Walk-in Customer"}
+                {booking.customer?.shopName || booking.receiver?.shopName || booking.customer?.ownerName || booking.receiver?.ownerName || booking.customer?.name || "Walk-in Customer"}
               </p>
-              {booking.customer?.ownerName && (
+              {(booking.customer?.ownerName || booking.receiver?.ownerName) && (
                 <p className="text-[#64748B]">
-                  Owner: <strong className="text-[#334155]">{booking.customer.ownerName}</strong>
+                  Contact Person: <strong className="text-[#334155]">{booking.customer?.ownerName || booking.receiver?.ownerName}</strong>
                 </p>
               )}
-              {booking.customer?.mobile ? (
+              {(booking.customer?.mobile || booking.receiver?.mobile) ? (
                 <p className="text-[#64748B] flex items-center gap-1.5 font-medium">
                   <Phone className="w-3.5 h-3.5 text-[#94A3B8]" />
-                  {booking.customer.mobile}
+                  {booking.customer?.mobile || booking.receiver?.mobile}
                 </p>
               ) : (
                 <p className="text-[#94A3B8]">No Mobile Contact</p>

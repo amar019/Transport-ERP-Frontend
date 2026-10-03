@@ -17,6 +17,7 @@ export const ReceiverSection = ({ customer = {}, deliveryAddress = "", receiver 
   const mobile = customer?.mobile || customer?.phone || receiver?.mobile || receiver?.phone || "-";
 
   const [marathiShopName, setMarathiShopName] = useState(explicitMarathi || '');
+  const [marathiAddress, setMarathiAddress] = useState('');
 
   useEffect(() => {
     let isMounted = true;
@@ -40,11 +41,6 @@ export const ReceiverSection = ({ customer = {}, deliveryAddress = "", receiver 
       isMounted = false;
     };
   }, [shopName, explicitMarathi]);
-
-  // Format display: English shop name followed by Marathi in brackets
-  const displayShopName = marathiShopName && marathiShopName !== shopName
-    ? `${shopName} (${marathiShopName})`
-    : shopName;
 
   // Build structured address from customer/receiver if available
   const customerFullAddress = [
@@ -73,6 +69,40 @@ export const ReceiverSection = ({ customer = {}, deliveryAddress = "", receiver 
     receiverFullAddress ||
     "-";
 
+  const explicitAddressMarathi = customer?.addressMarathi || receiver?.addressMarathi;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (explicitAddressMarathi) {
+      setMarathiAddress(explicitAddressMarathi);
+      return;
+    }
+
+    if (address && address !== '-') {
+      transliterateToMarathi(address).then((translated) => {
+        if (isMounted && translated) {
+          setMarathiAddress(translated);
+        }
+      });
+    } else {
+      setMarathiAddress('');
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [address, explicitAddressMarathi]);
+
+  // Format display: English shop name followed by Marathi in brackets
+  const displayShopName = marathiShopName && marathiShopName !== shopName
+    ? `${shopName} (${marathiShopName})`
+    : shopName;
+
+  const displayAddress = marathiAddress && marathiAddress !== address
+    ? `${address} (${marathiAddress})`
+    : (marathiAddress || address);
+
   return (
     <div className={styles.receiverCard}>
       {/* Section Title */}
@@ -97,7 +127,7 @@ export const ReceiverSection = ({ customer = {}, deliveryAddress = "", receiver 
         <div className={styles.detailRow}>
           <span className={styles.label}>Address</span>
           <span className={styles.colon}>:</span>
-          <span className={styles.value}>{address}</span>
+          <span className={styles.value}>{displayAddress}</span>
         </div>
       </div>
     </div>

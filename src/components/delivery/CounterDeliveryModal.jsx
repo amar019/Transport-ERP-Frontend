@@ -44,8 +44,10 @@ export default function CounterDeliveryModal({
 
   const customerName =
     booking.customer?.shopName ||
+    booking.receiver?.shopName ||
     booking.customer?.name ||
     booking.customer?.ownerName ||
+    booking.receiver?.ownerName ||
     "Walk-in Customer";
 
   const handleSubmit = async (e) => {

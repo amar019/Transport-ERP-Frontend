@@ -170,13 +170,13 @@ export default function AssignDeliveryBoyModal({
               <div>
                 <span className="text-[#64748B] block text-[10px] uppercase font-semibold">Recipient</span>
                 <span className="font-bold text-[#0F172A] truncate block">
-                  {booking.customer?.shopName || booking.customer?.ownerName || booking.customer?.name || "Walk-in Customer"}
+                  {booking.customer?.shopName || booking.receiver?.shopName || booking.customer?.ownerName || booking.receiver?.ownerName || booking.customer?.name || "Walk-in Customer"}
                 </span>
               </div>
               <div>
                 <span className="text-[#64748B] block text-[10px] uppercase font-semibold">Phone</span>
                 <span className="font-medium text-[#0F172A] block">
-                  {booking.customer?.mobile || "N/A"}
+                  {booking.customer?.mobile || booking.receiver?.mobile || "N/A"}
                 </span>
               </div>
             </div>

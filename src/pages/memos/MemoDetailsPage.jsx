@@ -447,11 +447,18 @@ export const MemoDetailsPage = () => {
                         </button>
                       </td>
                       <td className="py-3 px-4">
-                        <div className="font-extrabold text-slate-800">
-                          {b.customer?.shopName || (typeof b.customer === "string" ? b.customer : "N/A")}
+                        <div className="font-extrabold text-slate-800 flex items-center gap-1.5">
+                          {b.isDirectEntry && (
+                            <span className="text-[9px] font-black bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded border border-amber-200 shrink-0">
+                              ⚡ Direct
+                            </span>
+                          )}
+                          <span>
+                            {b.customer?.shopName || b.receiver?.shopName || (typeof b.customer === "string" ? b.customer : "N/A")}
+                          </span>
                         </div>
-                        {b.customer?.mobile && (
-                          <div className="text-[11px] text-slate-400">{b.customer.mobile}</div>
+                        {(b.customer?.mobile || b.receiver?.mobile) && (
+                          <div className="text-[11px] text-slate-400">{b.customer?.mobile || b.receiver?.mobile}</div>
                         )}
                       </td>
                       <td className="py-3 px-4">{b.itemName || "Goods"}</td>

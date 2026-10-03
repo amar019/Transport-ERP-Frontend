@@ -23,6 +23,8 @@ import {
   CreditCard,
   Truck,
   ChevronDown,
+  Plus,
+  Trash2,
 } from "lucide-react";
 import { getBranches } from "@/services/branch.service";
 import { getCustomers } from "@/services/customer.service";
@@ -36,6 +38,13 @@ export default function BookingForm({
 }) {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
+
+  // Multi-Item Goods List State
+  const [itemList, setItemList] = useState(
+    initialData?.items && initialData.items.length > 0
+      ? initialData.items.map((i) => ({ description: i.description || "", quantity: i.quantity ?? 1 }))
+      : [{ description: initialData?.itemName || "", quantity: initialData?.quantity ?? 1 }]
+  );
 
   // Branches list for Destination branch selection
   const [branches, setBranches] = useState([]);
@@ -53,6 +62,28 @@ export default function BookingForm({
 
   // Selected customer object for live preview chip
   const [selectedCustomerObj, setSelectedCustomerObj] = useState(null);
+
+  // Direct Entry (Walk-In Customer) Mode Flag
+  const [isDirectEntry, setIsDirectEntry] = useState(
+    Boolean(initialData?.isDirectEntry || (!initialData?.customer && initialData))
+  );
+
+  // Item List Handlers
+  const handleAddItem = () => {
+    setItemList((prev) => [...prev, { description: "", quantity: 1 }]);
+  };
+
+  const handleRemoveItem = (index) => {
+    if (itemList.length > 1) {
+      setItemList((prev) => prev.filter((_, i) => i !== index));
+    }
+  };
+
+  const handleItemChange = (index, field, value) => {
+    setItemList((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, [field]: value } : item))
+    );
+  };
 
   // Today's date string YYYY-MM-DD
   const todayStr = useMemo(() => {
@@ -156,6 +187,7 @@ export default function BookingForm({
     register,
     handleSubmit,
     setValue,
+    clearErrors,
     reset,
     control,
     formState: { errors },
@@ -189,6 +221,8 @@ export default function BookingForm({
       // Consignment & Goods
       itemName: initialData?.itemName || "",
       quantity: initialData?.quantity ?? 1,
+      invoiceNo: initialData?.invoiceNo || "",
+      remark: initialData?.remark || "",
 
       // Charges Matrix
       freight: initialData?.freight ?? 0,
@@ -225,6 +259,12 @@ export default function BookingForm({
         setSelectedCustomerObj(initialData.customer);
       }
 
+      if (initialData.items && Array.isArray(initialData.items) && initialData.items.length > 0) {
+        setItemList(initialData.items.map((i) => ({ description: i.description || "", quantity: i.quantity ?? 1 })));
+      } else if (initialData.itemName) {
+        setItemList([{ description: initialData.itemName, quantity: initialData.quantity ?? 1 }]);
+      }
+
       reset({
         bookingDate: formattedDate,
         collectionType: initialData.collectionType || "TO_PAY",
@@ -244,6 +284,8 @@ export default function BookingForm({
         deliveryAddress: initialData.deliveryAddress || initialData.customer?.address || "",
         itemName: initialData.itemName || "",
         quantity: initialData.quantity ?? 1,
+        invoiceNo: initialData.invoiceNo || "",
+        remark: initialData.remark || "",
         freight: initialData.freight ?? 0,
         hamali: initialData.hamali ?? 0,
         crossing: initialData.crossing ?? 0,
@@ -318,6 +360,17 @@ export default function BookingForm({
 
   // Form Submit Handler
   const handleFormSubmit = (data) => {
+    const validItems = itemList
+      .filter((i) => i.description && i.description.trim() !== "")
+      .map((i) => ({
+        description: i.description.trim(),
+        quantity: Math.max(1, Number(i.quantity || 1)),
+      }));
+
+    const finalItems = validItems.length > 0
+      ? validItems
+      : [{ description: data.itemName?.trim() || "General Goods", quantity: 1 }];
+
     const payload = {
       bookingDate: data.bookingDate,
       sender: {
@@ -325,11 +378,20 @@ export default function BookingForm({
         mobile: data.sender?.mobile?.trim() || "",
         address: data.sender?.address?.trim() || "",
       },
-      customer: data.customer,
+      customer: isDirectEntry ? null : (data.customer || null),
+      isDirectEntry: isDirectEntry,
+      receiver: {
+        shopName: data.receiver?.shopName?.trim() || "",
+        ownerName: data.receiver?.ownerName?.trim() || "",
+        mobile: data.receiver?.mobile?.trim() || "",
+      },
       toBranch: data.toBranch,
       deliveryAddress: data.deliveryAddress?.trim() || "",
-      itemName: data.itemName?.trim(),
-      quantity: Number(data.quantity || 1),
+      items: finalItems,
+      itemName: finalItems.map((i) => i.description).join(", "),
+      quantity: finalItems.reduce((sum, i) => sum + Number(i.quantity || 1), 0),
+      invoiceNo: data.invoiceNo?.trim() || "",
+      remark: data.remark?.trim() || "",
       freight: Number(data.freight || 0),
       hamali: Number(data.hamali || 0),
       crossing: Number(data.crossing || 0),
@@ -559,7 +621,7 @@ export default function BookingForm({
 
           {/* SECTION 2: PARTY DETAILS (SENDER & RECEIVER) */}
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-4 md:p-5 transition-all">
-            <div className="flex items-center justify-between mb-3.5 pb-2.5 border-b border-slate-100">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3.5 pb-2.5 border-b border-slate-100">
               <div className="flex items-center gap-2">
                 <span className="w-6 h-6 rounded-lg bg-orange-50 text-orange-700 font-black text-xs flex items-center justify-center border border-orange-200/80">
                   2
@@ -568,93 +630,145 @@ export default function BookingForm({
                   Party Details (Sender & Receiver)
                 </h3>
               </div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase">
-                Customer Quick-Fill
-              </span>
+
+              {/* Direct Entry Toggle Pill */}
+              <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold self-start sm:self-auto">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsDirectEntry(false);
+                  }}
+                  className={`px-3 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                    !isDirectEntry
+                      ? "bg-white text-orange-700 shadow-2xs font-extrabold"
+                      : "text-slate-500 hover:text-slate-800"
+                  }`}
+                >
+                  <User className="w-3.5 h-3.5" />
+                  <span>Registered Party</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsDirectEntry(true);
+                    setValue("customer", "");
+                    setSelectedCustomerObj(null);
+                    clearErrors("customer");
+                  }}
+                  className={`px-3 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                    isDirectEntry
+                      ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-2xs font-extrabold"
+                      : "text-slate-500 hover:text-slate-800"
+                  }`}
+                >
+                  <span className="text-amber-300">⚡</span>
+                  <span>Direct Entry</span>
+                </button>
+              </div>
             </div>
 
-            {/* Unified Fast-Search Dropdown */}
-            <div className="mb-4 relative" ref={partyDropdownRef}>
-              <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                Search Registered Customer / Receiver
-              </label>
-              <div className="relative">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  placeholder="Search by Shop Name, Owner, Mobile, Code, or City..."
-                  value={partySearchTerm}
-                  onFocus={() => setPartyDropdownOpen(true)}
-                  onChange={(e) => {
-                    setPartySearchTerm(e.target.value);
-                    setPartyDropdownOpen(true);
-                  }}
-                  className="w-full pl-9 pr-8 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 font-semibold text-slate-800 placeholder:text-slate-400 transition-all"
-                />
-                {partySearchTerm && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setPartySearchTerm("");
-                      setPartyDropdownOpen(false);
+            {/* Direct Entry Info Banner vs Fast-Search Autocomplete Dropdown */}
+            {isDirectEntry ? (
+              <div className="mb-4 bg-amber-50/80 border border-amber-200/90 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-amber-900">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 bg-amber-200/80 text-amber-900 rounded-md font-black text-[11px] shrink-0">
+                    ⚡ Direct Entry Active
+                  </span>
+                  <span className="font-medium text-amber-800">
+                    Walk-in Mode: Type receiver shop name & details directly below without registering a customer.
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsDirectEntry(false)}
+                  className="text-[11px] font-bold text-amber-800 hover:text-amber-950 underline self-start sm:self-auto cursor-pointer shrink-0"
+                >
+                  Switch to Registered Customer
+                </button>
+              </div>
+            ) : (
+              <div className="mb-4 relative" ref={partyDropdownRef}>
+                <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                  Search Registered Customer / Receiver
+                </label>
+                <div className="relative">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="Search by Shop Name, Owner, Mobile, Code, or City..."
+                    value={partySearchTerm}
+                    onFocus={() => setPartyDropdownOpen(true)}
+                    onChange={(e) => {
+                      setPartySearchTerm(e.target.value);
+                      setPartyDropdownOpen(true);
                     }}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-md cursor-pointer"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
+                    className="w-full pl-9 pr-8 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 font-semibold text-slate-800 placeholder:text-slate-400 transition-all"
+                  />
+                  {partySearchTerm && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPartySearchTerm("");
+                        setPartyDropdownOpen(false);
+                      }}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-md cursor-pointer"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+
+                {/* Customer Search Autocomplete Overlay */}
+                {partyDropdownOpen && (
+                  <div className="absolute left-0 right-0 top-full mt-1.5 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+                    <div className="max-h-56 overflow-y-auto divide-y divide-slate-100">
+                      {customersLoading ? (
+                        <div className="p-3 text-center text-xs text-slate-400 font-bold flex items-center justify-center gap-2">
+                          <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
+                          <span>Searching registered customers...</span>
+                        </div>
+                      ) : filteredCustomers.length === 0 ? (
+                        <div className="p-4 text-center text-xs text-slate-400 font-semibold">
+                          No registered customers matching "{partySearchTerm}"
+                        </div>
+                      ) : (
+                        filteredCustomers.map((c) => {
+                          const custId = c._id || c.id;
+                          return (
+                            <div
+                              key={custId}
+                              onClick={() => handleSelectCustomer(c)}
+                              className="p-3 text-xs flex items-center justify-between hover:bg-orange-50/70 cursor-pointer transition-colors"
+                            >
+                              <div>
+                                <div className="font-extrabold text-slate-800 flex items-center gap-2">
+                                  <Store className="w-3.5 h-3.5 text-orange-600 shrink-0" />
+                                  <span>{c.shopName}</span>
+                                  {c.customerCode && (
+                                    <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-mono font-bold">
+                                      {c.customerCode}
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="text-[11px] text-slate-500 font-medium flex items-center gap-3 mt-0.5">
+                                  <span>Owner: {c.ownerName || "N/A"}</span>
+                                  <span>•</span>
+                                  <span>Mob: {c.mobile || "N/A"}</span>
+                                  {c.city && <span>• {c.city}</span>}
+                                </div>
+                              </div>
+                              <span className="text-[10px] font-bold text-orange-600 bg-orange-50 border border-orange-200/80 px-2 py-0.5 rounded-md">
+                                Select
+                              </span>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
-
-              {/* Customer Search Autocomplete Overlay */}
-              {partyDropdownOpen && (
-                <div className="absolute left-0 right-0 top-full mt-1.5 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100">
-                  <div className="max-h-56 overflow-y-auto divide-y divide-slate-100">
-                    {customersLoading ? (
-                      <div className="p-3 text-center text-xs text-slate-400 font-bold flex items-center justify-center gap-2">
-                        <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
-                        <span>Searching registered customers...</span>
-                      </div>
-                    ) : filteredCustomers.length === 0 ? (
-                      <div className="p-4 text-center text-xs text-slate-400 font-semibold">
-                        No registered customers matching "{partySearchTerm}"
-                      </div>
-                    ) : (
-                      filteredCustomers.map((c) => {
-                        const custId = c._id || c.id;
-                        return (
-                          <div
-                            key={custId}
-                            onClick={() => handleSelectCustomer(c)}
-                            className="p-3 text-xs flex items-center justify-between hover:bg-orange-50/70 cursor-pointer transition-colors"
-                          >
-                            <div>
-                              <div className="font-extrabold text-slate-800 flex items-center gap-2">
-                                <Store className="w-3.5 h-3.5 text-orange-600 shrink-0" />
-                                <span>{c.shopName}</span>
-                                {c.customerCode && (
-                                  <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-mono font-bold">
-                                    {c.customerCode}
-                                  </span>
-                                )}
-                              </div>
-                              <div className="text-[11px] text-slate-500 font-medium flex items-center gap-3 mt-0.5">
-                                <span>Owner: {c.ownerName || "N/A"}</span>
-                                <span>•</span>
-                                <span>Mob: {c.mobile || "N/A"}</span>
-                                {c.city && <span>• {c.city}</span>}
-                              </div>
-                            </div>
-                            <span className="text-[10px] font-bold text-orange-600 bg-orange-50 border border-orange-200/80 px-2 py-0.5 rounded-md">
-                              Select
-                            </span>
-                          </div>
-                        );
-                      })
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
+            )}
 
             {/* Dual Cards: SENDER (Left) & RECEIVER / CUSTOMER (Right) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -750,9 +864,11 @@ export default function BookingForm({
 
                 <input
                   type="hidden"
-                  {...register("customer", { required: "Please select or assign a Customer" })}
+                  {...register("customer", {
+                    required: isDirectEntry ? false : "Please select or assign a Customer",
+                  })}
                 />
-                {errors.customer && (
+                {!isDirectEntry && errors.customer && (
                   <p className="text-[10px] font-bold text-rose-500">
                     {errors.customer.message}
                   </p>
@@ -799,7 +915,7 @@ export default function BookingForm({
             </div>
           </div>
 
-          {/* SECTION 3: CONSIGNMENT & GOODS */}
+          {/* SECTION 3: CONSIGNMENT & GOODS (MULTI-ITEM) */}
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-4 md:p-5 transition-all">
             <div className="flex items-center justify-between mb-3.5 pb-2.5 border-b border-slate-100">
               <div className="flex items-center gap-2">
@@ -807,55 +923,91 @@ export default function BookingForm({
                   3
                 </span>
                 <h3 className="font-extrabold text-slate-800 text-xs md:text-sm tracking-tight uppercase">
-                  Consignment & Goods
+                  Consignment Goods List ({itemList.length} {itemList.length === 1 ? "Item" : "Items"})
                 </h3>
               </div>
-              <span className="text-[10px] font-semibold text-slate-400 hidden sm:inline">
-                Use <kbd className="font-mono bg-slate-100 px-1 py-0.5 rounded border text-slate-500">TAB</kbd> key to jump between inputs
-              </span>
+              <button
+                type="button"
+                onClick={handleAddItem}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-extrabold text-orange-700 bg-orange-50 hover:bg-orange-100 border border-orange-200/80 rounded-xl transition-all cursor-pointer shadow-2xs hover:scale-105 active:scale-95"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Item Row</span>
+              </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
-              {/* Item Description (8 cols) */}
-              <div className="sm:col-span-8">
+            {/* Dynamic Multi-Item Rows */}
+            <div className="space-y-2.5">
+              {itemList.map((item, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center bg-slate-50/70 p-2.5 rounded-xl border border-slate-200/70 transition-all hover:border-orange-200"
+                >
+                  {/* Badge */}
+                  <div className="sm:col-span-1 flex items-center justify-center">
+                    <span className="text-[11px] font-mono font-black text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200 shadow-2xs">
+                      #{index + 1}
+                    </span>
+                  </div>
+
+                  {/* Item Description (7 cols) */}
+                  <div className="sm:col-span-7">
+                    <div className="relative">
+                      <Package className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        placeholder="Item Description / Goods Name (e.g. Electric Box, Bags)"
+                        value={item.description}
+                        onChange={(e) => handleItemChange(index, "description", e.target.value)}
+                        className="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-hidden focus:border-orange-500 font-bold text-slate-800"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Quantity (3 cols) */}
+                  <div className="sm:col-span-3">
+                    <input
+                      type="number"
+                      min="1"
+                      placeholder="Qty"
+                      value={item.quantity}
+                      onChange={(e) => handleItemChange(index, "quantity", e.target.value)}
+                      className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-hidden focus:border-orange-500 font-black text-slate-800 text-center"
+                    />
+                  </div>
+
+                  {/* Action / Remove (1 col) */}
+                  <div className="sm:col-span-1 flex items-center justify-center">
+                    {itemList.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveItem(index)}
+                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                        title="Remove Item"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Invoice Number Sub-Row */}
+            <div className="mt-3 pt-3 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-12 gap-3">
+              <div className="sm:col-span-6">
                 <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                  Item Description / Goods Name <span className="text-rose-500">*</span>
+                  Invoice No. / Bill No. <span className="text-slate-400 font-normal">(Optional)</span>
                 </label>
                 <div className="relative">
-                  <Package className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <FileText className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
-                    placeholder="e.g. Electrical Material box, PVC Pipes, Bags..."
-                    {...register("itemName", { required: "Item description is required" })}
-                    className="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:border-orange-500 font-bold text-slate-800"
+                    placeholder="e.g. INV-2026-001"
+                    {...register("invoiceNo")}
+                    className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:border-orange-500 font-bold text-slate-800"
                   />
                 </div>
-                {errors.itemName && (
-                  <p className="text-[10px] font-bold text-rose-500 mt-1">
-                    {errors.itemName.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Quantity / Cartons (4 cols) */}
-              <div className="sm:col-span-4">
-                <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                  Quantity / Packages <span className="text-rose-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  {...register("quantity", {
-                    required: "Quantity is required",
-                    min: { value: 1, message: "Min 1" },
-                  })}
-                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:border-orange-500 font-black text-slate-800 text-center"
-                />
-                {errors.quantity && (
-                  <p className="text-[10px] font-bold text-rose-500 mt-1">
-                    {errors.quantity.message}
-                  </p>
-                )}
               </div>
             </div>
           </div>
@@ -949,17 +1101,33 @@ export default function BookingForm({
               </div>
             </div>
 
-            {/* Notes & Special Instructions */}
-            <div>
-              <label className="block text-[11px] font-bold text-slate-600 mb-1">
-                Notes & Special Instructions <span className="text-slate-400 font-normal">(Optional)</span>
-              </label>
-              <textarea
-                rows="2"
-                placeholder="e.g. Handle with care, deliver during business hours..."
-                {...register("notes")}
-                className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:border-orange-500 font-medium text-slate-800 placeholder:text-slate-400 transition-all"
-              />
+            {/* Remark & Notes */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Remark */}
+              <div>
+                <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                  Remark <span className="text-slate-400 font-normal">(Prints on Bilty)</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Fragile / Handle with care / Urgent"
+                  {...register("remark")}
+                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:border-orange-500 font-semibold text-slate-800 placeholder:text-slate-400"
+                />
+              </div>
+
+              {/* Notes & Special Instructions */}
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                  Notes & Special Handling <span className="text-slate-400 font-normal">(Optional)</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Deliver during business hours..."
+                  {...register("notes")}
+                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:border-orange-500 font-medium text-slate-800 placeholder:text-slate-400"
+                />
+              </div>
             </div>
           </div>
         </div>

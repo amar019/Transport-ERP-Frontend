@@ -24,16 +24,16 @@
 }
 
 .singlePage {
-  height: 138mm !important;
-  max-height: 138mm !important;
+  height: 134mm !important;
+  max-height: 134mm !important;
   justify-content: center;
 }
 
 .copyContainer {
   width: 100%;
   max-width: 198mm;
-  height: 138mm;
-  max-height: 138mm;
+  height: 134mm;
+  max-height: 134mm;
   border: 1px solid #123B63;
   border-radius: 4px;
   position: relative;
@@ -74,8 +74,8 @@
 
 .row3 {
   display: flex;
-  height: 69mm;
-  max-height: 69mm;
+  height: 56mm;
+  max-height: 56mm;
   gap: 1mm;
   width: 100%;
   max-width: 100%;
@@ -85,6 +85,18 @@
 }
 
 .row4 {
+  display: flex;
+  height: 11mm;
+  max-height: 11mm;
+  gap: 1mm;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  align-items: stretch;
+}
+
+.row5 {
   display: flex;
   height: 5mm;
   max-height: 5mm;
@@ -96,30 +108,42 @@
 }
 
 .cutLine {
-  height: 4mm;
-  max-height: 4mm;
+  height: 10mm;
+  max-height: 10mm;
   width: 100%;
   max-width: 198mm;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 10mm;
-  border-top: 1px dashed #D9E1EA;
-  border-bottom: 1px dashed #D9E1EA;
-  font-size: 8px;
+  padding: 0 6mm;
+  border-top: 1.5px dashed #94A3B8;
+  border-bottom: 1.5px dashed #94A3B8;
+  font-size: 8.5pt;
   font-weight: 800;
   letter-spacing: 1.5px;
-  color: #5C738E;
-  background-color: #F4F7FA;
+  color: #334155;
+  background-color: #F1F5F9;
   box-sizing: border-box;
   overflow: hidden;
 }
 
 .cutIcon {
-  font-size: 10px;
+  font-size: 12px;
+  color: #D90429;
+}
+
+.cutDashGuide {
+  color: #94A3B8;
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-size: 7pt;
 }
 
 .cutText {
   font-family: 'Inter', sans-serif;
   text-transform: uppercase;
+  font-size: 7.5pt;
+  font-weight: 800;
+  color: #1E293B;
+  letter-spacing: 1.2px;
 }

@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
-import { Phone, MapPin, Globe } from 'lucide-react';
+import { Phone, MapPin } from 'lucide-react';
 import BookingInfo from './BookingInfo';
 import styles from './Header.module.css';
 
 /**
  * Header Component
- * Contains Company Section (Logo, Name, Subtitle, Tagline), Branch Contacts & Service Coverage,
- * Booking Info Card, and Right Panel (QR Payment Card + Corner Ribbon).
- * 
- * Accepts props: company, booking, type, qrCode, upiId
+ * Unified Corporate Header combining Logo & Branding, Tagline, Phone Contacts, Branch Network,
+ * and Booking Info Card in an A4 Portrait layout.
  */
-
 
 export const Header = ({
   company = {},
@@ -37,14 +34,15 @@ export const Header = ({
 
   return (
     <div className={styles.headerWrapper}>
-      {/* 1. LEFT SECTION: Corporate Logo & Branding */}
+      {/* UNIFIED CORPORATE BRANDING & BRANCH CARD */}
       <div className={styles.logoCompanyBox}>
+        {/* Corporate Logo */}
         <div className={styles.logoArea}>
           {logo && !logoError ? (
-            <img 
-              src={logo} 
-              alt="MTS Logo" 
-              className={styles.logoSvg} 
+            <img
+              src={logo}
+              alt="MTS Logo"
+              className={styles.logoSvg}
               onError={() => setLogoError(true)}
             />
           ) : (
@@ -61,53 +59,54 @@ export const Header = ({
           )}
         </div>
 
+        {/* Company Info & Integrated Branch/Contact Details */}
         <div className={styles.companyInfo}>
           <div className={styles.topMetaRow}>
             <span className={styles.shree}>{shree}</span>
           </div>
+
           <div className={styles.brandTitleRow}>
-            <span className={styles.companyName}>MAHAKAL</span>
-            <span className={styles.companySubtitle}>TRANSPORT</span>
+            <span className={styles.companyName}>{name}</span>
+            <span className={styles.companySubtitle}>{subtitle}</span>
           </div>
-          <div className={styles.tagline}>{tagline}</div>
+
+          {/* Integrated Phone Contacts & Branch Network Block */}
+          <div className={styles.branchContactBlock}>
+            {/* Phone Contacts */}
+            <div className={styles.infoRow}>
+              <Phone size={11} strokeWidth={2.4} className={styles.infoIcon} />
+
+              <div className={styles.phoneNumbers}>
+                {phones.map((phone, idx) => (
+                  <React.Fragment key={idx}>
+                    <span className={styles.phoneNumber}>{phone}</span>
+                    {idx < phones.length - 1 && <span className={styles.bullet}>•</span>}
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+
+            {/* Branch Network */}
+            <div className={styles.infoRow}>
+              <MapPin size={10} strokeWidth={2.4} className={styles.infoIcon} />
+              <span className={styles.infoLabel}>BRANCHES:</span>
+              <div className={styles.branchPills}>
+                {branches
+                  .map((b) => (typeof b === 'string' ? b : (b.title || b.name || '')).replace(/^Branch\s*-\s*/i, '').trim())
+                  .filter(Boolean)
+                  .map((city, idx, arr) => (
+                    <React.Fragment key={idx}>
+                      <span className={styles.branchName}>{city}</span>
+                      {idx < arr.length - 1 && <span className={styles.bullet}>•</span>}
+                    </React.Fragment>
+                  ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* 2. MIDDLE SECTION: Clean Contact & Branch Info Block */}
-      <div className={styles.branchBox}>
-        {/* Phone Contacts */}
-        <div className={styles.infoRow}>
-          <Phone size={11} strokeWidth={2.4} className={styles.infoIcon} />
-          <span className={styles.infoLabel}>TEL:</span>
-          <div className={styles.phoneNumbers}>
-            {phones.map((phone, idx) => (
-              <React.Fragment key={idx}>
-                <span className={styles.phoneNumber}>{phone}</span>
-                {idx < phones.length - 1 && <span className={styles.bullet}>•</span>}
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-
-        {/* Branch Network */}
-        <div className={styles.infoRow}>
-          <MapPin size={11} strokeWidth={2.4} className={styles.infoIcon} />
-          <span className={styles.infoLabel}>BRANCHES:</span>
-          <div className={styles.branchPills}>
-            {branches
-              .map((b) => (typeof b === 'string' ? b : (b.title || b.name || '')).replace(/^Branch\s*-\s*/i, '').trim())
-              .filter(Boolean)
-              .map((city, idx, arr) => (
-                <React.Fragment key={idx}>
-                  <span className={styles.branchName}>{city}</span>
-                  {idx < arr.length - 1 && <span className={styles.bullet}>•</span>}
-                </React.Fragment>
-              ))}
-          </div>
-        </div>
-      </div>
-
-      {/* 3. RIGHT SECTION: Booking Info Card */}
+      {/* Booking Info Card */}
       <BookingInfo booking={booking} />
     </div>
   );

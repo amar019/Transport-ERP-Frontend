@@ -20,13 +20,20 @@ const WireframeCopy = ({ type, booking = {} }) => {
   const sender = booking.sender || {};
   const customer = booking.customer || {};
 
-  const goodsItems = [
-    {
-      srNo: 1,
-      description: booking.itemName || "-",
-      quantity: booking.quantity ?? "-"
-    }
-  ];
+  const goodsItems =
+    Array.isArray(booking.items) && booking.items.length > 0
+      ? booking.items.map((item, idx) => ({
+          srNo: idx + 1,
+          description: item.description || "-",
+          quantity: item.quantity ?? "-"
+        }))
+      : [
+          {
+            srNo: 1,
+            description: booking.itemName || "-",
+            quantity: booking.quantity ?? "-"
+          }
+        ];
 
   const charges = {
     crossing: booking.crossing ?? 0,
@@ -56,8 +63,13 @@ const WireframeCopy = ({ type, booking = {} }) => {
         <GoodsTable goodsItems={goodsItems} charges={charges} notes={booking.notes} booking={booking} />
       </div>
 
-      {/* Row 4: Custom Software Advertisement Footer Strip */}
+      {/* Row 4: Signature Section (Receiver & Authorized Signatory) */}
       <div className={styles.row4}>
+        <SignatureSection companyName="MAHAKAL TRANSPORT" />
+      </div>
+
+      {/* Row 5: Custom Software Advertisement Footer Strip */}
+      <div className={styles.row5}>
         <Footer />
       </div>
     </div>
@@ -79,7 +91,9 @@ export const WireframeBilty = ({ booking = {}, viewMode = "both" }) => {
         {viewMode === "both" && (
           <div className={styles.cutLine}>
             <span className={styles.cutIcon}>✂</span>
+            <span className={styles.cutDashGuide}>- - - - - - - - - - - - - - -</span>
             <span className={styles.cutText}>CUT HERE FOR OFFICE COPY</span>
+            <span className={styles.cutDashGuide}>- - - - - - - - - - - - - - -</span>
             <span className={styles.cutIcon}>✂</span>
           </div>
         )}

@@ -29,7 +29,7 @@ export const ChargesTable = ({
     : [
       { label: "1. CROSSING", amount: charges.crossing ?? 0 },
       { label: "2. FREIGHT", amount: charges.freight ?? 0 },
-      { label: "3. HAMALI", amount: charges.hamali ?? 0 },
+      { label: "3. HANDLING CHARGES", amount: charges.hamali ?? 0 },
       { label: "4. BILTY CHARGE", amount: charges.biltyCharge ?? 0 },
       { label: "5. OTHER CHARGES", amount: charges.otherCharges ?? 0 }
     ];

@@ -187,11 +187,13 @@ export default function BookingTable({
                 const isSelected = selectedIds.includes(bookingId);
                 const isCancelled = b.status === "CANCELLED";
 
+                const isDirectEntry = Boolean(b.isDirectEntry || (!b.customer && b.receiver?.shopName));
                 const customerShop =
                   b.customer?.shopName ||
-                  (typeof b.customer === "string" ? b.customer : "N/A");
-                const customerOwner = b.customer?.ownerName || "";
-                const customerMobile = b.customer?.mobile || "";
+                  b.receiver?.shopName ||
+                  (typeof b.customer === "string" ? b.customer : "Walk-in Customer");
+                const customerOwner = b.customer?.ownerName || b.receiver?.ownerName || "";
+                const customerMobile = b.customer?.mobile || b.receiver?.mobile || "";
                 const customerSubInfo = [customerOwner, customerMobile]
                   .filter(Boolean)
                   .join(" · ");
@@ -245,15 +247,22 @@ export default function BookingTable({
 
                     {/* 5. Customer Details */}
                     <td className="py-3 px-3">
-                      <div
-                        className="font-semibold text-[#0F172A] text-xs truncate max-w-[200px]"
-                        title={customerShop}
-                      >
-                        {customerShop}
+                      <div className="flex items-center gap-1.5 max-w-[210px]">
+                        {isDirectEntry && (
+                          <span className="text-[9px] font-black bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded border border-amber-200 shrink-0">
+                            ⚡ Direct
+                          </span>
+                        )}
+                        <div
+                          className="font-semibold text-[#0F172A] text-xs truncate"
+                          title={customerShop}
+                        >
+                          {customerShop}
+                        </div>
                       </div>
                       {customerSubInfo && (
                         <div
-                          className="text-[11px] text-[#64748B] font-normal truncate max-w-[200px] mt-0.5"
+                          className="text-[11px] text-[#64748B] font-normal truncate max-w-[210px] mt-0.5"
                           title={customerSubInfo}
                         >
                           {customerSubInfo}

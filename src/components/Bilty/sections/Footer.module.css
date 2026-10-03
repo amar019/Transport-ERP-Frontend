@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Full Footer Strip (Deep Premium Red & Dark Navy)
+   Full Footer Strip (Clean & Minimalist Theme)
    ========================================================================== */
 
 .footerStrip {
@@ -9,8 +9,8 @@
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
-  padding: 0 2mm;
-  background: transparent !important;
+  padding: 0 3mm;
+  background: #F4F7FA !important;
   border: 1px solid #D9E1EA !important;
   border-radius: 4px;
   line-height: 1;
@@ -44,15 +44,15 @@
 .serviceMiddle {
   display: flex;
   align-items: center;
-  gap: 1mm;
-  font-size: 6.5pt;
+  gap: 1.5mm;
+  font-size: 6pt;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .globeIcon {
-  color: #D90429;
+  color: #123B63;
   flex-shrink: 0;
 }
 
@@ -66,7 +66,7 @@
 
 .serviceLocations {
   font-weight: 600;
-  color: #2B4C6F;
+  color: #475569;
   font-family: 'Inter', sans-serif;
   letter-spacing: 0.1px;
 }
@@ -80,7 +80,7 @@
 }
 
 .contactNumber {
-  font-size: 6.5pt;
+  font-size: 6.2pt;
   font-weight: 800;
   color: #D90429;
   font-family: 'Inter', sans-serif;

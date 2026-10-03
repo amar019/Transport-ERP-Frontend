@@ -1,149 +1,30 @@
 /* ==========================================================================
-   Unified Goods Details & Charges Section CSS Module (Deep Premium Red & Dark Navy)
+   Single Unified Goods Details & Charges Table CSS Module
    ========================================================================== */
 
 .goodsChargesContainer {
   width: 100%;
-  height: 69mm;
+  height: 100%;
   border: 1px solid #D9E1EA !important;
   border-radius: 4px;
   background-color: #FFFFFF !important;
   display: flex;
-  box-sizing: border-box;
-  overflow: hidden;
-  align-items: stretch;
-}
-
-/* LEFT SIDE: Goods Details */
-.goodsSection {
-  flex: 1;
-  display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-right: 1px solid #D9E1EA !important;
-  padding: 1mm 2mm 0.8mm 2mm;
   box-sizing: border-box;
-  background-color: #FFFFFF !important;
-}
-
-.titleRow {
-  display: flex;
-  align-items: center;
-  gap: 1.2mm;
-  color: #D90429;
-  font-weight: 800;
-  font-size: 7.2pt;
-  line-height: 1;
-  margin-bottom: 0.4mm;
-}
-
-.titleIcon {
-  font-size: 8pt;
-  color: #D90429;
-}
-
-.titleEnglish {
-  font-size: 6.8pt;
-  color: #D90429;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  font-family: 'Inter', sans-serif;
-}
-
-.tableWrapper {
-  flex: 1;
-  width: 100%;
   overflow: hidden;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  border-spacing: 0;
-  font-size: 6.8pt;
-}
-
-.table th {
-  background-color: #F4F7FA !important;
-  color: #123B63;
-  font-weight: 800;
-  font-size: 6.2pt;
-  padding: 2px 4px;
-  border: 1px solid #D9E1EA !important;
-  text-align: center;
-  white-space: nowrap;
-  line-height: 1.1;
-  letter-spacing: 0.3px;
-  font-family: 'Inter', sans-serif;
-}
-
-.table th.alignLeft {
-  text-align: left;
-  padding-left: 6px;
-}
-
-.table td {
-  background-color: #FFFFFF !important;
-  color: #123B63 !important;
-  font-weight: 600;
-  padding: 1.5px 4px;
-  border: 1px solid #E8EEF5 !important;
-  text-align: center;
-  height: 5.5mm;
-  box-sizing: border-box;
-  font-family: 'Inter', sans-serif;
-}
-
-.table td.alignLeft {
-  text-align: left;
-  padding-left: 6px;
-}
-
-.disclaimerBox {
-  margin-top: 0.5mm;
-  padding-top: 0.4mm;
-  border-top: 1px solid #E8EEF5 !important;
-  display: flex;
-  align-items: flex-start;
-  gap: 1mm;
-  font-size: 5.5pt;
-  line-height: 1.1;
-  color: #5C738E;
-}
-
-.disclaimerTitle {
-  font-weight: 800;
-  color: #123B63;
-  white-space: nowrap;
-  font-family: 'Inter', sans-serif;
-}
-
-.disclaimerText {
-  font-weight: 500;
-  color: #2B4C6F;
-  font-family: 'Inter', sans-serif;
-}
-
-/* RIGHT SIDE: Charges Breakdown */
-.chargesSection {
-  flex: 0 0 82mm;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 1mm 2mm 0 2mm;
-  box-sizing: border-box;
-  background-color: #FFFFFF !important;
   position: relative;
+  padding: 0;
 }
 
 /* Authentic Dotted Stamp for PAID Status */
 .paidStamp {
   position: absolute;
-  top: 38%;
-  right: 14mm;
+  top: 36%;
+  right: 18mm;
   transform: translateY(-50%) rotate(-15deg);
-  width: 19mm;
-  height: 19mm;
+  width: 20mm;
+  height: 20mm;
   border: 2px dotted #2EAD72;
   border-radius: 50%;
   display: flex;
@@ -153,7 +34,6 @@
   z-index: 10;
   opacity: 0.85;
   background: transparent !important;
-  box-shadow: none;
   mix-blend-mode: multiply;
   padding: 1.5px;
   box-sizing: border-box;
@@ -199,97 +79,175 @@
   text-transform: uppercase;
 }
 
-.chargesTitleRow {
-  display: flex;
-  align-items: center;
-  gap: 1.2mm;
-  color: #D90429;
-  font-weight: 800;
-  font-size: 7.2pt;
-  line-height: 1;
-  margin-bottom: 0.4mm;
-}
-
-.rupeeCircleIcon {
-  width: 3.5mm;
-  height: 3.5mm;
-  border-radius: 50%;
-  background-color: #D90429;
-  color: #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 5pt;
-  font-weight: 900;
-  flex-shrink: 0;
-}
-
-.chargesList {
+.tableWrapper {
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 0.3mm;
-  flex: 1;
-  justify-content: flex-start;
-  margin-bottom: 0.3mm;
 }
 
-.chargeRow {
+.table {
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: 7pt;
+}
+
+.table th {
+  background-color: #F4F7FA !important;
+  color: #123B63;
+  font-weight: 900;
+  font-size: 8pt;
+  padding: 4px 6px;
+  border: 1px solid #D9E1EA !important;
+  text-align: center;
+  white-space: nowrap;
+  line-height: 1.15;
+  letter-spacing: 0.5px;
+  font-family: 'Inter', sans-serif;
+  height: 7.5mm;
+  box-sizing: border-box;
+}
+
+.table th.alignLeft {
+  text-align: left;
+  padding-left: 6px;
+}
+
+.table th.alignRight {
+  text-align: right;
+  padding-right: 6px;
+}
+
+.table td {
+  background-color: #FFFFFF !important;
+  color: #123B63 !important;
+  font-weight: 600;
+  padding: 2px 4px;
+  border: 1px solid #E8EEF5 !important;
+  text-align: center;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+.table td.alignLeft {
+  text-align: left;
+  padding-left: 6px;
+}
+
+.table td.alignRight {
+  text-align: right;
+  padding-right: 6px;
+}
+
+.chargeCell {
+  color: #2B4C6F !important;
+  font-weight: 700 !important;
+  border-left: 1.5px solid #D9E1EA !important;
+}
+
+.amountCell {
+  color: #123B63 !important;
+  font-weight: 800 !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 2-Column Meta Row (Invoice No. & Remark) in Last Row */
+.metaRowCell {
+  background-color: #F8FAFC !important;
+  padding: 1.5px 6px !important;
+  border: 1px solid #E8EEF5 !important;
+  vertical-align: middle;
+}
+
+.metaGrid {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 6.5pt;
-  line-height: 1.15;
+  width: 100%;
+  height: 100%;
+  gap: 4px;
 }
 
-.chargeLeft {
+.metaItem {
   display: flex;
-  align-items: baseline;
-  gap: 0.8mm;
-  color: #2B4C6F;
-  font-weight: 600;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.chargeLabel {
-  font-family: 'Inter', sans-serif;
-  font-size: 6.4pt;
+.metaDivider {
+  width: 1px;
+  height: 11px;
+  background-color: #CBD5E1;
+  flex-shrink: 0;
 }
 
-.chargeDots {
-  flex: 1;
-  border-bottom: 1px dotted #D9E1EA;
-  margin: 0 1.2mm;
-  height: 1px;
-}
-
-.chargeRight {
-  display: flex;
-  align-items: center;
-  gap: 0.5mm;
+.metaLabel {
+  font-size: 6.2pt;
   font-weight: 800;
   color: #123B63;
-  font-variant-numeric: tabular-nums;
-  min-width: 12mm;
-  justify-content: flex-end;
+  font-family: 'Inter', sans-serif;
+  flex-shrink: 0;
+  letter-spacing: 0.2px;
+}
+
+.metaValue {
+  font-size: 6.5pt;
+  font-weight: 700;
+  color: #2B4C6F;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* BOTTOM SUMMARY BAR */
+.bottomBar {
+  display: flex;
+  align-items: stretch;
+  height: 8.5mm;
+  border-top: 1px solid #D9E1EA !important;
+  width: 100%;
+}
+
+.disclaimerBox {
+  flex: 1;
+  padding: 1mm 2mm;
+  display: flex;
+  align-items: center;
+  gap: 1mm;
+  font-size: 5.5pt;
+  line-height: 1.1;
+  color: #5C738E;
+  background-color: #FFFFFF !important;
+  border-right: 1px solid #D9E1EA !important;
+}
+
+.disclaimerTitle {
+  font-weight: 800;
+  color: #123B63;
+  white-space: nowrap;
+  font-family: 'Inter', sans-serif;
+  flex-shrink: 0;
+}
+
+.disclaimerText {
+  font-weight: 500;
+  color: #2B4C6F;
   font-family: 'Inter', sans-serif;
 }
 
-.currencySymbol {
-  font-size: 5.8pt;
-  color: #5C738E;
-}
-
-.amount {
-  font-size: 6.8pt;
-}
-
-/* TOTAL ROW AT BOTTOM OF CHARGES */
 .totalBox {
-  height: 6.5mm;
+  flex: 0 0 78mm;
   background-color: #FFF0F3 !important;
-  border-top: 1.2px solid #D90429 !important;
-  margin: 0 -2mm;
-  padding: 0 2mm;
+  padding: 0 3mm;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -297,7 +255,7 @@
 }
 
 .totalLabel {
-  font-size: 7pt;
+  font-size: 7.5pt;
   font-weight: 800;
   color: #123B63;
   letter-spacing: 0.4px;
@@ -311,13 +269,13 @@
 }
 
 .totalCurrency {
-  font-size: 8.5pt;
+  font-size: 9pt;
   font-weight: 900;
   color: #D90429;
 }
 
 .totalAmount {
-  font-size: 10.5pt;
+  font-size: 11pt;
   font-weight: 900;
   color: #123B63;
   font-family: 'Inter', sans-serif;

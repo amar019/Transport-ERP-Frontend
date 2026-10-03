@@ -262,18 +262,26 @@ export default function DeliveryTable({
 
                   {/* Column 2: Consignee / Customer Details */}
                   <td className="py-3.5 px-4 max-w-[220px]">
-                    <div className="font-bold text-[#0F172A] truncate flex items-center gap-1.5" title={b.customer?.shopName || b.customer?.name}>
+                    <div
+                      className="font-bold text-[#0F172A] truncate flex items-center gap-1.5"
+                      title={b.customer?.shopName || b.receiver?.shopName || b.customer?.name}
+                    >
                       <Building2 className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
+                      {b.isDirectEntry && (
+                        <span className="text-[9px] font-black bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded border border-amber-200 shrink-0">
+                          ⚡ Direct
+                        </span>
+                      )}
                       <span className="truncate">
-                        {b.customer?.shopName || b.customer?.ownerName || b.customer?.name || b.sender?.name || "Walk-in Customer"}
+                        {b.customer?.shopName || b.receiver?.shopName || b.customer?.ownerName || b.receiver?.ownerName || b.customer?.name || b.sender?.name || "Walk-in Customer"}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2 mt-0.5">
-                      {b.customer?.mobile ? (
+                      {(b.customer?.mobile || b.receiver?.mobile) ? (
                         <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#64748B]">
                           <Phone className="w-3 h-3 text-[#94A3B8]" />
-                          {b.customer.mobile}
+                          {b.customer?.mobile || b.receiver?.mobile}
                         </span>
                       ) : (
                         <span className="text-[11px] text-[#94A3B8]">No Mobile</span>

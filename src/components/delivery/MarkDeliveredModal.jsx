@@ -121,7 +121,7 @@ export default function MarkDeliveredModal({
                 <Building2 className="w-3.5 h-3.5 text-[#059669]" /> Recipient:
               </span>
               <span className="font-bold text-[#0F172A]">
-                {booking.customer?.shopName || booking.customer?.ownerName || booking.customer?.name || "Walk-in Customer"}
+                {booking.customer?.shopName || booking.receiver?.shopName || booking.customer?.ownerName || booking.receiver?.ownerName || booking.customer?.name || "Walk-in Customer"}
               </span>
             </div>
 

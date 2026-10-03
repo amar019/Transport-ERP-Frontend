@@ -124,8 +124,8 @@ export default function MemoForm({ onSubmit, isSubmitting = false }) {
     return availableBookings.filter((b) => {
       const q = searchQuery.toLowerCase().trim();
       const bNum = (b.bookingNumber || "").toLowerCase();
-      const shop = (b.customer?.shopName || b.customer?.name || b.customer || "").toLowerCase();
-      const owner = (b.customer?.ownerName || "").toLowerCase();
+      const shop = (b.customer?.shopName || b.receiver?.shopName || b.customer?.name || b.customer || "").toLowerCase();
+      const owner = (b.customer?.ownerName || b.receiver?.ownerName || "").toLowerCase();
       const item = (b.itemName || "").toLowerCase();
 
       const matchSearch = !q || bNum.includes(q) || shop.includes(q) || owner.includes(q) || item.includes(q);
@@ -467,12 +467,19 @@ export default function MemoForm({ onSubmit, isSubmitting = false }) {
                             {b.bookingNumber}
                           </td>
                           <td className="py-2.5 px-3">
-                            <div className="font-extrabold text-slate-800">
-                              {b.customer?.shopName || b.customer?.name || b.customer || "N/A"}
+                            <div className="font-extrabold text-slate-800 flex items-center gap-1.5">
+                              {b.isDirectEntry && (
+                                <span className="text-[9px] font-black bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded border border-amber-200 shrink-0">
+                                  ⚡ Direct
+                                </span>
+                              )}
+                              <span className="truncate">
+                                {b.customer?.shopName || b.receiver?.shopName || b.customer?.name || b.customer || "N/A"}
+                              </span>
                             </div>
-                            {b.customer?.ownerName && (
+                            {(b.customer?.ownerName || b.receiver?.ownerName) && (
                               <div className="text-[11px] text-slate-400">
-                                {b.customer.ownerName}
+                                {b.customer?.ownerName || b.receiver?.ownerName}
                               </div>
                             )}
                           </td>

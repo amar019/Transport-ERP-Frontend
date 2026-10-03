@@ -1,9 +1,9 @@
 /* ==========================================================================
-   ReceiverSection CSS Module (Deep Premium Red & Dark Navy)
+   ReceiverSection CSS Module (120% Width Ratio - Deep Premium Red & Dark Navy)
    ========================================================================== */
 
 .receiverCard {
-  flex: 1;
+  flex: 1.2;
   height: 23mm;
   border: 1px solid #D9E1EA !important;
   border-radius: 4px;
@@ -12,7 +12,7 @@
   background-color: #FFFFFF !important;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   overflow: hidden;
 }
 
@@ -34,7 +34,7 @@
 .detailsList {
   display: flex;
   flex-direction: column;
-  gap: 0.5mm;
+  gap: 0.6mm;
   font-size: 7.8pt;
   line-height: 1.15;
 }
@@ -65,10 +65,10 @@
 .nameValue {
   color: #123B63;
   font-weight: 800;
-  font-size: 8.2pt;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 8pt;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.1;
   flex: 1;
   min-width: 0;
   font-family: 'Inter', sans-serif;
@@ -77,10 +77,10 @@
 .value {
   color: #2B4C6F;
   font-weight: 600;
-  font-size: 7.8pt;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 7.5pt;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.1;
   flex: 1;
   min-width: 0;
   font-family: 'Inter', sans-serif;

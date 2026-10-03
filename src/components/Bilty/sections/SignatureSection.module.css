@@ -1,57 +1,88 @@
 /* ==========================================================================
-   SignatureSection CSS Module (Deep Premium Red & Dark Navy)
+   Clean & Spacious SignatureSection CSS Module
    ========================================================================== */
 
 .signatureWrapper {
   width: 100%;
-  height: 9.5mm;
+  height: 11mm;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  box-sizing: border-box;
-}
-
-.sigBox {
-  flex: 0 0 85mm;
-  height: 9.5mm;
+  justify-content: space-between;
   border: 1px solid #D9E1EA !important;
   border-radius: 4px;
+  background-color: #FAFBFD !important;
+  padding: 1.2mm 4mm;
   box-sizing: border-box;
-  background-color: #FFFFFF !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2mm;
-  padding: 0.8mm 3mm;
+  gap: 4mm;
 }
 
-.sigIcon {
-  font-size: 8.5pt;
-  color: #123B63;
-  flex-shrink: 0;
+.sigCol {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3mm;
+  min-width: 0;
 }
 
 .textGroup {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  text-align: center;
-  line-height: 1.15;
+  min-width: 0;
+  line-height: 1.2;
 }
 
-.marathiText {
-  font-size: 6.8pt;
+.textGroupRight {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.primaryText {
+  font-size: 7.2pt;
   font-weight: 800;
   color: #123B63;
   font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
   white-space: nowrap;
 }
 
-.englishText {
-  font-size: 5.8pt;
+.companyHeader {
+  font-size: 7.2pt;
+  font-weight: 900;
+  color: #D90429;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.subText {
+  font-size: 5.6pt;
   font-weight: 600;
   color: #5C738E;
   white-space: nowrap;
   font-family: 'Inter', sans-serif;
+}
+
+.lineArea {
+  width: 36mm;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.sigLine {
+  width: 100%;
+  border-bottom: 1.2px dashed #94A3B8;
+}
+
+.divider {
+  width: 1px;
+  height: 7mm;
+  background-color: #E2E8F0;
+  flex-shrink: 0;
 }

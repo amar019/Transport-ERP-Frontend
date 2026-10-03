@@ -1,26 +1,46 @@
 import React from 'react';
-import { PenTool } from 'lucide-react';
 import styles from './SignatureSection.module.css';
 
 /**
  * SignatureSection Component (~11mm height)
- * Displays 2 compact signature cards shifted to the far left & right corners:
- * 1. Receiver Signature (घेणाऱ्याची सही) - Far Left Corner
- * 2. Authorized Signatory (महाकाल ट्रान्सपोर्ट) - Far Right Corner
+ * Clean, spacious & un-crowded 2-column signature strip:
+ * 1. Left: Receiver Signature & Stamp (घेणाऱ्याची सही व शिक्का)
+ * 2. Right: Authorized Signatory for MAHAKAL TRANSPORT (अधिकृत स्वाक्षरी)
  */
 
 export const SignatureSection = ({
-  receiverSigMarathi = "घेणाऱ्याची सही",
-  receiverSigEnglish = "(Receiver Signature & Stamp)"
+  companyName = "MAHAKAL TRANSPORT",
+  receiverSigMarathi = "घेणाऱ्याची सही व शिक्का",
+  receiverSigEnglish = "(Receiver Signature & Stamp)",
+  authorizedSigMarathi = "अधिकृत स्वाक्षरी",
+  authorizedSigEnglish = "(Authorized Signatory)"
 }) => {
   return (
     <div className={styles.signatureWrapper}>
-      {/* Receiver Signature (Single Box) */}
-      <div className={styles.sigBox}>
-        <PenTool size={14} strokeWidth={2.2} color="#222222" className={styles.sigIcon} />
+      {/* 1. Receiver Signature (Left) */}
+      <div className={styles.sigCol}>
         <div className={styles.textGroup}>
-          <div className={styles.marathiText}>{receiverSigMarathi}</div>
-          <div className={styles.englishText}>{receiverSigEnglish}</div>
+          <span className={styles.primaryText}>{receiverSigMarathi}</span>
+          <span className={styles.subText}>{receiverSigEnglish}</span>
+        </div>
+        <div className={styles.lineArea}>
+          <div className={styles.sigLine} />
+        </div>
+      </div>
+
+      {/* Subtle Vertical Divider */}
+      <div className={styles.divider} />
+
+      {/* 2. Authorized Signatory (Right) */}
+      <div className={styles.sigCol}>
+        <div className={styles.textGroupRight}>
+          <span className={styles.companyHeader}>For {companyName}</span>
+          <span className={styles.subText}>
+            {authorizedSigMarathi} {authorizedSigEnglish}
+          </span>
+        </div>
+        <div className={styles.lineArea}>
+          <div className={styles.sigLine} />
         </div>
       </div>
     </div>
@@ -28,3 +48,5 @@ export const SignatureSection = ({
 };
 
 export default SignatureSection;
+
+
