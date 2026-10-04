@@ -25,10 +25,10 @@ export const GoodsTable = ({
     (booking.collectionType || "").toUpperCase().replace(/[\s-]+/g, '_') === "PAID_AT_BOOKING";
 
   const chargesRows = [
-    { label: "1. CROSSING", amount: charges.crossing ?? 0 },
-    { label: "2. FREIGHT", amount: charges.freight ?? 0 },
-    { label: "3. HANDLING CHARGES", amount: charges.hamali ?? 0 },
-    { label: "4. PLATFORM CHARGES", amount: charges.biltyCharge ?? 0 },
+    { label: "1. FREIGHT", amount: charges.freight ?? 0 },
+    { label: "2. HANDLING CHARGES", amount: charges.hamali ?? 0 },
+    { label: "3. PLATFORM CHARGES", amount: charges.biltyCharge ?? 0 },
+    { label: "4. CROSSING", amount: charges.crossing ?? 0 },
     { label: "5. OTHER CHARGES", amount: charges.otherCharges ?? 0 }
   ];
 
@@ -134,23 +134,21 @@ export const GoodsTable = ({
               );
             })}
           </tbody>
+          <tfoot>
+            <tr>
+              <td colSpan={3} className={styles.disclaimerCell}>
+                <span className={styles.disclaimerTitle}>NOTE : </span>
+                <span className={styles.disclaimerText}>{displayDisclaimer}</span>
+              </td>
+              <td className={styles.totalLabelCell}>
+                TOTAL AMOUNT
+              </td>
+              <td className={styles.totalAmountCell}>
+                ₹ {formatVal(total)}
+              </td>
+            </tr>
+          </tfoot>
         </table>
-      </div>
-
-      {/* BOTTOM BAR: DISCLAIMER NOTE ON LEFT, TOTAL AMOUNT ON RIGHT */}
-      <div className={styles.bottomBar}>
-        <div className={styles.disclaimerBox}>
-          <span className={styles.disclaimerTitle}>NOTE :</span>
-          <span className={styles.disclaimerText}>{displayDisclaimer}</span>
-        </div>
-
-        <div className={styles.totalBox}>
-          <span className={styles.totalLabel}>TOTAL AMOUNT</span>
-          <div className={styles.totalRight}>
-            <span className={styles.totalCurrency}>₹</span>
-            <span className={styles.totalAmount}>{formatVal(total)}</span>
-          </div>
-        </div>
       </div>
     </div>
   );

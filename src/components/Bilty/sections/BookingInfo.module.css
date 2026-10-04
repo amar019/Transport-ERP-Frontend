@@ -26,7 +26,7 @@
 .biltyLabel {
   font-size: 6.2pt;
   font-weight: 800;
-  color: #2B4C6F;
+  color: #000000;
   text-transform: uppercase;
   letter-spacing: 0.4px;
 }
@@ -58,13 +58,13 @@
 .dateLabel {
   font-weight: 700;
   font-size: 6.2pt;
-  color: #2B4C6F;
+  color: #000000;
   letter-spacing: 0.3px;
 }
 
 .dateValue {
   font-weight: 800;
-  color: #123B63;
+  color: #000000;
   font-size: 7.2pt;
   font-family: 'Inter', sans-serif;
   font-variant-numeric: tabular-nums;
@@ -80,7 +80,7 @@
 .statusLabel {
   font-size: 6.2pt;
   font-weight: 700;
-  color: #2B4C6F;
+  color: #000000;
   letter-spacing: 0.3px;
   text-transform: uppercase;
   white-space: nowrap;

@@ -10,7 +10,7 @@
   justify-content: space-between;
   box-sizing: border-box;
   padding: 0 3mm;
-  background: #F4F7FA !important;
+  background: #ffffff !important;
   border: 1px solid #D9E1EA !important;
   border-radius: 4px;
   line-height: 1;
@@ -29,12 +29,13 @@
 
 .sparkleIcon {
   flex-shrink: 0;
+  color: #000000;
 }
 
 .adText {
   font-size: 5.5pt;
   font-weight: 700;
-  color: #D90429;
+  color: #000000;
   font-family: 'Inter', sans-serif;
   letter-spacing: 0.1px;
   white-space: nowrap;
@@ -52,13 +53,13 @@
 }
 
 .globeIcon {
-  color: #123B63;
+  color: #000000;
   flex-shrink: 0;
 }
 
 .serviceTitle {
   font-weight: 800;
-  color: #123B63;
+  color: #000000;
   font-family: 'Inter', sans-serif;
   letter-spacing: 0.2px;
   flex-shrink: 0;
@@ -66,7 +67,7 @@
 
 .serviceLocations {
   font-weight: 600;
-  color: #475569;
+  color: #000000;
   font-family: 'Inter', sans-serif;
   letter-spacing: 0.1px;
 }
@@ -82,7 +83,7 @@
 .contactNumber {
   font-size: 6.2pt;
   font-weight: 800;
-  color: #D90429;
+  color: #000000;
   font-family: 'Inter', sans-serif;
   letter-spacing: 0.3px;
 }

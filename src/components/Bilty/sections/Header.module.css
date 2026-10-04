@@ -89,7 +89,7 @@
 .companySubtitle {
   font-size: 13pt;
   font-weight: 800;
-  color: #123B63;
+  color: #000000;
   line-height: 1;
   letter-spacing: 1px;
   font-family: 'Inter', sans-serif;
@@ -114,14 +114,14 @@
 }
 
 .infoIcon {
-  color: #D90429;
+  color: #000000;
   flex-shrink: 0;
 }
 
 .infoLabel {
   font-weight: 900;
   font-size: 7.2pt;
-  color: #123B63;
+  color: #000000;
   letter-spacing: 0.4px;
   flex-shrink: 0;
 }
@@ -138,7 +138,7 @@
 .phoneNumber {
   font-weight: 900;
   font-size: 8.5pt;
-  color: #123B63;
+  color: #000000;
   line-height: 1;
   font-family: 'Inter', sans-serif;
   letter-spacing: 0.3px;
@@ -147,7 +147,7 @@
 .branchName {
   font-size: 8pt;
   font-weight: 800;
-  color: #123B63;
+  color: #000000;
   white-space: nowrap;
   line-height: 1.1;
   font-family: 'Inter', sans-serif;
@@ -155,7 +155,7 @@
 }
 
 .bullet {
-  color: #D90429;
+  color: #000000;
   font-size: 7pt;
   font-weight: 900;
 }

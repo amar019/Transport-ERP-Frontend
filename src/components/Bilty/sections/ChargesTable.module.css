@@ -20,7 +20,7 @@
   display: flex;
   align-items: center;
   gap: 1.5mm;
-  color: #EB5A00;
+  color: #000000;
   font-weight: 800;
   font-size: 7.2pt;
   line-height: 1;
@@ -31,7 +31,7 @@
   width: 3.8mm;
   height: 3.8mm;
   border-radius: 50%;
-  background-color: #EB5A00;
+  background-color: #000000;
   color: #FFFFFF;
   display: flex;
   align-items: center;
@@ -43,12 +43,12 @@
 
 .titleMarathi {
   font-family: 'Noto Sans Devanagari', sans-serif;
-  color: #EB5A00;
+  color: #000000;
 }
 
 .titleEnglish {
   font-size: 6.5pt;
-  color: #EB5A00;
+  color: #000000;
   font-weight: 700;
 }
 
@@ -74,7 +74,7 @@
   display: flex;
   align-items: baseline;
   gap: 1mm;
-  color: #222222;
+  color: #000000;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -100,7 +100,7 @@
   align-items: center;
   gap: 1mm;
   font-weight: 800;
-  color: #111111;
+  color: #000000;
   font-variant-numeric: tabular-nums;
   min-width: 14mm;
   justify-content: flex-end;
@@ -108,7 +108,7 @@
 
 .currencySymbol {
   font-size: 6pt;
-  color: #333333;
+  color: #000000;
 }
 
 .amount {
@@ -118,8 +118,8 @@
 /* Total Amount Box */
 .totalBox {
   height: 7.2mm;
-  background-color: #FFF3E0 !important;
-  border: 0.8px solid #F0B896 !important;
+  background-color: #ffffff !important;
+  border: 1px solid #CCCCCC !important;
   border-radius: 4px;
   padding: 0 2.5mm;
   display: flex;
@@ -131,7 +131,7 @@
 .totalLabel {
   font-size: 7.2pt;
   font-weight: 900;
-  color: #111111;
+  color: #000000;
   font-family: 'Noto Sans Devanagari', sans-serif;
 }
 
@@ -144,13 +144,13 @@
 .totalCurrency {
   font-size: 9pt;
   font-weight: 900;
-  color: #111111;
+  color: #000000;
 }
 
 .totalAmount {
   font-size: 11pt;
   font-weight: 900;
-  color: #111111;
+  color: #000000;
   font-family: 'Poppins', sans-serif;
   font-variant-numeric: tabular-nums;
 }

@@ -10,7 +10,7 @@
   justify-content: space-between;
   border: 1px solid #D9E1EA !important;
   border-radius: 4px;
-  background-color: #FAFBFD !important;
+  background-color: #ffffff !important;
   padding: 1.2mm 4mm;
   box-sizing: border-box;
   gap: 4mm;
@@ -45,7 +45,7 @@
 .primaryText {
   font-size: 7.2pt;
   font-weight: 800;
-  color: #123B63;
+  color: #000000;
   font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
   white-space: nowrap;
 }
@@ -53,7 +53,7 @@
 .companyHeader {
   font-size: 7.2pt;
   font-weight: 900;
-  color: #D90429;
+  color: #000000;
   font-family: 'Inter', sans-serif;
   white-space: nowrap;
   letter-spacing: 0.3px;
@@ -63,7 +63,7 @@
 .subText {
   font-size: 5.6pt;
   font-weight: 600;
-  color: #5C738E;
+  color: #000000;
   white-space: nowrap;
   font-family: 'Inter', sans-serif;
 }

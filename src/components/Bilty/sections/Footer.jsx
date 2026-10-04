@@ -19,20 +19,20 @@ export const Footer = ({
     <footer className={styles.footerStrip}>
       {/* 1. STARTING CORNER (LEFT AD TEXT) */}
       <div className={styles.adLeft}>
-        <Bot size={10} strokeWidth={2.2} color="#D90429" className={styles.sparkleIcon} />
+        <Bot size={10} strokeWidth={2.2} color="#000000" className={styles.sparkleIcon} />
         <span className={styles.adText}>Build AI-Powered Softwares for your Business</span>
       </div>
 
       {/* 2. MIDDLE SECTION (SERVICE AREAS) */}
       <div className={styles.serviceMiddle}>
-        <Globe size={10} strokeWidth={2.4} className={styles.globeIcon} />
+        <Globe size={10} strokeWidth={2.4} color="#000000" className={styles.globeIcon} />
         <span className={styles.serviceTitle}>Service Areas :</span>
         <span className={styles.serviceLocations}>{formattedServiceAreas}</span>
       </div>
 
       {/* 3. END CORNER (RIGHT CONTACT NUMBER) */}
       <div className={styles.contactRight}>
-        <PhoneCall size={9} strokeWidth={2.2} color="#D90429" />
+        <PhoneCall size={9} strokeWidth={2.2} color="#000000" />
         <span className={styles.contactNumber}>{contactNumber}</span>
       </div>
     </footer>
