@@ -5,6 +5,11 @@ export const loginUser = async (credentials) => {
     return response.data;
 };
 
+export const refreshAuthToken = async (refreshToken) => {
+    const response = await api.post("/users/refresh-token", { refreshToken });
+    return response.data;
+};
+
 export const getCurrentUser = async () => {
     const response = await api.get("/users/me");
     return response.data;

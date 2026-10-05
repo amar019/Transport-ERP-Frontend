@@ -64,6 +64,8 @@ export const LoginPage = () => {
     );
   };
 
+  const isSessionExpired = location.search.includes("sessionExpired=true");
+
   return (
     <div className="min-h-screen w-full bg-[#f3f4f6] flex items-center justify-center py-6 md:py-10 px-4 font-sans antialiased selection:bg-orange-100">
       {/* Center Card */}
@@ -104,6 +106,14 @@ export const LoginPage = () => {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Session Expired Banner */}
+          {isSessionExpired && (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-start space-x-2.5 text-amber-700 text-xs">
+              <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500" />
+              <span className="font-medium text-left">Your session expired after 1 hour. Please log in again.</span>
+            </div>
+          )}
+
           {/* Backend Errors */}
           {error && !fieldErrors.username && !fieldErrors.password && (
             <div className="bg-rose-50 border border-rose-100 rounded-xl p-3 flex items-start space-x-2.5 text-rose-600 text-xs animate-shake">
