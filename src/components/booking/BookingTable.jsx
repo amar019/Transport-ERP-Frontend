@@ -434,43 +434,6 @@ export default function BookingTable({
           </tbody>
         </table>
       </div>
-
-      {/* Table Footer / Pagination */}
-      <div className="px-3.5 py-3 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600 font-medium select-none">
-        <div>
-          Showing <b className="text-slate-900">{paginatedBookings.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}</b> to{" "}
-          <b className="text-slate-900">{Math.min(currentPage * itemsPerPage, totalItems)}</b> of <b className="text-slate-900">{totalItems}</b> bookings
-          {selectedIds.length > 0 && (
-            <span className="ml-2 font-semibold text-orange-700 bg-orange-50 border border-orange-200 px-2 py-0.5 rounded-md text-[11px]">
-              {selectedIds.length} selected
-            </span>
-          )}
-        </div>
-
-        {totalPages > 1 && (
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-              disabled={currentPage === 1}
-              className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-white disabled:opacity-40 transition-colors cursor-pointer"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <span className="px-3 py-1 font-semibold text-slate-900">
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              type="button"
-              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-white disabled:opacity-40 transition-colors cursor-pointer"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        )}
-      </div>
     </div>
   );
 }
