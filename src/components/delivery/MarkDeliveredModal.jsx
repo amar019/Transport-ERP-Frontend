@@ -6,10 +6,11 @@ import {
   AlertCircle,
   Building2,
   UserCheck,
-  IndianRupee,
+  Wallet,
+  Check,
   Package,
-  Sparkles,
-  ShieldAlert,
+  ArrowRight,
+  ShieldCheck,
 } from "lucide-react";
 
 export default function MarkDeliveredModal({
@@ -18,7 +19,7 @@ export default function MarkDeliveredModal({
   booking,
   onDeliver,
 }) {
-  const [remarks, setRemarks] = useState("Delivered successfully to customer");
+  const [paymentCollected, setPaymentCollected] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
@@ -31,19 +32,19 @@ export default function MarkDeliveredModal({
 
   const isUnpaidToPay = booking.collectionType === "TO_PAY" && remaining > 0;
 
-  const quickRemarkChips = [
-    "Delivered successfully to customer",
-    "Received at customer shop / office",
-    "Handed over to receiver",
-    "Counter pickup completed",
-  ];
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setSubmitting(true);
       setError(null);
-      await onDeliver(booking._id, { remarks });
+
+      const payload = {
+        remarks: "Delivered successfully to customer",
+        paymentCollected: isUnpaidToPay ? paymentCollected : false,
+        paymentMode: isUnpaidToPay && paymentCollected ? "CASH" : null,
+      };
+
+      await onDeliver(booking._id || booking.id, payload);
       onClose();
     } catch (err) {
       console.error("Mark delivered error:", err);
@@ -56,151 +57,218 @@ export default function MarkDeliveredModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 animate-in fade-in duration-150 select-none">
-      <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-150">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0] bg-[#F8FAFC]">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] flex items-center justify-center shrink-0 shadow-2xs">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none">
+      <div className="bg-white border border-orange-100/90 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200">
+        
+        {/* CLEAN WHITE HEADER WITH ORANGE ACCENTS */}
+        <div className="bg-white px-6 py-4 border-b border-orange-100 flex items-center justify-between">
+          <div className="flex items-center gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 border border-orange-200/80 flex items-center justify-center shrink-0 shadow-2xs">
               <CheckCircle2 className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-[#0F172A] tracking-tight">
-                Mark as Delivered
-              </h3>
-              <p className="text-xs text-[#64748B] font-medium">
-                Confirm parcel handover & complete shipment
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-bold text-slate-900 tracking-tight leading-snug">
+                  Mark Delivery Completed
+                </h3>
+                <span className="font-mono text-xs font-bold text-orange-700 bg-orange-50 border border-orange-200 px-2.5 py-0.5 rounded-md">
+                  #{booking.bookingNumber || (booking._id || booking.id)?.slice(-6)}
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 font-medium">
+                Log parcel handover & payment collection details
               </p>
             </div>
           </div>
+
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#E2E8F0]/60 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-orange-50 transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        {/* FORM BODY */}
+        <form onSubmit={handleSubmit} className="p-5 md:p-6 space-y-4 max-h-[82vh] overflow-y-auto custom-scrollbar">
           {error && (
-            <div className="p-3 rounded-xl bg-[#FEF2F2] border border-[#FECACA] text-[#DC2626] text-xs font-semibold flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0" />
+            <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-2.5 animate-in fade-in">
+              <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
               <span>{error}</span>
             </div>
           )}
 
-          {/* Unpaid TO PAY Warning Banner */}
-          {isUnpaidToPay && (
-            <div className="p-3 rounded-xl bg-[#FFFBEB] border border-[#FDE68A] text-[#B45309] text-xs space-y-1">
-              <div className="flex items-center gap-1.5 font-bold text-[#D97706]">
-                <ShieldAlert className="w-4 h-4 text-[#D97706] shrink-0" />
-                Outstanding Balance Warning
+          {/* SHIPMENT SUMMARY CARD */}
+          <div className="p-4 rounded-xl bg-orange-50/40 border border-orange-200/60 space-y-2.5 text-xs">
+            <div className="flex items-center justify-between pb-2 border-b border-orange-200/60">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-orange-800 flex items-center gap-1.5">
+                <Package className="w-3.5 h-3.5 text-orange-600" />
+                Shipment Details
+              </span>
+              <span className="text-[10px] font-bold bg-white text-orange-700 border border-orange-200 px-2.5 py-0.5 rounded-md shadow-2xs">
+                {booking.totalPackages || 1} {booking.totalPackages === 1 ? "Package" : "Packages"}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 text-slate-700 pt-0.5">
+              <div className="space-y-0.5">
+                <span className="text-[10px] font-medium text-slate-500 flex items-center gap-1">
+                  <Building2 className="w-3 h-3 text-orange-600" /> Recipient
+                </span>
+                <p className="font-bold text-slate-900 truncate">
+                  {booking.customer?.shopName || booking.receiver?.shopName || booking.customer?.name || "Walk-in Customer"}
+                </p>
               </div>
-              <p className="text-[11px] leading-relaxed">
-                This shipment has an unpaid <strong>TO PAY</strong> balance of{" "}
-                <strong className="font-mono font-bold text-[#D97706]">₹{remaining}</strong>. Delivering without upfront payment will record this amount under customer outstanding ledger.
-              </p>
+
+              <div className="space-y-0.5">
+                <span className="text-[10px] font-medium text-slate-500 flex items-center gap-1">
+                  <UserCheck className="w-3 h-3 text-orange-600" /> Delivery Boy
+                </span>
+                <p className="font-bold text-slate-900 truncate">
+                  {booking.delivery?.deliveryBoy?.name || "Branch Counter Pickup"}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* PAYMENT COLLECTION REPORTING SECTION */}
+          {isUnpaidToPay ? (
+            <div className="p-4 rounded-2xl bg-white border border-orange-200 space-y-3 shadow-2xs">
+              <div className="flex items-center justify-between pb-2.5 border-b border-orange-100">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center shrink-0 border border-orange-200">
+                    <Wallet className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900 tracking-tight">
+                      Payment Collection Status
+                    </h4>
+                    <p className="text-[10px] text-slate-500 font-medium">
+                      Report payment outcome from delivery boy
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-orange-50 text-orange-700 border border-orange-200 px-2.5 py-1 rounded-lg text-xs font-mono font-extrabold flex items-center gap-1">
+                  <span>Due:</span>
+                  <span className="text-sm font-bold text-orange-600">₹{remaining}</span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-800 flex items-center justify-between">
+                  <span>Did the delivery boy collect the payment?</span>
+                </label>
+
+                {/* OPTION 1: YES (GREEN) */}
+                <div
+                  onClick={() => setPaymentCollected(true)}
+                  className={`group relative flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${
+                    paymentCollected
+                      ? "bg-emerald-50 border-emerald-500 ring-2 ring-emerald-500/20 shadow-2xs"
+                      : "bg-white border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/30"
+                  }`}
+                >
+                  <div className="pt-0.5 shrink-0">
+                    <div
+                      className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all ${
+                        paymentCollected
+                          ? "border-emerald-600 bg-emerald-600 text-white"
+                          : "border-slate-300 bg-white group-hover:border-emerald-400"
+                      }`}
+                    >
+                      {paymentCollected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                    </div>
+                  </div>
+
+                  <div className="space-y-0.5 flex-1 pr-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-900 group-hover:text-emerald-950 transition-colors">
+                        Yes, payment collected
+                      </span>
+                      {paymentCollected && (
+                        <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded bg-emerald-600 text-white">
+                          Selected
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-emerald-700 font-semibold leading-relaxed">
+                      ₹{remaining} collected by delivery boy → Added to Delivery Boy Ledger
+                    </p>
+                  </div>
+                </div>
+
+                {/* OPTION 2: NO (RED) */}
+                <div
+                  onClick={() => setPaymentCollected(false)}
+                  className={`group relative flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${
+                    !paymentCollected
+                      ? "bg-rose-50 border-rose-500 ring-2 ring-rose-500/20 shadow-2xs"
+                      : "bg-white border-slate-200 hover:border-rose-300 hover:bg-rose-50/30"
+                  }`}
+                >
+                  <div className="pt-0.5 shrink-0">
+                    <div
+                      className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all ${
+                        !paymentCollected
+                          ? "border-rose-600 bg-rose-600 text-white"
+                          : "border-slate-300 bg-white group-hover:border-rose-400"
+                      }`}
+                    >
+                      {!paymentCollected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                    </div>
+                  </div>
+
+                  <div className="space-y-0.5 flex-1 pr-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-900 group-hover:text-rose-950 transition-colors">
+                        No, payment not collected
+                      </span>
+                      {!paymentCollected && (
+                        <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded bg-rose-600 text-white">
+                          Selected
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-rose-700 font-semibold leading-relaxed">
+                      ₹{remaining} remains outstanding → Branch owner can collect it later
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="p-3.5 rounded-xl bg-orange-50 border border-orange-200 text-orange-800 text-xs flex items-center gap-2.5 font-bold shadow-2xs">
+              <ShieldCheck className="w-4 h-4 text-orange-600 shrink-0" />
+              <span>Payment already settled for this shipment</span>
             </div>
           )}
 
-          {/* Delivery Summary Context Card */}
-          <div className="p-4 rounded-xl bg-[#ECFDF5]/60 border border-[#A7F3D0] text-xs space-y-2">
-            <div className="flex items-center justify-between pb-1.5 border-b border-[#A7F3D0]">
-              <span className="font-mono font-bold text-xs text-[#0F172A]">
-                #{booking.bookingNumber || booking._id?.slice(-6)}
-              </span>
-              <span className="text-[10px] font-semibold bg-white text-[#059669] border border-[#A7F3D0] px-2 py-0.5 rounded">
-                {booking.totalPackages || 1} Packages
-              </span>
-            </div>
-
-            <div className="flex justify-between items-center text-[#475569]">
-              <span className="text-[#64748B] flex items-center gap-1">
-                <Building2 className="w-3.5 h-3.5 text-[#059669]" /> Recipient:
-              </span>
-              <span className="font-bold text-[#0F172A]">
-                {booking.customer?.shopName || booking.receiver?.shopName || booking.customer?.ownerName || booking.receiver?.ownerName || booking.customer?.name || "Walk-in Customer"}
-              </span>
-            </div>
-
-            <div className="flex justify-between items-center text-[#475569]">
-              <span className="text-[#64748B] flex items-center gap-1">
-                <UserCheck className="w-3.5 h-3.5 text-[#2563EB]" /> Delivery Boy:
-              </span>
-              <span className="font-semibold text-[#0F172A]">
-                {booking.delivery?.deliveryBoy?.name || "Direct Counter / Branch Owner"}
-              </span>
-            </div>
-
-            {booking.collectionType === "TO_PAY" && (
-              <div className="pt-1.5 border-t border-[#A7F3D0] flex justify-between items-center font-bold">
-                <span className="text-[#64748B] flex items-center gap-1">
-                  <IndianRupee className="w-3.5 h-3.5 text-[#059669]" /> TO PAY Amount:
-                </span>
-                <span className="font-mono text-sm text-[#0F172A]">₹{booking.totalAmount || 0}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Remarks Field & Quick Remark Chips */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-[#334155] flex items-center justify-between">
-              <span>Delivery Remarks</span>
-              <span className="text-[11px] text-[#64748B] font-normal">Tap chip to fill</span>
-            </label>
-
-            {/* Quick Remark Suggestion Chips */}
-            <div className="flex flex-wrap gap-1 pb-1">
-              {quickRemarkChips.map((chip, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => setRemarks(chip)}
-                  className={`text-[10px] px-2 py-0.5 rounded-full border transition-all cursor-pointer ${
-                    remarks === chip
-                      ? "bg-[#ECFDF5] text-[#059669] border-[#059669] font-bold"
-                      : "bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0] hover:border-[#CBD5E1]"
-                  }`}
-                >
-                  ✓ {chip}
-                </button>
-              ))}
-            </div>
-
-            <textarea
-              rows={2}
-              value={remarks}
-              onChange={(e) => setRemarks(e.target.value)}
-              placeholder="Enter delivery notes or recipient proof details..."
-              className="w-full px-3.5 py-2 text-xs font-medium bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-[#0F172A] focus:bg-white focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/20 transition-all outline-none resize-none"
-            />
-          </div>
-
-          {/* Footer Actions */}
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E2E8F0]">
+          {/* FOOTER ACTIONS */}
+          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 text-xs font-semibold text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] rounded-xl transition-all cursor-pointer"
+              className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold text-white bg-[#059669] hover:bg-[#047857] rounded-xl shadow-md shadow-[#059669]/20 transition-all cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 rounded-xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/35 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
             >
               {submitting ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  Updating...
+                  <span>Processing...</span>
                 </>
               ) : (
                 <>
                   <CheckCircle2 className="w-3.5 h-3.5" />
-                  Confirm Delivered
+                  <span>Confirm Delivery</span>
+                  <ArrowRight className="w-3.5 h-3.5 opacity-80" />
                 </>
               )}
             </button>
@@ -210,3 +278,6 @@ export default function MarkDeliveredModal({
     </div>
   );
 }
+
+
+

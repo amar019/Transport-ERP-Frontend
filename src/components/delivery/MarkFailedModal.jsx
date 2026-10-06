@@ -32,7 +32,7 @@ export default function MarkFailedModal({
     try {
       setSubmitting(true);
       setError(null);
-      await onFail(booking._id, { remarks });
+      await onFail(booking._id || booking.id, { remarks });
       onClose();
     } catch (err) {
       console.error("Mark failed error:", err);

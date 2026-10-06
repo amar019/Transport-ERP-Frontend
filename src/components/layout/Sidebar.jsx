@@ -141,7 +141,7 @@ export const Sidebar = ({
 
                       {/* Floating Glass Tooltip for Collapsed State */}
                       {isCollapsed && (
-                        <div className="absolute left-16 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-lg text-[11px] font-medium text-slate-100 bg-slate-900/95 backdrop-blur-xs shadow-xl border border-slate-800 pointer-events-none group-hover:pointer-events-auto group-hover:opacity-100 group-hover:translate-x-0 opacity-0 -translate-x-2 transition-all duration-200 z-50 whitespace-nowrap flex items-center gap-1.5 before:content-[''] before:absolute before:right-full before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-transparent before:border-r-slate-900/95">
+                        <div className="absolute left-14 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-lg text-[11px] font-medium text-slate-100 bg-slate-900/95 backdrop-blur-xs shadow-xl border border-slate-800 pointer-events-none group-hover:pointer-events-auto group-hover:opacity-100 group-hover:translate-x-0 opacity-0 -translate-x-2 transition-all duration-200 z-50 whitespace-nowrap flex items-center gap-1.5 before:content-[''] before:absolute before:right-full before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-transparent before:border-r-slate-900/95">
                           <span>{item.name}</span>
                         </div>
                       )}
@@ -167,7 +167,7 @@ export const Sidebar = ({
 
             {/* Collapsed Tooltip for Logout */}
             {isCollapsed && (
-              <div className="absolute left-16 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-lg text-[11px] font-medium text-white bg-rose-600 shadow-xl border border-rose-500 pointer-events-none group-hover:pointer-events-auto group-hover:opacity-100 group-hover:translate-x-0 opacity-0 -translate-x-2 transition-all duration-200 z-50 whitespace-nowrap before:content-[''] before:absolute before:right-full before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-transparent before:border-r-rose-600">
+              <div className="absolute left-14 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-lg text-[11px] font-medium text-white bg-rose-600 shadow-xl border border-rose-500 pointer-events-none group-hover:pointer-events-auto group-hover:opacity-100 group-hover:translate-x-0 opacity-0 -translate-x-2 transition-all duration-200 z-50 whitespace-nowrap before:content-[''] before:absolute before:right-full before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-transparent before:border-r-rose-600">
                 Logout
               </div>
             )}

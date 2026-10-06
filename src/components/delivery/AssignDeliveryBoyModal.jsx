@@ -85,7 +85,7 @@ export default function AssignDeliveryBoyModal({
     try {
       setSubmitting(true);
       setError(null);
-      await onAssign(booking._id, selectedBoyId);
+      await onAssign(booking._id || booking.id, selectedBoyId);
       onClose();
     } catch (err) {
       console.error("Assign error:", err);

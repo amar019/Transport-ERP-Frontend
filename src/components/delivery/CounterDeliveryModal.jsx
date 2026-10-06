@@ -67,7 +67,7 @@ export default function CounterDeliveryModal({
     try {
       setSubmitting(true);
       setError(null);
-      await onCounterDeliver(booking._id, {
+      await onCounterDeliver(booking._id || booking.id, {
         amount: numAmount,
         paymentMode,
         remarks,

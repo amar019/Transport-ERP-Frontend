@@ -63,7 +63,7 @@ export default function CollectPaymentModal({
     try {
       setSubmitting(true);
       setError(null);
-      await onCollect(booking._id, {
+      await onCollect(booking._id || booking.id, {
         amount: numAmount,
         collectedBy,
         paymentMode,

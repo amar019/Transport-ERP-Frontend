@@ -69,7 +69,7 @@ export const Layout = ({ children }) => {
       {/* Sidebar: Desktop Sticky Container */}
       <aside
         className={`hidden md:block shrink-0 bg-white border-r border-[#E2E8F0] h-screen sticky top-0 transition-all duration-300 ease-in-out z-20 shadow-[1px_0_10px_rgba(0,0,0,0.02)] ${
-          isCollapsed ? "w-20" : "w-64"
+          isCollapsed ? "w-16" : "w-52"
         }`}
       >
         <Sidebar

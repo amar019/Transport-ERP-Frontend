@@ -347,7 +347,7 @@ export const DeliveryPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-6 md:p-8 font-sans antialiased text-[#0F172A] selection:bg-[#FFF7ED] selection:text-[#C2410C] printable-area select-none space-y-6">
+    <div className="min-h-screen bg-[#F8FAFC] p-4 md:p-6 w-full font-sans antialiased text-[#0F172A] selection:bg-[#FFF7ED] selection:text-[#C2410C] printable-area select-none space-y-6">
       {/* Toast Notification Banner */}
       {toast && (
         <div

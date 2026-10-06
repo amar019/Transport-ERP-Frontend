@@ -273,7 +273,7 @@ export default function CustomerLedgerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-6 md:p-8 font-sans antialiased text-[#0F172A] selection:bg-[#FFF7ED] selection:text-[#C2410C] space-y-6 select-none">
+    <div className="min-h-screen bg-[#F8FAFC] p-4 md:p-6 w-full font-sans antialiased text-[#0F172A] selection:bg-[#FFF7ED] selection:text-[#C2410C] space-y-6 select-none">
       {/* Toast Notification */}
       {toast && (
         <div

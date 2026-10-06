@@ -14,10 +14,10 @@ import {
   MapPin,
   Phone,
   Building2,
-  Package,
   Calendar,
   UserPlus,
-  Hash,
+  ShieldCheck,
+  Store,
 } from "lucide-react";
 import DeliveryActionMenu from "./DeliveryActionMenu";
 
@@ -59,10 +59,10 @@ export default function DeliveryTable({
     return isNaN(d.getTime())
       ? dateStr
       : d.toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      });
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        });
   };
 
   // Helpers
@@ -80,35 +80,35 @@ export default function DeliveryTable({
       case "PENDING":
       case "BOOKED":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A] shadow-2xs">
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A] whitespace-nowrap">
             <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] animate-pulse" />
-            Pending Delivery
+            Pending
           </span>
         );
       case "OUT_FOR_DELIVERY":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#ECFEFF] text-[#0891B2] border border-[#CFFAFE] shadow-2xs">
-            <Truck className="w-3.5 h-3.5 text-[#0891B2] animate-bounce" />
-            Out for Delivery
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#ECFEFF] text-[#0891B2] border border-[#CFFAFE] whitespace-nowrap">
+            <Truck className="w-3 h-3 text-[#0891B2] animate-bounce" />
+            Out For Delivery
           </span>
         );
       case "DELIVERED":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] shadow-2xs">
-            <CheckCircle2 className="w-3.5 h-3.5 text-[#059669]" />
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] whitespace-nowrap">
+            <CheckCircle2 className="w-3 h-3 text-[#059669]" />
             Delivered
           </span>
         );
       case "FAILED":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] shadow-2xs">
-            <AlertTriangle className="w-3.5 h-3.5 text-[#DC2626]" />
-            Delivery Failed
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] whitespace-nowrap">
+            <AlertTriangle className="w-3 h-3 text-[#DC2626]" />
+            Failed
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0]">
+          <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0] whitespace-nowrap">
             {st}
           </span>
         );
@@ -122,21 +122,21 @@ export default function DeliveryTable({
 
     if (status === "PAID") {
       return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]">
-          <CheckCircle2 className="w-3 h-3" />
+        <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded text-[9px] font-extrabold bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]">
+          <CheckCircle2 className="w-2.5 h-2.5" />
           PAID
         </span>
       );
     }
     if (status === "PARTIAL") {
       return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]">
+        <span className="inline-flex items-center px-1 py-0.2 rounded text-[9px] font-extrabold bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]">
           PARTIAL
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A]">
+      <span className="inline-flex items-center px-1 py-0.2 rounded text-[9px] font-extrabold bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A]">
         {collectionType}
       </span>
     );
@@ -145,7 +145,7 @@ export default function DeliveryTable({
   // 1. Loading Skeleton State
   if (loading) {
     return (
-      <div className="bg-white rounded-xl border border-[#E2E8F0] shadow-2xs overflow-hidden">
+      <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden w-full">
         <div className="p-4 border-b border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between">
           <div className="h-4 bg-[#E2E8F0] rounded w-32 animate-pulse" />
           <div className="h-4 bg-[#E2E8F0] rounded w-24 animate-pulse" />
@@ -174,7 +174,7 @@ export default function DeliveryTable({
   // 2. Empty State
   if (bookings.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-[#E2E8F0] p-12 text-center shadow-2xs space-y-4">
+      <div className="bg-white rounded-2xl border border-[#E2E8F0] p-12 text-center shadow-sm space-y-4 w-full">
         <div className="w-14 h-14 rounded-2xl bg-[#FFF7ED] text-[#F97316] mx-auto flex items-center justify-center border border-[#FFEDD5] shadow-2xs">
           <Inbox className="w-7 h-7" />
         </div>
@@ -191,33 +191,35 @@ export default function DeliveryTable({
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden flex flex-col w-full">
-      {/* Enterprise Data Table */}
-      <div className="overflow-x-auto min-h-[480px] w-full">
-        <table className="w-full text-left border-collapse text-xs select-none">
-          <thead>
-            <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B] font-bold uppercase tracking-wider text-[11px]">
-              <th className="py-3.5 px-4 w-12 text-center">
-                <input
-                  type="checkbox"
-                  checked={isAllSelected}
-                  onChange={onToggleSelectAll}
-                  className="rounded border-[#CBD5E1] text-[#F97316] focus:ring-[#F97316] cursor-pointer w-4 h-4"
-                  title="Select All Deliveries"
-                />
-              </th>
-              <th className="py-3.5 px-4 min-w-[130px]">LR / Booking</th>
-              <th className="py-3.5 px-4 min-w-[190px]">Customer</th>
-              <th className="py-3.5 px-4 min-w-[220px]">Delivery Address</th>
-              <th className="py-3.5 px-4 min-w-[170px]">Delivery Boy</th>
-              <th className="py-3.5 px-4 min-w-[150px]">Delivery Status</th>
-              <th className="py-3.5 px-4 min-w-[140px]">Payment</th>
-              <th className="py-3.5 px-4 text-right min-w-[190px]">Actions</th>
-            </tr>
-          </thead>
+    <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm flex flex-col w-full overflow-hidden">
+      {/* ------------------------------------------------------------- */}
+      {/* DESKTOP / LAPTOP TABLE VIEW (CSS Grid Architecture - NO Horizontal Scroll) */}
+      {/* ------------------------------------------------------------- */}
+      <div className="hidden md:block w-full max-w-full min-w-0 overflow-hidden">
+        {/* Table Header Row */}
+        <div className="grid grid-cols-[40px_125px_165px_minmax(140px,1fr)_140px_115px_130px_160px] lg:grid-cols-[40px_140px_190px_minmax(180px,1fr)_155px_125px_145px_170px] border-b border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B] font-bold uppercase tracking-wider text-[10px] py-2.5 px-2 items-center text-left select-none w-full max-w-full min-w-0">
+          <div className="text-center flex justify-center items-center min-w-0">
+            <input
+              type="checkbox"
+              checked={isAllSelected}
+              onChange={onToggleSelectAll}
+              className="rounded border-[#CBD5E1] text-[#F97316] focus:ring-[#F97316] cursor-pointer w-4 h-4"
+              title="Select All Deliveries"
+            />
+          </div>
+          <div className="px-1 min-w-0">LR / Date</div>
+          <div className="px-1 min-w-0">Customer</div>
+          <div className="px-1 min-w-0">Delivery Address</div>
+          <div className="px-1 min-w-0">Delivery Boy</div>
+          <div className="px-1 min-w-0">Status</div>
+          <div className="px-1 min-w-0">Payment</div>
+          <div className="px-1 text-right min-w-0">Actions</div>
+        </div>
 
-          <tbody className="divide-y divide-[#E2E8F0] text-[#0F172A]">
+        {/* Table Body Rows */}
+        <div className="divide-y divide-[#E2E8F0] text-[#0F172A] w-full max-w-full min-w-0">
             {paginatedBookings.map((b) => {
+              const bookingId = b._id || b.id;
               const deliveryStatus =
                 b.deliveryStatus || b.delivery?.status || b.status || "PENDING";
               const deliveryBoy = b.delivery?.deliveryBoy;
@@ -226,94 +228,113 @@ export default function DeliveryTable({
 
               const remaining = Number(
                 b.remainingAmount ??
-                (Number(b.totalAmount || 0) - Number(b.paidAmount || 0))
+                  (Number(b.totalAmount || 0) - Number(b.paidAmount || 0))
               );
-              const isSelected = selectedIds.includes(b._id || b.id);
+              const isSelected = selectedIds.includes(bookingId);
+
+              const customerName =
+                b.customer?.shopName ||
+                b.receiver?.shopName ||
+                b.customer?.ownerName ||
+                b.receiver?.ownerName ||
+                b.customer?.name ||
+                b.sender?.name ||
+                "Walk-in Customer";
+
+              const customerMobile = b.customer?.mobile || b.receiver?.mobile;
+              const addressText =
+                b.deliveryAddress || b.customer?.address || "Branch Pickup";
 
               return (
-                <tr
-                  key={b._id || b.id}
-                  className={`transition-colors duration-150 hover:bg-[#F8FAFC]/90 ${
+                <div
+                  key={bookingId}
+                  onClick={() => onViewDetails(b)}
+                  className={`grid grid-cols-[40px_125px_165px_minmax(140px,1fr)_140px_115px_130px_160px] lg:grid-cols-[40px_140px_190px_minmax(180px,1fr)_155px_125px_145px_170px] py-2.5 px-2 items-center text-xs transition-colors duration-150 hover:bg-[#F8FAFC]/90 cursor-pointer w-full max-w-full min-w-0 ${
                     isSelected ? "bg-[#FFF7ED]/70" : ""
                   }`}
                 >
-                  {/* Select Checkbox */}
-                  <td className="py-3.5 px-4 text-center">
+                  {/* 1. Checkbox */}
+                  <div
+                    className="text-center flex justify-center items-center min-w-0"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <input
                       type="checkbox"
                       checked={isSelected}
-                      onChange={() => onToggleSelect(b._id || b.id)}
+                      onChange={() => onToggleSelect(bookingId)}
                       className="rounded border-[#CBD5E1] text-[#F97316] focus:ring-[#F97316] cursor-pointer w-4 h-4"
                     />
-                  </td>
+                  </div>
 
-                  {/* Column 1: LR Number & Date */}
-                  <td className="py-3.5 px-4 whitespace-nowrap">
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-mono font-bold text-xs text-[#0F172A] tracking-tight">
-                        #{b.bookingNumber || b._id?.slice(-6)}
-                      </span>
+                  {/* 2. LR / Date */}
+                  <div className="px-1 min-w-0 overflow-hidden">
+                    <div className="font-mono font-bold text-xs text-[#0F172A] tracking-tight truncate">
+                      #{b.bookingNumber || bookingId?.slice(-6)}
                     </div>
-                    <div className="flex items-center gap-1 text-[11px] text-[#64748B] mt-0.5 font-medium">
-                      <Calendar className="w-3 h-3 text-[#94A3B8]" />
-                      <span>{formatDate(b.bookingDate || b.createdAt)}</span>
+                    <div className="flex items-center gap-1 text-[10px] text-[#64748B] mt-0.5 font-medium truncate">
+                      <Calendar className="w-3 h-3 text-[#94A3B8] shrink-0" />
+                      <span className="truncate">{formatDate(b.bookingDate || b.createdAt)}</span>
                     </div>
-                  </td>
+                  </div>
 
-                  {/* Column 2: Consignee / Customer Details */}
-                  <td className="py-3.5 px-4 max-w-[220px]">
+                  {/* 3. Customer */}
+                  <div className="px-1 min-w-0 overflow-hidden">
                     <div
-                      className="font-bold text-[#0F172A] truncate flex items-center gap-1.5"
-                      title={b.customer?.shopName || b.receiver?.shopName || b.customer?.name}
+                      className="font-bold text-[#0F172A] text-xs truncate flex items-center gap-1"
+                      title={customerName}
                     >
                       <Building2 className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
                       {b.isDirectEntry && (
-                        <span className="text-[9px] font-black bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded border border-amber-200 shrink-0">
-                          ⚡ Direct
+                        <span className="text-[9px] font-black bg-amber-100 text-amber-900 px-1 py-0.2 rounded border border-amber-200 shrink-0">
+                          ⚡
                         </span>
                       )}
-                      <span className="truncate">
-                        {b.customer?.shopName || b.receiver?.shopName || b.customer?.ownerName || b.receiver?.ownerName || b.customer?.name || b.sender?.name || "Walk-in Customer"}
-                      </span>
+                      <span className="truncate">{customerName}</span>
                     </div>
 
-                    <div className="flex items-center gap-2 mt-0.5">
-                      {(b.customer?.mobile || b.receiver?.mobile) ? (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#64748B]">
-                          <Phone className="w-3 h-3 text-[#94A3B8]" />
-                          {b.customer?.mobile || b.receiver?.mobile}
+                    <div className="flex items-center gap-1 text-[10px] text-[#64748B] font-medium mt-0.5 truncate">
+                      {customerMobile ? (
+                        <span className="inline-flex items-center gap-1 truncate">
+                          <Phone className="w-2.5 h-2.5 text-[#94A3B8] shrink-0" />
+                          <span className="truncate">{customerMobile}</span>
                         </span>
                       ) : (
-                        <span className="text-[11px] text-[#94A3B8]">No Mobile</span>
+                        <span className="text-[#94A3B8]">No Mobile</span>
                       )}
                     </div>
-                  </td>
+                  </div>
 
-                  {/* Column 3: Delivery Address */}
-                  <td className="py-3.5 px-4 max-w-[280px]">
-                    <div className="flex items-start gap-1.5">
+                  {/* 4. Delivery Address (Flexible Column) */}
+                  <div className="px-1 min-w-0 overflow-hidden">
+                    <div className="flex items-start gap-1">
                       <MapPin className="w-3.5 h-3.5 text-[#F97316] shrink-0 mt-0.5" />
-                      <div className="font-medium text-[#0F172A] leading-normal text-xs line-clamp-2" title={b.deliveryAddress || b.customer?.address}>
-                        {b.deliveryAddress || b.customer?.address || "Address Not Specified"}
+                      <div
+                        className="font-medium text-[#0F172A] leading-tight text-[11px] truncate block"
+                        title={addressText}
+                      >
+                        {addressText}
                       </div>
                     </div>
-                  </td>
+                  </div>
 
-                  {/* Column 4: Assigned Delivery Boy */}
-                  <td className="py-3.5 px-4 whitespace-nowrap">
+                  {/* 5. Delivery Boy */}
+                  <div className="px-1 min-w-0 overflow-hidden">
                     {deliveryBoyName ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full bg-[#EFF6FF] text-[#2563EB] font-bold text-[11px] flex items-center justify-center border border-[#BFDBFE] shrink-0">
+                      <div className="flex items-center gap-1.5 truncate">
+                        <div className="w-5.5 h-5.5 rounded-full bg-[#EFF6FF] text-[#2563EB] font-bold text-[9px] flex items-center justify-center border border-[#BFDBFE] shrink-0">
                           {getInitials(deliveryBoyName)}
                         </div>
-                        <div>
-                          <div className="font-bold text-[#0F172A] text-xs">
+                        <div className="min-w-0 truncate">
+                          <div
+                            className="font-bold text-[#0F172A] text-[11px] truncate"
+                            title={deliveryBoyName}
+                          >
                             {deliveryBoyName}
                           </div>
                           {deliveryBoyMobile && (
-                            <div className="text-[10px] font-medium text-[#64748B] flex items-center gap-1">
-                              <Phone className="w-2.5 h-2.5 text-[#94A3B8]" />
-                              {deliveryBoyMobile}
+                            <div className="text-[9px] font-medium text-[#64748B] flex items-center gap-0.5 truncate">
+                              <Phone className="w-2 h-2 text-[#94A3B8] shrink-0" />
+                              <span className="truncate">{deliveryBoyMobile}</span>
                             </div>
                           )}
                         </div>
@@ -321,38 +342,44 @@ export default function DeliveryTable({
                     ) : (
                       <button
                         type="button"
-                        onClick={() => onAssignBoy(b)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold text-[#D97706] bg-[#FFFBEB] hover:bg-[#FEF3C7] border border-[#FDE68A] transition-colors cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onAssignBoy(b);
+                        }}
+                        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-semibold text-[#D97706] bg-[#FFFBEB] hover:bg-[#FEF3C7] border border-[#FDE68A] transition-colors cursor-pointer"
                         title="Click to assign delivery boy"
                       >
                         <UserPlus className="w-3 h-3 text-[#D97706]" />
                         <span>Unassigned</span>
                       </button>
                     )}
-                  </td>
+                  </div>
 
-                  {/* Column 5: Delivery Status Badge */}
-                  <td className="py-3.5 px-4 whitespace-nowrap">
+                  {/* 6. Status */}
+                  <div className="px-1 min-w-0 overflow-hidden">
                     {getStatusBadge(deliveryStatus)}
-                  </td>
+                  </div>
 
-                  {/* Column 6: Financials & Payment Status */}
-                  <td className="py-3.5 px-4 whitespace-nowrap">
+                  {/* 7. Payment */}
+                  <div className="px-1 min-w-0 overflow-hidden">
                     <div className="flex items-center gap-1">
                       {getPaymentBadge(b)}
                     </div>
-                    <div className="text-xs font-bold text-[#0F172A] mt-0.5 font-mono flex items-center gap-1">
+                    <div className="text-[11px] font-bold text-[#0F172A] mt-0.5 font-mono flex items-center gap-1 flex-wrap">
                       <span>₹{(b.totalAmount || 0).toLocaleString("en-IN")}</span>
                       {remaining > 0 && (
-                        <span className="text-[10px] font-semibold text-[#DC2626] font-sans bg-[#FEF2F2] px-1.5 py-0.2 rounded border border-[#FECACA]">
+                        <span className="text-[9px] font-semibold text-[#DC2626] font-sans bg-[#FEF2F2] px-1 py-0.2 rounded border border-[#FECACA] whitespace-nowrap">
                           Due: ₹{remaining.toLocaleString("en-IN")}
                         </span>
                       )}
                     </div>
-                  </td>
+                  </div>
 
-                  {/* Column 7: Action Menu */}
-                  <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                  {/* 8. Actions */}
+                  <div
+                    className="px-1 min-w-0 flex items-center justify-end"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <DeliveryActionMenu
                       booking={b}
                       onViewDetails={onViewDetails}
@@ -362,18 +389,115 @@ export default function DeliveryTable({
                       onMarkFailed={onMarkFailed}
                       onCollectPayment={onCollectPayment}
                     />
-                  </td>
-                </tr>
+                  </div>
+                </div>
               );
             })}
-          </tbody>
-        </table>
+          </div>
+        </div>
+
+      {/* ------------------------------------------------------------- */}
+      {/* MOBILE CARD VIEW FALLBACK (< 768px Viewports)               */}
+      {/* ------------------------------------------------------------- */}
+      <div className="block md:hidden divide-y divide-[#E2E8F0]">
+        {paginatedBookings.map((b) => {
+          const bookingId = b._id || b.id;
+          const deliveryStatus =
+            b.deliveryStatus || b.delivery?.status || b.status || "PENDING";
+
+          const remaining = Number(
+            b.remainingAmount ??
+              (Number(b.totalAmount || 0) - Number(b.paidAmount || 0))
+          );
+          const isSelected = selectedIds.includes(bookingId);
+
+          const customerName =
+            b.customer?.shopName ||
+            b.receiver?.shopName ||
+            b.customer?.ownerName ||
+            b.receiver?.ownerName ||
+            b.customer?.name ||
+            "Walk-in Customer";
+
+          return (
+            <div
+              key={bookingId}
+              onClick={() => onViewDetails(b)}
+              className={`p-4 space-y-3 cursor-pointer transition-colors ${
+                isSelected ? "bg-[#FFF7ED]" : "bg-white"
+              }`}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      onToggleSelect(bookingId);
+                    }}
+                    className="rounded border-[#CBD5E1] text-[#F97316] focus:ring-[#F97316] w-4 h-4"
+                  />
+                  <span className="font-mono font-bold text-xs text-[#0F172A]">
+                    #{b.bookingNumber || bookingId?.slice(-6)}
+                  </span>
+                  <span className="text-[10px] text-[#64748B]">
+                    {formatDate(b.bookingDate || b.createdAt)}
+                  </span>
+                </div>
+                {getStatusBadge(deliveryStatus)}
+              </div>
+
+              <div className="space-y-1 text-xs">
+                <div className="font-bold text-[#0F172A] flex items-center gap-1.5">
+                  <Building2 className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
+                  <span>{customerName}</span>
+                </div>
+
+                <div className="text-[#64748B] flex items-start gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-[#F97316] shrink-0 mt-0.5" />
+                  <span className="line-clamp-2">
+                    {b.deliveryAddress || b.customer?.address || "Branch Pickup"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-2 border-t border-[#F1F5F9] text-xs">
+                <div className="flex items-center gap-1.5">
+                  {getPaymentBadge(b)}
+                  <span className="font-mono font-bold text-[#0F172A]">
+                    ₹{(b.totalAmount || 0).toLocaleString("en-IN")}
+                  </span>
+                  {remaining > 0 && (
+                    <span className="text-[10px] font-bold text-[#DC2626]">
+                      (Due: ₹{remaining})
+                    </span>
+                  )}
+                </div>
+
+                <div onClick={(e) => e.stopPropagation()}>
+                  <DeliveryActionMenu
+                    booking={b}
+                    onViewDetails={onViewDetails}
+                    onAssignBoy={onAssignBoy}
+                    onCounterDeliver={onCounterDeliver}
+                    onMarkDelivered={onMarkDelivered}
+                    onMarkFailed={onMarkFailed}
+                    onCollectPayment={onCollectPayment}
+                  />
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Senior UI/UX Pagination Footer */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-[#E2E8F0] bg-[#F8FAFC] text-xs text-[#64748B] select-none">
+      {/* ------------------------------------------------------------- */}
+      {/* PAGINATION FOOTER                                             */}
+      {/* ------------------------------------------------------------- */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-[#E2E8F0] bg-[#F8FAFC] text-xs text-[#64748B] select-none w-full">
         {/* Left: Summary & Items Per Page Selector */}
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <div className="font-medium text-[#475569]">
             Showing <strong className="text-[#0F172A]">{(validCurrentPage - 1) * itemsPerPage + 1}</strong> to{" "}
             <strong className="text-[#0F172A]">{Math.min(validCurrentPage * itemsPerPage, totalItems)}</strong> of{" "}
@@ -455,4 +579,3 @@ export default function DeliveryTable({
     </div>
   );
 }
-
