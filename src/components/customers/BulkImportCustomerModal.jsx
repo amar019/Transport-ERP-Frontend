@@ -83,7 +83,7 @@ export default function BulkImportCustomerModal({ isOpen, onClose, onSuccess }) 
             pincode: cols[9] || "",
             openingBalance: Number(cols[10]) || 0,
             openingBalanceType: cols[11]?.toUpperCase() === "PAYABLE" ? "PAYABLE" : "RECEIVABLE",
-            isValid: cols[0] && cols[1] && /^[0-9]{10}$/.test(cols[2]),
+            isValid: Boolean(cols[0]) && (!cols[2] || /^[0-9]{10}$/.test(cols[2])),
           });
         }
       }
@@ -98,7 +98,7 @@ export default function BulkImportCustomerModal({ isOpen, onClose, onSuccess }) 
   const handleStartImport = async () => {
     const validRows = parsedData.filter((r) => r.isValid);
     if (validRows.length === 0) {
-      setErrorMsg("No valid customer records found in file. Check mandatory fields (Shop Name, Owner Name, 10-digit Mobile).");
+      setErrorMsg("No valid customer records found in file. Check mandatory field (Shop Name).");
       return;
     }
 

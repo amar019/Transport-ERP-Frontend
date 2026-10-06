@@ -79,22 +79,24 @@ export default function PublicCustomerRegisterPage() {
 
   const isShopNameValid = formData.shopName.trim().length > 0;
   const isOwnerNameValid = formData.ownerName.trim().length > 0;
-  const isMobileValid = /^[0-9]{10}$/.test(formData.mobile.trim());
+  const isMobileValid = !formData.mobile.trim() || /^[0-9]{10}$/.test(formData.mobile.trim());
   const isPincodeValid = !formData.pincode || /^[0-9]{6}$/.test(formData.pincode.trim());
 
   // Progress percentage
-  const requiredCount = (isShopNameValid ? 1 : 0) + (isOwnerNameValid ? 1 : 0) + (isMobileValid ? 1 : 0);
+  const requiredCount = isShopNameValid ? 1 : 0;
   const optionalCount =
+    (formData.ownerName ? 1 : 0) +
+    (formData.mobile ? 1 : 0) +
     (formData.address ? 1 : 0) +
     (formData.city ? 1 : 0) +
     (formData.district ? 1 : 0) +
     (formData.pincode ? 1 : 0) +
     (formData.email ? 1 : 0);
-  const completionPercentage = Math.min(100, Math.round((requiredCount / 3) * 70 + (optionalCount / 5) * 30));
+  const completionPercentage = Math.min(100, Math.round((requiredCount / 1) * 60 + (optionalCount / 7) * 40));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isShopNameValid || !isOwnerNameValid || !isMobileValid) {
+    if (!isShopNameValid || !isMobileValid) {
       setErrorMsg("Please complete all required fields marked with * correctly.");
       return;
     }
@@ -271,8 +273,8 @@ export default function PublicCustomerRegisterPage() {
                 Form Readiness Status
               </span>
               <span className="text-[11px] text-slate-500 font-medium">
-                {requiredCount < 3
-                  ? `Required missing: ${!isShopNameValid ? "Shop Name, " : ""}${!isOwnerNameValid ? "Proprietor, " : ""}${!isMobileValid ? "Mobile (10 digits)" : ""}`
+                {requiredCount < 1
+                  ? "Required missing: Shop Name"
                   : "Mandatory credentials filled! Ready to register."}
               </span>
             </div>
@@ -344,7 +346,7 @@ export default function PublicCustomerRegisterPage() {
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 flex items-center gap-1">
-                    Proprietor / Owner Name <span className="text-orange-600">*</span>
+                    Proprietor / Owner Name <span className="text-[10px] font-normal text-slate-400">(Optional)</span>
                   </label>
                   {formData.shopName && (
                     <button
@@ -360,7 +362,6 @@ export default function PublicCustomerRegisterPage() {
                   <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
                   <input
                     type="text"
-                    required
                     placeholder="e.g. Mahesh Kale"
                     value={formData.ownerName}
                     onChange={(e) => setFormData({ ...formData, ownerName: e.target.value })}
@@ -373,7 +374,7 @@ export default function PublicCustomerRegisterPage() {
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 flex items-center gap-1">
-                    Mobile Contact <span className="text-orange-600">*</span>
+                    Mobile Contact <span className="text-[10px] font-normal text-slate-400">(Optional)</span>
                   </label>
                   {formData.mobile && (
                     <span
@@ -389,7 +390,6 @@ export default function PublicCustomerRegisterPage() {
                   <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
                   <input
                     type="tel"
-                    required
                     maxLength={10}
                     placeholder="e.g. 9423456789"
                     value={formData.mobile}
@@ -553,7 +553,7 @@ export default function PublicCustomerRegisterPage() {
           <div className="hidden sm:block pt-4 border-t border-orange-100">
             <button
               type="submit"
-              disabled={isSubmitting || requiredCount < 3}
+              disabled={isSubmitting || requiredCount < 1 || !isMobileValid}
               className="w-full py-4 bg-gradient-to-r from-[#FF5500] via-[#FF6B00] to-[#FF7700] hover:from-[#E64C00] hover:to-[#E64C00] text-white font-black text-sm uppercase tracking-wider rounded-2xl shadow-lg shadow-orange-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.99]"
             >
               {isSubmitting ? (
@@ -604,7 +604,7 @@ export default function PublicCustomerRegisterPage() {
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={isSubmitting || requiredCount < 3}
+            disabled={isSubmitting || requiredCount < 1 || !isMobileValid}
             className="w-full py-3.5 bg-gradient-to-r from-[#FF5500] to-[#FF7700] text-white font-black text-xs uppercase tracking-wider rounded-2xl shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 transition-transform"
           >
             {isSubmitting ? (

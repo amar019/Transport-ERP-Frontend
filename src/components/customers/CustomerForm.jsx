@@ -146,15 +146,14 @@ export default function CustomerForm() {
     setErrorMsg("");
   };
 
-  // Validation Checks
   const isShopNameValid = formData.shopName.trim().length > 0;
-  const isOwnerNameValid = formData.ownerName.trim().length > 0;
-  const isMobileValid = /^[0-9]{10}$/.test(formData.mobile.trim());
+  const isOwnerNameValid = true;
+  const isMobileValid = !formData.mobile.trim() || /^[0-9]{10}$/.test(formData.mobile.trim());
   const isEmailValid = !formData.email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim());
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
-    if (!isShopNameValid || !isOwnerNameValid || !isMobileValid) {
+    if (!isShopNameValid || !isMobileValid) {
       setErrorMsg("Please fill out all required fields marked with * correctly.");
       return;
     }
@@ -362,7 +361,7 @@ export default function CustomerForm() {
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#475569] flex items-center gap-1">
-                    Owner / Contact Person <span className="text-[#DC2626]">*</span>
+                    Owner / Contact Person <span className="text-[10px] font-normal text-[#94A3B8]">(Optional)</span>
                   </label>
                   {formData.shopName && (
                     <button
@@ -380,7 +379,6 @@ export default function CustomerForm() {
                   </div>
                   <input
                     type="text"
-                    required
                     placeholder="e.g. Mahesh Kale"
                     value={formData.ownerName}
                     onChange={(e) =>
@@ -395,7 +393,7 @@ export default function CustomerForm() {
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#475569] flex items-center gap-1">
-                    Mobile Number <span className="text-[#DC2626]">*</span>
+                    Mobile Number <span className="text-[10px] font-normal text-[#94A3B8]">(Optional)</span>
                   </label>
                   {formData.mobile && (
                     <span
@@ -420,7 +418,6 @@ export default function CustomerForm() {
                   <input
                     type="tel"
                     inputMode="tel"
-                    required
                     maxLength={10}
                     placeholder="e.g. 9423456789"
                     value={formData.mobile}
@@ -720,7 +717,7 @@ export default function CustomerForm() {
             />
           </div>
 
-          {/* DESKTOP FORM BOTTOM ACTIONS */}
+          {/* DESKTOP FORM BOTTOM ACTIONS (SECONDARY) */}
           <div className="hidden lg:flex items-center justify-end gap-3 pt-2">
             <button
               type="button"
@@ -728,25 +725,6 @@ export default function CustomerForm() {
               className="px-4 py-2.5 rounded-lg border border-[#CBD5E1] bg-white text-[#475569] hover:text-[#0F172A] hover:bg-[#F8FAFC] font-bold text-xs transition-all cursor-pointer"
             >
               Cancel
-            </button>
-
-            <button
-              id="customer-form-submit-btn"
-              type="submit"
-              disabled={isSubmitting || !isShopNameValid || !isOwnerNameValid || !isMobileValid}
-              className="inline-flex items-center gap-2 bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold px-6 py-2.5 rounded-lg shadow-sm transition-all text-xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Saving Profile...</span>
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4 stroke-[2.5]" />
-                  <span>{isEditMode ? "Save Changes" : "Register Customer"}</span>
-                </>
-              )}
             </button>
           </div>
         </div>
@@ -756,24 +734,24 @@ export default function CustomerForm() {
           <div className="lg:sticky lg:top-6 space-y-4">
             {/* Real-time Business Card Preview */}
             <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden transition-all">
-              {/* Card Header Gradient */}
-              <div className="bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#334155] p-4 sm:p-5 text-white relative">
+              {/* Card Header (Vibrant White & Orange Theme) */}
+              <div className="bg-gradient-to-r from-[#FF5500] via-[#EA580C] to-[#F97316] p-4 sm:p-5 text-white relative shadow-sm">
                 <div className="flex items-start justify-between gap-3 relative z-10">
                   <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-tr from-[#EA580C] to-[#F97316] text-white flex items-center justify-center font-black text-base sm:text-lg shadow-md shrink-0">
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white text-[#EA580C] flex items-center justify-center font-black text-base sm:text-lg shadow-md shrink-0">
                       {formData.shopName ? formData.shopName.charAt(0).toUpperCase() : "C"}
                     </div>
                     <div>
-                      <h4 className="font-bold text-xs sm:text-sm text-white line-clamp-1 leading-tight">
+                      <h4 className="font-extrabold text-xs sm:text-sm text-white line-clamp-1 leading-tight">
                         {formData.shopName || "Your Shop Name"}
                       </h4>
-                      <p className="text-[11px] text-[#94A3B8] font-medium flex items-center gap-1 mt-0.5">
-                        <User className="w-3 h-3 text-[#EA580C]" />
+                      <p className="text-[11px] text-orange-100 font-medium flex items-center gap-1 mt-0.5">
+                        <User className="w-3 h-3 text-orange-200" />
                         {formData.ownerName || "Proprietor Name"}
                       </p>
                     </div>
                   </div>
-                  <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-white/10 text-white border border-white/20 backdrop-blur-xs shrink-0">
+                  <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-white/20 text-white border border-white/30 backdrop-blur-xs shrink-0">
                     PREVIEW
                   </span>
                 </div>
@@ -867,6 +845,36 @@ export default function CustomerForm() {
                   </div>
                 )}
               </div>
+            </div>
+
+            {/* REGISTER CUSTOMER / SAVE CHANGES SUBMIT BUTTON (PLACED DIRECTLY AFTER THE CARD) */}
+            <div className="space-y-2 pt-1">
+              <button
+                id="customer-form-submit-btn"
+                type="submit"
+                disabled={isSubmitting || !isShopNameValid || !isMobileValid}
+                className="w-full inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#FF5500] via-[#EA580C] to-[#C2410C] hover:from-[#EA580C] hover:to-[#9A3412] text-white font-extrabold px-6 py-3.5 rounded-xl shadow-lg shadow-orange-500/25 transition-all text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.99]"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Saving Profile...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-5 h-5 stroke-[2.5]" />
+                    <span>{isEditMode ? "Save Changes" : "Register Customer"}</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => navigate("/customers")}
+                className="w-full text-center py-2 text-xs font-bold text-[#64748B] hover:text-[#0F172A] transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
             </div>
 
             {/* Quick Tips Box */}
