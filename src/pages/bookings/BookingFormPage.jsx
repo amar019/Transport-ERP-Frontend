@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { CheckCircle2, AlertCircle } from "lucide-react";
+import { CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import BookingForm from "@/components/booking/BookingForm";
 import {
   addBooking,
@@ -34,8 +34,9 @@ export const BookingFormPage = () => {
 
   // Fetch single booking in edit mode
   useEffect(() => {
-    dispatch(clearCurrentBooking());
+    setErrorMsg("");
     if (isEditMode && id) {
+      dispatch(clearCurrentBooking());
       dispatch(fetchBookingById(id))
         .unwrap()
         .catch((err) => {
@@ -78,6 +79,9 @@ export const BookingFormPage = () => {
     }
   };
 
+  const currentBookingId = currentBooking?._id || currentBooking?.id;
+  const isBookingLoading = isEditMode && (reduxLoading || !currentBooking || currentBookingId !== id);
+
   return (
     <div className="min-h-screen bg-slate-50 p-3 md:p-6 font-sans antialiased selection:bg-orange-100">
       {/* Toast Alert Banner */}
@@ -109,12 +113,33 @@ export const BookingFormPage = () => {
           </div>
         )}
 
-        {isEditMode && reduxLoading && !currentBooking ? (
-          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-12 text-center text-slate-400 font-semibold text-xs animate-pulse">
-            Loading booking details for editing...
+        {isBookingLoading ? (
+          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-12 text-center text-slate-500 font-semibold text-xs flex flex-col items-center justify-center gap-3">
+            <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+            <span>Loading booking details for editing...</span>
+          </div>
+        ) : errorMsg && isEditMode && !currentBooking ? (
+          <div className="bg-white p-10 rounded-3xl border border-rose-200/90 shadow-xs text-center space-y-4">
+            <div className="w-14 h-14 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center mx-auto border border-rose-100 shadow-2xs">
+              <AlertCircle className="w-7 h-7" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-lg font-black text-slate-800">Booking Not Found</h3>
+              <p className="text-xs text-slate-500 font-medium max-w-sm mx-auto">
+                {errorMsg}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => navigate(ROUTES.BOOKINGS.LIST)}
+              className="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs rounded-xl shadow-md shadow-orange-500/20 cursor-pointer transition-all"
+            >
+              Return to Bookings List
+            </button>
           </div>
         ) : (
           <BookingForm
+            key={isEditMode ? (currentBookingId || id) : "new"}
             initialData={isEditMode ? currentBooking : null}
             isEditMode={isEditMode}
             onSubmit={handleSubmitBooking}
@@ -127,3 +152,4 @@ export const BookingFormPage = () => {
 };
 
 export default BookingFormPage;
+

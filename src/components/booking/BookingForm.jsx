@@ -28,6 +28,20 @@ import { getBranches } from "@/services/branch.service";
 import { getCustomers } from "@/services/customer.service";
 import { ROUTES } from "@/constants/paths";
 
+// Helper for safe date string formatting (YYYY-MM-DD)
+const formatDateForInput = (dateVal) => {
+  if (!dateVal) return new Date().toISOString().split("T")[0];
+  try {
+    const d = new Date(dateVal);
+    if (isNaN(d.getTime())) {
+      return new Date().toISOString().split("T")[0];
+    }
+    return d.toISOString().split("T")[0];
+  } catch (e) {
+    return new Date().toISOString().split("T")[0];
+  }
+};
+
 export default function BookingForm({
   initialData = null,
   isEditMode = false,
@@ -38,11 +52,18 @@ export default function BookingForm({
   const { user } = useSelector((state) => state.auth);
 
   // Multi-Item Goods List State
-  const [itemList, setItemList] = useState(
-    initialData?.items && initialData.items.length > 0
-      ? initialData.items.map((i) => ({ description: i.description || "", quantity: i.quantity ?? 1 }))
-      : [{ description: initialData?.itemName || "", quantity: initialData?.quantity ?? 1 }]
-  );
+  const [itemList, setItemList] = useState(() => {
+    if (initialData?.items && Array.isArray(initialData.items) && initialData.items.length > 0) {
+      return initialData.items.map((i) => ({
+        description: i?.description || "",
+        quantity: Math.max(1, Number(i?.quantity || 1)),
+      }));
+    }
+    if (initialData?.itemName) {
+      return [{ description: initialData.itemName, quantity: Math.max(1, Number(initialData.quantity || 1)) }];
+    }
+    return [{ description: "", quantity: 1 }];
+  });
 
   // Mobile Bottom Sheet / Summary Drawer State
   const [isMobileSummaryOpen, setIsMobileSummaryOpen] = useState(false);
@@ -62,12 +83,15 @@ export default function BookingForm({
   const partyDropdownRef = useRef(null);
 
   // Selected customer object for live preview chip
-  const [selectedCustomerObj, setSelectedCustomerObj] = useState(null);
+  const [selectedCustomerObj, setSelectedCustomerObj] = useState(() => {
+    return typeof initialData?.customer === "object" ? initialData.customer : null;
+  });
 
   // Direct Entry (Walk-In Customer) Mode Flag
-  const [isDirectEntry, setIsDirectEntry] = useState(
-    Boolean(initialData?.isDirectEntry || (!initialData?.customer && initialData))
-  );
+  const [isDirectEntry, setIsDirectEntry] = useState(() => {
+    if (!initialData) return false;
+    return Boolean(initialData.isDirectEntry || (!initialData.customer && initialData));
+  });
 
   // Item List Handlers
   const handleAddItem = () => {
@@ -88,7 +112,7 @@ export default function BookingForm({
 
   // Today's date string YYYY-MM-DD
   const todayStr = useMemo(() => {
-    return new Date().toISOString().split("T")[0];
+    return formatDateForInput();
   }, []);
 
   // Fetch branches on mount
@@ -98,9 +122,10 @@ export default function BookingForm({
         setBranchesLoading(true);
         const res = await getBranches();
         const list = res?.data ? res.data : Array.isArray(res) ? res : [];
-        setBranches(list);
+        setBranches(Array.isArray(list) ? list : []);
       } catch (err) {
         console.error("Failed to load branches:", err);
+        setBranches([]);
       } finally {
         setBranchesLoading(false);
       }
@@ -114,10 +139,20 @@ export default function BookingForm({
       try {
         setCustomersLoading(true);
         const res = await getCustomers();
-        const list = res?.data ? res.data : Array.isArray(res) ? res : [];
+        let list = [];
+        if (Array.isArray(res)) {
+          list = res;
+        } else if (res?.data && Array.isArray(res.data)) {
+          list = res.data;
+        } else if (res?.data?.customers && Array.isArray(res.data.customers)) {
+          list = res.data.customers;
+        } else if (res?.customers && Array.isArray(res.customers)) {
+          list = res.customers;
+        }
         setCustomers(list);
       } catch (err) {
         console.error("Failed to load customers:", err);
+        setCustomers([]);
       } finally {
         setCustomersLoading(false);
       }
@@ -141,7 +176,9 @@ export default function BookingForm({
 
   // Filter destination branches: exclude user's own origin branch
   const destinationBranches = useMemo(() => {
+    if (!Array.isArray(branches)) return [];
     return branches.filter((b) => {
+      if (!b || typeof b !== "object") return false;
       if (b.status && b.status !== "ACTIVE") return false;
       const userBranchId = user?.branch?._id || user?.branch?.id || user?.branch;
       if (userBranchId && (b._id === userBranchId || b.id === userBranchId)) {
@@ -153,9 +190,11 @@ export default function BookingForm({
 
   // Filtered destination branches based on search query
   const filteredDestinationBranches = useMemo(() => {
+    if (!Array.isArray(destinationBranches)) return [];
     const q = destSearchTerm.toLowerCase().trim();
     if (!q) return destinationBranches;
     return destinationBranches.filter((b) => {
+      if (!b) return false;
       const name = (b.name || "").toLowerCase();
       const code = (b.branchCode || b.code || "").toLowerCase();
       const city = (b.city || "").toLowerCase();
@@ -165,9 +204,11 @@ export default function BookingForm({
 
   // Filtered customers list based on party search query
   const filteredCustomers = useMemo(() => {
+    if (!Array.isArray(customers)) return [];
     const q = partySearchTerm.toLowerCase().trim();
     if (!q) return customers.slice(0, 8);
     return customers.filter((c) => {
+      if (!c) return false;
       const shop = (c.shopName || "").toLowerCase();
       const owner = (c.ownerName || "").toLowerCase();
       const mobile = (c.mobile || "").toLowerCase();
@@ -183,6 +224,20 @@ export default function BookingForm({
     });
   }, [customers, partySearchTerm]);
 
+  // Helper variables to resolve initial values for customer/receiver
+  const customerObj = typeof initialData?.customer === "object" ? initialData.customer : null;
+  const custId = customerObj ? (customerObj._id || customerObj.id) : (typeof initialData?.customer === "string" ? initialData.customer : "");
+  const receiverObj = initialData?.receiver || {};
+
+  const initialReceiverShopName = receiverObj.shopName || customerObj?.shopName || "";
+  const initialReceiverOwnerName = receiverObj.ownerName || customerObj?.ownerName || "";
+  const initialReceiverMobile = receiverObj.mobile || customerObj?.mobile || "";
+  const initialDeliveryAddress = initialData?.deliveryAddress || customerObj?.deliveryAddress || customerObj?.address || receiverObj.address || "";
+
+  const destBranchObj = typeof initialData?.toBranch === "object" ? initialData.toBranch : null;
+  const initialDestBranchId = destBranchObj ? (destBranchObj._id || destBranchObj.id) : (typeof initialData?.toBranch === "string" ? initialData.toBranch : "");
+  const initialDestBranchName = destBranchObj?.name || "";
+
   // Initialize react-hook-form
   const {
     register,
@@ -194,14 +249,12 @@ export default function BookingForm({
     formState: { errors },
   } = useForm({
     defaultValues: {
-      bookingDate: initialData?.bookingDate
-        ? new Date(initialData.bookingDate).toISOString().split("T")[0]
-        : todayStr,
+      bookingDate: formatDateForInput(initialData?.bookingDate),
       collectionType: initialData?.collectionType || "TO_PAY",
 
       // Destination Branch
-      toBranch: initialData?.toBranch?._id || initialData?.toBranch || "",
-      toBranchName: initialData?.toBranch?.name || "",
+      toBranch: initialDestBranchId,
+      toBranchName: initialDestBranchName,
 
       // Sender
       sender: {
@@ -211,13 +264,13 @@ export default function BookingForm({
       },
 
       // Customer / Receiver
-      customer: initialData?.customer?._id || initialData?.customer || "",
+      customer: custId,
       receiver: {
-        shopName: initialData?.customer?.shopName || "",
-        ownerName: initialData?.customer?.ownerName || "",
-        mobile: initialData?.customer?.mobile || "",
+        shopName: initialReceiverShopName,
+        ownerName: initialReceiverOwnerName,
+        mobile: initialReceiverMobile,
       },
-      deliveryAddress: initialData?.deliveryAddress || initialData?.customer?.address || "",
+      deliveryAddress: initialDeliveryAddress,
 
       // Consignment & Goods
       itemName: initialData?.itemName || "",
@@ -236,53 +289,55 @@ export default function BookingForm({
     },
   });
 
-  // Populate form in edit mode
+  // Populate form in edit mode if initialData arrives after mount
   useEffect(() => {
     if (initialData) {
-      const formattedDate = initialData.bookingDate
-        ? new Date(initialData.bookingDate).toISOString().split("T")[0]
-        : todayStr;
+      const formattedDate = formatDateForInput(initialData.bookingDate);
 
-      const custId =
-        typeof initialData.customer === "object"
-          ? initialData.customer._id || initialData.customer.id
-          : initialData.customer || "";
+      const cObj = typeof initialData.customer === "object" ? initialData.customer : null;
+      const cId = cObj ? (cObj._id || cObj.id) : (typeof initialData.customer === "string" ? initialData.customer : "");
+      const rObj = initialData.receiver || {};
 
-      const destBranchId =
-        typeof initialData.toBranch === "object"
-          ? initialData.toBranch._id || initialData.toBranch.id
-          : initialData.toBranch || "";
+      const recShop = rObj.shopName || cObj?.shopName || "";
+      const recOwner = rObj.ownerName || cObj?.ownerName || "";
+      const recMob = rObj.mobile || cObj?.mobile || "";
+      const delAddr = initialData.deliveryAddress || cObj?.deliveryAddress || cObj?.address || rObj.address || "";
 
-      const destBranchName =
-        typeof initialData.toBranch === "object" ? initialData.toBranch.name : "";
+      const dBranchObj = typeof initialData.toBranch === "object" ? initialData.toBranch : null;
+      const dBranchId = dBranchObj ? (dBranchObj._id || dBranchObj.id) : (typeof initialData.toBranch === "string" ? initialData.toBranch : "");
+      const dBranchName = dBranchObj?.name || "";
 
-      if (typeof initialData.customer === "object" && initialData.customer) {
-        setSelectedCustomerObj(initialData.customer);
+      if (cObj) {
+        setSelectedCustomerObj(cObj);
       }
 
+      setIsDirectEntry(Boolean(initialData.isDirectEntry || (!initialData.customer && initialData)));
+
       if (initialData.items && Array.isArray(initialData.items) && initialData.items.length > 0) {
-        setItemList(initialData.items.map((i) => ({ description: i.description || "", quantity: i.quantity ?? 1 })));
+        setItemList(initialData.items.map((i) => ({ description: i?.description || "", quantity: Math.max(1, Number(i?.quantity || 1)) })));
       } else if (initialData.itemName) {
-        setItemList([{ description: initialData.itemName, quantity: initialData.quantity ?? 1 }]);
+        setItemList([{ description: initialData.itemName, quantity: Math.max(1, Number(initialData.quantity || 1)) }]);
+      } else {
+        setItemList([{ description: "", quantity: 1 }]);
       }
 
       reset({
         bookingDate: formattedDate,
         collectionType: initialData.collectionType || "TO_PAY",
-        toBranch: destBranchId,
-        toBranchName: destBranchName,
+        toBranch: dBranchId,
+        toBranchName: dBranchName,
         sender: {
           name: initialData.sender?.name || "",
           mobile: initialData.sender?.mobile || "",
           address: initialData.sender?.address || "",
         },
-        customer: custId,
+        customer: cId,
         receiver: {
-          shopName: initialData.customer?.shopName || "",
-          ownerName: initialData.customer?.ownerName || "",
-          mobile: initialData.customer?.mobile || "",
+          shopName: recShop,
+          ownerName: recOwner,
+          mobile: recMob,
         },
-        deliveryAddress: initialData.deliveryAddress || initialData.customer?.address || "",
+        deliveryAddress: delAddr,
         itemName: initialData.itemName || "",
         quantity: initialData.quantity ?? 1,
         invoiceNo: initialData.invoiceNo || "",
@@ -290,7 +345,7 @@ export default function BookingForm({
         freight: initialData.freight ?? 0,
         hamali: initialData.hamali ?? 0,
         crossing: initialData.crossing ?? 0,
-        biltyCharge: initialData.biltyCharge ?? 0,
+        biltyCharge: initialData.biltyCharge ?? 5,
         otherCharges: initialData.otherCharges ?? 0,
         notes: initialData.notes || "",
       });
@@ -796,7 +851,7 @@ export default function BookingForm({
                     {...register("sender.name", { required: "Sender Name is required" })}
                     className="w-full px-3 py-2 sm:py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-hidden focus:border-orange-500 font-semibold text-slate-800"
                   />
-                  {errors.sender?.name && (
+                  {errors.sender?.name?.message && (
                     <p className="text-[10px] font-bold text-rose-500 mt-0.5">
                       {errors.sender.name.message}
                     </p>
@@ -861,7 +916,7 @@ export default function BookingForm({
                     {...register("receiver.shopName", { required: "Customer Shop Name is required" })}
                     className="w-full px-3 py-2 sm:py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-hidden focus:border-orange-500 font-bold text-slate-800"
                   />
-                  {errors.receiver?.shopName && (
+                  {errors.receiver?.shopName?.message && (
                     <p className="text-[10px] font-bold text-rose-500 mt-0.5">
                       {errors.receiver.shopName.message}
                     </p>
