@@ -279,11 +279,11 @@ export default function BookingForm({
       remark: initialData?.remark || "",
 
       // Charges Matrix
-      freight: initialData?.freight ?? 0,
-      hamali: initialData?.hamali ?? 0,
-      crossing: initialData?.crossing ?? 0,
-      biltyCharge: initialData?.biltyCharge ?? 5,
-      otherCharges: initialData?.otherCharges ?? 0,
+      freight: initialData?.freight || "",
+      hamali: initialData?.hamali || "",
+      crossing: initialData?.crossing || "",
+      biltyCharge: initialData?.biltyCharge || "",
+      otherCharges: initialData?.otherCharges || "",
 
       notes: initialData?.notes || "",
     },
@@ -342,11 +342,11 @@ export default function BookingForm({
         quantity: initialData.quantity ?? 1,
         invoiceNo: initialData.invoiceNo || "",
         remark: initialData.remark || "",
-        freight: initialData.freight ?? 0,
-        hamali: initialData.hamali ?? 0,
-        crossing: initialData.crossing ?? 0,
-        biltyCharge: initialData.biltyCharge ?? 5,
-        otherCharges: initialData.otherCharges ?? 0,
+        freight: initialData.freight || "",
+        hamali: initialData.hamali || "",
+        crossing: initialData.crossing || "",
+        biltyCharge: initialData.biltyCharge || "",
+        otherCharges: initialData.otherCharges || "",
         notes: initialData.notes || "",
       });
     }

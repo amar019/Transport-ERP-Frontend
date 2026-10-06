@@ -12,7 +12,7 @@ import styles from './PaymentQR.module.css';
 export const PaymentQR = ({
   type = "customer",
   qrCode = "/qr.jpeg",
-  upiId = "mahakaltransport@okaxis"
+  upiId = ""
 }) => {
   const [qrError, setQrError] = useState(false);
   const isOffice = type === "office";

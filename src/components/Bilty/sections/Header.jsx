@@ -14,7 +14,7 @@ export const Header = ({
   booking = {},
   type = "customer",
   qrCode = "",
-  upiId = "mahakaltransport@okaxis"
+  upiId = ""
 }) => {
   const [logoError, setLogoError] = useState(false);
 
