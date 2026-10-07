@@ -13,7 +13,10 @@ export const fetchBookings = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const response = await getBookings(params);
-      return Array.isArray(response) ? response : response.data || [];
+      if (Array.isArray(response)) return response;
+      if (Array.isArray(response?.data?.bookings)) return response.data.bookings;
+      if (Array.isArray(response?.data)) return response.data;
+      return [];
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch bookings"

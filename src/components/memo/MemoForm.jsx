@@ -52,7 +52,13 @@ export default function MemoForm({ onSubmit, isSubmitting = false }) {
       try {
         setBranchesLoading(true);
         const res = await getBranches();
-        const list = res?.data ? res.data : Array.isArray(res) ? res : [];
+        const list = Array.isArray(res?.data)
+          ? res.data
+          : Array.isArray(res?.branches)
+          ? res.branches
+          : Array.isArray(res)
+          ? res
+          : [];
         setBranches(list);
       } catch (err) {
         console.error("Failed to load branches:", err);
@@ -87,17 +93,27 @@ export default function MemoForm({ onSubmit, isSubmitting = false }) {
       try {
         setBookingsLoading(true);
         setFormError(null);
-        const res = await getBookings();
-        const list = res?.data ? res.data : Array.isArray(res) ? res : [];
+        const res = await getBookings({ limit: 100 });
+        let list = [];
+        if (Array.isArray(res?.data?.bookings)) {
+          list = res.data.bookings;
+        } else if (Array.isArray(res?.data)) {
+          list = res.data;
+        } else if (Array.isArray(res?.bookings)) {
+          list = res.bookings;
+        } else if (Array.isArray(res)) {
+          list = res;
+        }
 
-        const userBranchId = user?.branch?._id || user?.branch?.id || user?.branch;
+        const userBranchId = (user?.branch?._id || user?.branch?.id || user?.branch || "").toString();
+        const destBranchId = (selectedToBranch || "").toString();
 
         // Filter bookings for this destination branch and not in any memo
         const eligible = list.filter((b) => {
-          const bToBranchId = b.toBranch?._id || b.toBranch;
-          const bFromBranchId = b.fromBranch?._id || b.fromBranch;
+          const bToBranchId = (b.toBranch?._id || b.toBranch || "").toString();
+          const bFromBranchId = (b.fromBranch?._id || b.fromBranch || "").toString();
 
-          const matchDest = bToBranchId === selectedToBranch;
+          const matchDest = bToBranchId === destBranchId;
           const matchOrigin = !userBranchId || bFromBranchId === userBranchId;
           const notInMemo = !b.memo;
           const notCancelled = b.status !== "CANCELLED";

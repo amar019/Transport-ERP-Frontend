@@ -61,6 +61,9 @@ export const BookingDashboard = () => {
     if (!res) return [];
     if (Array.isArray(res)) return res;
     if (Array.isArray(res.data)) return res.data;
+    if (Array.isArray(res.data?.bookings)) return res.data.bookings;
+    if (Array.isArray(res.data?.memos)) return res.data.memos;
+    if (Array.isArray(res.data?.expenses)) return res.data.expenses;
     return [];
   };
 
