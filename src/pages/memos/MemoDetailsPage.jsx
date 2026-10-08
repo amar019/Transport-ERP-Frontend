@@ -9,6 +9,7 @@ import {
   IndianRupee,
   FileText,
   Printer,
+  Pencil,
   Trash2,
   Check,
   Send,
@@ -173,6 +174,7 @@ export const MemoDetailsPage = () => {
   const canReceive = isDeliveryBranch && memo.status === "ON_ROUTE";
   const canSettle = isBookingBranch && memo.status === "RECEIVED" && memo.collectionStatus !== "COMPLETED";
   const canDelete = isBookingBranch && memo.status === "CREATED";
+  const canEdit = isBookingBranch && memo.status === "CREATED";
 
   const bookingsList = Array.isArray(memo.bookings) ? memo.bookings : [];
   const totalBilties = memo.bookingsCount ?? memo.totalBookings ?? bookingsList.length;
@@ -260,6 +262,18 @@ export const MemoDetailsPage = () => {
               <Printer className="w-3.5 h-3.5 text-slate-500" />
               <span>Print Manifest</span>
             </button>
+
+            {/* Edit Memo (BOOKING only, when CREATED) */}
+            {canEdit && (
+              <button
+                type="button"
+                onClick={() => navigate(ROUTES.MEMOS.EDIT(id))}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-orange-700 bg-orange-50 hover:bg-orange-100 border border-orange-200 rounded-xl transition-all cursor-pointer shadow-2xs"
+              >
+                <Pencil className="w-3.5 h-3.5 text-orange-600" />
+                <span>Edit Memo</span>
+              </button>
+            )}
 
             {/* Dispatch Button (BOOKING only) */}
             {canDispatch && (

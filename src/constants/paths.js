@@ -17,6 +17,7 @@ export const ROUTES = {
   MEMOS: {
     LIST: "/memos",
     NEW: "/memos/new",
+    EDIT: (id = ":id") => `/memos/${id}/edit`,
     DETAILS: (id = ":id") => `/memos/${id}`,
     PREVIEW: (id = ":id") => `/memo-preview/${id}`,
     PREVIEW_BLANK: "/memo-preview",

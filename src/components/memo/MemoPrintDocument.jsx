@@ -47,6 +47,7 @@ export const MemoPrintDocument = ({ memo = {}, company = {} }) => {
   let grandTotal = 0;
 
   bookingsList.forEach((b) => {
+    if (!b || typeof b !== 'object') return;
     totalQuantity += Number(b.quantity || 1);
     totalFreight += Number(b.freight || 0);
     const amount = Number(b.totalAmount || 0);
@@ -135,7 +136,8 @@ export const MemoPrintDocument = ({ memo = {}, company = {} }) => {
           <tbody>
             {bookingsList.length > 0 ? (
               bookingsList.map((b, idx) => {
-                const customer = typeof b.customer === 'object' ? b.customer : {};
+                if (!b || typeof b !== 'object') return null;
+                const customer = typeof b.customer === 'object' && b.customer !== null ? b.customer : {};
                 const shopName = customer.shopName || (typeof b.customer === 'string' ? b.customer : "-");
                 const ownerName = customer.ownerName || "";
                 const mobile = customer.mobile || b.sender?.mobile || "-";

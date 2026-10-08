@@ -42,13 +42,9 @@ export default function BookingTable({
     });
   };
 
-  // Paginated data
+  // Display all bookings passed from parent (which manages pagination)
   const totalItems = bookings.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
-  const paginatedBookings = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return bookings.slice(start, start + itemsPerPage);
-  }, [bookings, currentPage, itemsPerPage]);
+  const paginatedBookings = bookings;
 
   const isAllSelected = useMemo(() => {
     return bookings.length > 0 && selectedIds.length === bookings.length;

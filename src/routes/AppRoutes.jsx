@@ -64,6 +64,7 @@ export const AppRoutes = () => {
           {/* Memos */}
           <Route path={ROUTES.MEMOS.LIST} element={<MemoListPage />} />
           <Route path={ROUTES.MEMOS.NEW} element={<MemoFormPage />} />
+          <Route path={ROUTES.MEMOS.EDIT(":id")} element={<MemoFormPage />} />
           <Route path={ROUTES.MEMOS.DETAILS(":id")} element={<MemoDetailsPage />} />
 
           {/* Customers */}

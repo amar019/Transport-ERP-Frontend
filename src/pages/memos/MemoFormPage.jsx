@@ -1,17 +1,20 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { ArrowLeft, Truck, AlertCircle, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Truck, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import MemoForm from "@/components/memo/MemoForm";
-import { createMemoThunk } from "@/store/slices/memoSlice";
+import { createMemoThunk, updateMemoThunk, fetchMemoById } from "@/store/slices/memoSlice";
 import { ROUTES } from "@/constants/paths";
 
 export const MemoFormPage = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const isEditMode = Boolean(id);
+
   const { user } = useSelector((state) => state.auth);
-  const { isSubmitting } = useSelector((state) => state.memos);
+  const { currentMemo, isSubmitting, isLoading } = useSelector((state) => state.memos);
   const [toast, setToast] = useState(null);
 
   const showToast = (msg, type = "success") => {
@@ -19,28 +22,54 @@ export const MemoFormPage = () => {
     setTimeout(() => setToast(null), 3500);
   };
 
-  const handleCreateMemo = async (formData) => {
+  useEffect(() => {
+    if (isEditMode && id) {
+      dispatch(fetchMemoById(id));
+    }
+  }, [isEditMode, id, dispatch]);
+
+  const handleSubmitMemo = async (formData) => {
     try {
-      const res = await dispatch(createMemoThunk(formData)).unwrap();
-      showToast("Memo created successfully!", "success");
-      setTimeout(() => {
-        navigate(res?._id ? ROUTES.MEMOS.DETAILS(res._id) : ROUTES.MEMOS.LIST);
-      }, 1000);
+      if (isEditMode) {
+        const res = await dispatch(updateMemoThunk({ id, memoData: formData })).unwrap();
+        showToast("Memo updated successfully!", "success");
+        setTimeout(() => {
+          navigate(ROUTES.MEMOS.DETAILS(id));
+        }, 1000);
+      } else {
+        const res = await dispatch(createMemoThunk(formData)).unwrap();
+        showToast("Memo created successfully!", "success");
+        setTimeout(() => {
+          navigate(res?._id ? ROUTES.MEMOS.DETAILS(res._id) : ROUTES.MEMOS.LIST);
+        }, 1000);
+      }
     } catch (err) {
-      console.error("Failed to create memo:", err);
-      showToast(typeof err === "string" ? err : "Failed to create memo", "error");
+      console.error("Failed to save memo:", err);
+      showToast(typeof err === "string" ? err : "Failed to save memo", "error");
     }
   };
+
+  if (isEditMode && isLoading) {
+    return (
+      <div className="w-full min-h-screen bg-slate-50 p-6 flex items-center justify-center">
+        <div className="flex items-center gap-3 text-slate-500 font-bold text-sm">
+          <Loader2 className="w-6 h-6 animate-spin text-orange-500" />
+          <span>Loading dispatch memo...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full min-h-screen bg-slate-50 p-3.5 md:p-6 font-sans antialiased selection:bg-orange-100 select-none pb-16 space-y-4 max-w-[1400px] mx-auto">
       {/* Toast Alert Banner */}
       {toast && (
         <div
-          className={`fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-lg border transition-all duration-300 animate-in fade-in slide-in-from-top-4 ${toast.type === "success"
-            ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-            : "bg-rose-50 text-rose-800 border-rose-200"
-            }`}
+          className={`fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-lg border transition-all duration-300 animate-in fade-in slide-in-from-top-4 ${
+            toast.type === "success"
+              ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+              : "bg-rose-50 text-rose-800 border-rose-200"
+          }`}
         >
           {toast.type === "success" ? (
             <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
@@ -71,7 +100,7 @@ export const MemoFormPage = () => {
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <h4 className="text-lg md:text-xl font-bold text-slate-800 tracking-tight">
-                  Create  Memo
+                  {isEditMode ? `Edit Memo ${currentMemo?.memoNumber || ""}` : "Create Memo"}
                 </h4>
 
                 <span className="bg-orange-50 text-orange-700 border border-orange-200 text-[10px] font-bold px-2 py-0.5 rounded-full">
@@ -80,7 +109,9 @@ export const MemoFormPage = () => {
               </div>
 
               <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-                Group consignments into a dispatch manifest.
+                {isEditMode
+                  ? "Modify route or selected consignments for this draft manifest."
+                  : "Group consignments into a dispatch manifest."}
               </p>
             </div>
           </div>
@@ -89,7 +120,11 @@ export const MemoFormPage = () => {
 
       {/* Form Container */}
       <div className="w-full">
-        <MemoForm onSubmit={handleCreateMemo} isSubmitting={isSubmitting} />
+        <MemoForm
+          initialData={isEditMode ? currentMemo : null}
+          onSubmit={handleSubmitMemo}
+          isSubmitting={isSubmitting}
+        />
       </div>
     </div>
   );
