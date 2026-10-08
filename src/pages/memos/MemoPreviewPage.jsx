@@ -26,21 +26,17 @@ export const MemoPreviewPage = () => {
     pageStyle: `
       @page {
         size: A4 landscape;
-        margin: 6mm;
+        margin: 6mm 14mm;
       }
       @media print {
         html, body {
           width: 100% !important;
-          height: 100% !important;
-          max-height: 100% !important;
-          overflow: hidden !important;
+          height: auto !important;
           margin: 0 !important;
           padding: 0 !important;
           background: #ffffff !important;
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
-          transform: none !important;
-          writing-mode: horizontal-tb !important;
         }
         .no-print, .no-print * {
           display: none !important;
@@ -52,13 +48,9 @@ export const MemoPreviewPage = () => {
           padding: 0 !important;
           width: 100% !important;
           height: auto !important;
-          max-height: 198mm !important;
+          max-height: none !important;
+          overflow: visible !important;
           transform: none !important;
-          writing-mode: horizontal-tb !important;
-          page-break-inside: avoid !important;
-          break-inside: avoid !important;
-          page-break-after: avoid !important;
-          break-after: avoid !important;
         }
       }
     `,

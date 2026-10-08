@@ -161,10 +161,13 @@ export const BookingDetailsPage = () => {
     );
   }
 
-  const sender = booking.sender || {};
-  const customer = typeof booking.customer === "object" ? booking.customer : {};
-  const memoNumber = typeof booking.memo === "object" ? booking.memo?.memoNumber : booking.memo;
-  const memoId = typeof booking.memo === "object" ? booking.memo?._id : booking.memo;
+  const sender = typeof booking.sender === "object" && booking.sender !== null ? booking.sender : {};
+  const customer = typeof booking.customer === "object" && booking.customer !== null ? booking.customer : {};
+  const receiver = typeof booking.receiver === "object" && booking.receiver !== null ? booking.receiver : {};
+  const memoNumber = typeof booking.memo === "object" && booking.memo !== null ? booking.memo?.memoNumber : booking.memo;
+  const memoId = typeof booking.memo === "object" && booking.memo !== null ? booking.memo?._id : booking.memo;
+
+  const displaySystemId = id && typeof id === "string" ? id.slice(-6) : (booking?._id ? String(booking._id).slice(-6) : "000000");
 
   return (
     <div className="min-h-screen bg-slate-50/60 p-3.5 md:p-6 font-sans antialiased text-slate-800 selection:bg-orange-100 select-none pb-20">
@@ -211,7 +214,7 @@ export const BookingDetailsPage = () => {
 
           <div className="flex items-center gap-2 self-start sm:self-auto">
             <span className="text-[11px] font-mono font-bold bg-slate-100/80 text-slate-700 px-3 py-1 rounded-lg border border-slate-200/80 shadow-2xs">
-              System ID: <span className="text-slate-900 font-extrabold">#{id.slice(-6)}</span>
+              System ID: <span className="text-slate-900 font-extrabold">#{displaySystemId}</span>
             </span>
           </div>
         </div>

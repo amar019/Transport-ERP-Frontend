@@ -87,13 +87,13 @@
 }
 
 .paidBadge {
-  font-size: 6pt;
+  font-size: 6.5pt;
   font-weight: 800;
-  color: #2EAD72;
-  background-color: #EAF8F1;
-  border: 1px solid #A2E3C4;
-  padding: 1px 6px;
-  border-radius: 3px;
+  color: #16a34a;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  border-radius: 0;
   letter-spacing: 0.3px;
   text-transform: uppercase;
   white-space: nowrap;
@@ -102,13 +102,13 @@
 }
 
 .toPayBadge {
-  font-size: 6pt;
+  font-size: 6.5pt;
   font-weight: 800;
-  color: #D90429;
-  background-color: #FFF0F3;
-  border: 1px solid #FCD3DB;
-  padding: 1px 6px;
-  border-radius: 3px;
+  color: #ea580c;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  border-radius: 0;
   letter-spacing: 0.3px;
   text-transform: uppercase;
   white-space: nowrap;

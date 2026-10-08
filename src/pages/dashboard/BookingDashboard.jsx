@@ -597,7 +597,7 @@ export const BookingDashboard = () => {
                           ? "bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]"
                           : "bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A]"
                         }`}>
-                        {item.collectionType === "PAID_AT_BOOKING" ? "PAID" : "TO PAY"}
+                        {item.collectionType === "PAID_AT_BOOKING" ? "PAID AT BOOKING" : "TO PAY"}
                       </span>
                     </div>
                     <div className="text-xs text-[#475569] font-medium truncate">

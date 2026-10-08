@@ -509,7 +509,7 @@ export const DeliveryDashboard = () => {
                               ? "bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]"
                               : "bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A]"
                           }`}>
-                            {b.collectionType === "PAID_AT_BOOKING" ? "PAID" : "TO PAY"}
+                            {b.collectionType === "PAID_AT_BOOKING" ? "PAID AT BOOKING" : "TO PAY"}
                           </span>
                         </div>
                         <div className="text-xs text-[#475569] font-medium truncate">

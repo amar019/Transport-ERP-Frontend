@@ -176,32 +176,44 @@ export const MemoDetailsPage = () => {
   const canDelete = isBookingBranch && memo.status === "CREATED";
   const canEdit = isBookingBranch && memo.status === "CREATED";
 
-  const bookingsList = Array.isArray(memo.bookings) ? memo.bookings : [];
+  const rawBookings = Array.isArray(memo.bookings) ? memo.bookings : [];
+  const bookingsList = [...rawBookings].sort((a, b) => {
+    if (!a || !b) return 0;
+    const numA = a.bookingNumber || "";
+    const numB = b.bookingNumber || "";
+    if (numA && numB) {
+      const cmp = numA.localeCompare(numB, undefined, { numeric: true, sensitivity: "base" });
+      if (cmp !== 0) return cmp;
+    }
+    const dateA = new Date(a.bookingDate || a.createdAt || 0).getTime();
+    const dateB = new Date(b.bookingDate || b.createdAt || 0).getTime();
+    return dateA - dateB;
+  });
   const totalBilties = memo.bookingsCount ?? memo.totalBookings ?? bookingsList.length;
 
-  let grossCargoValue = 0;
-  let toPayAmount = 0;
-  let paidAtBookingAmount = 0;
+  let grossCargoValue = memo.grandTotal ?? memo.totalMoney ?? 0;
+  let toPayAmount = memo.totalToPay ?? 0;
+  let paidAtBookingAmount = memo.totalPaid ?? 0;
 
-  bookingsList.forEach((b) => {
-    const amt = Number(b.totalAmount || 0);
-    grossCargoValue += amt;
-    if (b.collectionType === "TO_PAY") {
-      toPayAmount += Number(b.remainingAmount !== undefined ? b.remainingAmount : amt);
-    } else if (b.collectionType === "PAID_AT_BOOKING") {
-      paidAtBookingAmount += amt;
-    }
-  });
+  if (grossCargoValue === 0 && bookingsList.length > 0) {
+    bookingsList.forEach((b) => {
+      const amt = Number(b.totalAmount || 0);
 
-  if (grossCargoValue === 0 && memo.totalAmount) {
-    grossCargoValue = Number(memo.totalMoney ?? memo.totalAmount);
-    toPayAmount = Number(memo.totalToPay ?? memo.totalAmount);
+      if (b.collectionType === "PAID_AT_BOOKING") {
+        paidAtBookingAmount += amt;
+        grossCargoValue += amt;
+      } else if (b.collectionType === "TO_PAY") {
+        toPayAmount += amt;
+        grossCargoValue += amt;
+      }
+    });
   }
 
-  const totalToPay = toPayAmount || Number(memo.totalToPay ?? memo.totalAmount ?? 0);
+  const totalToPay = toPayAmount;
   const settledAmount = Number(memo.receivedAmount ?? memo.totalCollected ?? 0);
   const pendingBalance = Number(memo.pendingAmount ?? (totalToPay - settledAmount));
   const totalQuantity =
+    memo.totalQuantity ??
     memo.totalPackages ??
     bookingsList.reduce((sum, b) => sum + Number(b.quantity || 1), 0);
 
@@ -462,17 +474,17 @@ export const MemoDetailsPage = () => {
                       </td>
                       <td className="py-3 px-4">
                         <div className="font-extrabold text-slate-800 flex items-center gap-1.5">
-                          {b.isDirectEntry && (
+                          {(b.isDirectEntry || (!b.customer && b.receiver?.shopName)) && (
                             <span className="text-[9px] font-black bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded border border-amber-200 shrink-0">
                               ⚡ Direct
                             </span>
                           )}
                           <span>
-                            {b.customer?.shopName || b.receiver?.shopName || (typeof b.customer === "string" ? b.customer : "N/A")}
+                            {b.customer?.shopName || b.receiver?.shopName || b.customer?.ownerName || b.receiver?.ownerName || (typeof b.customer === "string" ? b.customer : "N/A")}
                           </span>
                         </div>
-                        {(b.customer?.mobile || b.receiver?.mobile) && (
-                          <div className="text-[11px] text-slate-400">{b.customer?.mobile || b.receiver?.mobile}</div>
+                        {(b.customer?.mobile || b.receiver?.mobile || b.sender?.mobile) && (
+                          <div className="text-[11px] text-slate-400">{b.customer?.mobile || b.receiver?.mobile || b.sender?.mobile}</div>
                         )}
                       </td>
                       <td className="py-3 px-4">{b.itemName || "Goods"}</td>

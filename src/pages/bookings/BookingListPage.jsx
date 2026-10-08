@@ -158,7 +158,7 @@ export const BookingListPage = () => {
       }
 
       if (
-        (b.collectionType === "PAID_AT_BOOKING" || b.paymentStatus === "PAID") &&
+        b.collectionType === "PAID_AT_BOOKING" &&
         b.status !== "CANCELLED"
       ) {
         paidTotal += amount;

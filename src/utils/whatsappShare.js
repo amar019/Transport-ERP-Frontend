@@ -69,11 +69,12 @@ export const generateBiltyWhatsAppMessage = (booking = {}) => {
   const quantity = booking.quantity ?? 1;
   const totalAmount = parseFloat(booking.totalAmount || 0).toFixed(2);
 
-  const isPaid =
-    (booking.collectionType || "").toUpperCase().replace(/[\s-]+/g, "_") === "PAID_AT_BOOKING" ||
-    (booking.paymentStatus || "").toUpperCase() === "PAID";
+  const isPaidAtBooking = (booking.collectionType || "").toUpperCase().replace(/[\s-]+/g, "_") === "PAID_AT_BOOKING";
+  const paymentStatusStr = (booking.paymentStatus || "PENDING").toUpperCase();
 
-  const paymentStatusText = isPaid ? "PAID AT BOOKING ✅" : "TO PAY (Collect at Delivery) ⏳";
+  const paymentStatusText = isPaidAtBooking
+    ? "PAID AT BOOKING ✅"
+    : `TO PAY (${paymentStatusStr}) ⏳`;
 
   const previewUrl = window.location.origin ? `${window.location.origin}/bilty-preview?id=${booking._id || booking.id}` : "";
 

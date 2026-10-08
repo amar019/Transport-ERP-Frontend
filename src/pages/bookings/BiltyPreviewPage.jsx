@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams, useParams, useNavigate } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import { 
-  Printer, 
-  ArrowLeft, 
-  Loader2, 
-  AlertCircle, 
-  ZoomIn, 
-  ZoomOut, 
-  RotateCcw, 
-  FileText, 
-  CheckCircle2, 
+import {
+  Printer,
+  ArrowLeft,
+  Loader2,
+  AlertCircle,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw,
+  FileText,
+  CheckCircle2,
   Clock,
 } from "lucide-react";
 import api from "@/services/api";
@@ -132,9 +132,9 @@ export const BiltyPreviewPage = () => {
   };
 
   // Operational payment status check
-  const isPaid =
-    (booking?.collectionType || "").toUpperCase().replace(/[\s-]+/g, "_") === "PAID_AT_BOOKING" ||
-    (booking?.paymentStatus || "").toUpperCase() === "PAID";
+  const isPaidAtBooking =
+    (booking?.collectionType || "").toUpperCase().replace(/[\s-]+/g, "_") === "PAID_AT_BOOKING";
+  const isPaid = (booking?.paymentStatus || "").toUpperCase() === "PAID" || isPaidAtBooking;
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased flex flex-col selection:bg-orange-500 selection:text-white pb-20 lg:pb-0">
@@ -166,11 +166,10 @@ export const BiltyPreviewPage = () => {
           {/* Status Badge */}
           {booking && (
             <span
-              className={`inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-black rounded-full border ${
-                isPaid
+              className={`inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-black rounded-full border ${isPaid
                   ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
                   : "bg-amber-500/10 text-amber-400 border-amber-500/30"
-              }`}
+                }`}
             >
               {isPaid ? (
                 <>
@@ -194,11 +193,10 @@ export const BiltyPreviewPage = () => {
             <button
               type="button"
               onClick={() => setViewMode("both")}
-              className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
-                viewMode === "both"
+              className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${viewMode === "both"
                   ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs"
                   : "text-slate-400 hover:text-slate-200"
-              }`}
+                }`}
               title="Show Both Copies (Portrait A4)"
             >
               Both
@@ -206,11 +204,10 @@ export const BiltyPreviewPage = () => {
             <button
               type="button"
               onClick={() => setViewMode("customer")}
-              className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
-                viewMode === "customer"
+              className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${viewMode === "customer"
                   ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs"
                   : "text-slate-400 hover:text-slate-200"
-              }`}
+                }`}
               title="Customer Copy Only"
             >
               Customer
@@ -218,11 +215,10 @@ export const BiltyPreviewPage = () => {
             <button
               type="button"
               onClick={() => setViewMode("office")}
-              className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
-                viewMode === "office"
+              className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${viewMode === "office"
                   ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs"
                   : "text-slate-400 hover:text-slate-200"
-              }`}
+                }`}
               title="Office Copy Only"
             >
               Office

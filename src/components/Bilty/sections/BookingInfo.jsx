@@ -28,21 +28,8 @@ export const BookingInfo = ({ booking = {} }) => {
   const formattedPaymentStatus = (paymentStatus || "").toUpperCase();
 
   const isPaidAtBooking = formattedCollectionType === "PAID_AT_BOOKING";
-  const isPaidOnDelivery = formattedCollectionType === "TO_PAY" && formattedPaymentStatus === "PAID";
-
-  let paymentText = "TO PAY";
-  let isGreenBadge = false;
-
-  if (isPaidAtBooking) {
-    paymentText = "PAID AT BOOKING";
-    isGreenBadge = true;
-  } else if (isPaidOnDelivery) {
-    paymentText = "PAID ON DELIVERY";
-    isGreenBadge = true;
-  } else {
-    paymentText = "TO PAY";
-    isGreenBadge = false;
-  }
+  const paymentText = isPaidAtBooking ? "PAID AT BOOKING" : "TO PAY";
+  const isGreenBadge = isPaidAtBooking;
 
   return (
     <div className={styles.bookingCard}>
