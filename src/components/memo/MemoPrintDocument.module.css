@@ -39,10 +39,10 @@
 .headerWrapper {
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid #cbd5e1;
-  border-radius: 5px;
-  padding: 1.8mm 3mm;
-  margin-bottom: 1.8mm;
+  border: none;
+  padding: 3mm 1mm 3mm 1mm;
+  margin-top: 5mm;
+  margin-bottom: 4mm;
   background: #ffffff;
 }
 
@@ -52,19 +52,19 @@
   justify-content: space-between;
   width: 100%;
   box-sizing: border-box;
-  gap: 3mm;
+  gap: 4mm;
 }
 
 .brandSection {
   display: flex;
   align-items: center;
-  gap: 3mm;
+  gap: 3.5mm;
   flex-shrink: 0;
 }
 
 .logoImg {
-  width: 11mm;
-  height: 11mm;
+  width: 13mm;
+  height: 13mm;
   object-fit: contain;
   border-radius: 3px;
 }
@@ -72,6 +72,7 @@
 .brandInfo {
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .titleRow {
@@ -81,11 +82,11 @@
 }
 
 .companyTitle {
-  font-size: 16pt;
+  font-size: 18pt;
   font-weight: 800;
   color: #ea580c;
-  line-height: 1.1;
-  letter-spacing: -0.2px;
+  line-height: 1.05;
+  letter-spacing: -0.3px;
 }
 
 .memoTag {
@@ -100,45 +101,86 @@
 }
 
 .phoneStrip {
-  font-size: 7.2pt;
+  font-size: 7.8pt;
   font-weight: 700;
   color: #475569;
   line-height: 1.1;
-  margin-top: 1.2mm;
+  margin-top: 1mm;
 }
 
-/* Compact Metadata Box (Right Side) */
+/* Metadata Box (Right Side) - Unboxed Executive Layout */
 .headerMetaBox {
   display: flex;
   flex-direction: column;
-  gap: 1.2mm;
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 4px;
-  padding: 1.5mm 3.5mm;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2mm;
+  background: transparent;
+  border: none;
+  padding: 0;
   flex: 1;
   min-width: 0;
   box-sizing: border-box;
 }
 
-.metaRow {
+.metaRowPrimary {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   width: 100%;
-  gap: 3mm;
+  gap: 5mm;
+}
+
+.metaRowSecondary {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  gap: 4mm;
+}
+
+.metaItemBig {
+  display: flex;
+  align-items: center;
+  gap: 1.5mm;
+}
+
+.metaLabelBig {
+  font-weight: 800;
+  color: #475569;
+  font-size: 8.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+.memoNoValue {
+  color: #ea580c;
+  font-weight: 900;
+  font-family: monospace, 'Courier New', sans-serif;
+  font-size: 14pt;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+.dateValue {
+  color: #0f172a;
+  font-weight: 800;
+  font-size: 11.5pt;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .metaItem {
   display: flex;
   align-items: center;
   gap: 1.5mm;
-  font-size: 7.4pt;
+  font-size: 7.6pt;
 }
 
 .metaLabel {
   font-weight: 700;
-  color: #475569;
+  color: #64748b;
   white-space: nowrap;
 }
 
@@ -160,9 +202,9 @@
   color: #ea580c;
   background: #ffffff;
   border: 0.8px solid #cbd5e1;
-  padding: 0.4mm 2mm;
+  padding: 0.4mm 2.2mm;
   border-radius: 3px;
-  font-size: 7pt;
+  font-size: 7.5pt;
   white-space: nowrap;
 }
 
@@ -187,6 +229,8 @@
   font-weight: 900;
   color: #15803d;
   text-transform: uppercase;
+  font-size: 8pt;
+  letter-spacing: 0.3px;
 }
 
 /* ==========================================================================
@@ -398,13 +442,13 @@
 .summaryRow td {
   padding: 1.3mm 0.8mm;
   font-weight: 900;
-  color: #0f172a;
+  color: #0f172a !important;
   font-size: 8pt;
 }
 
 .totalHighlight {
   font-size: 9pt;
-  color: #eb5a00 !important;
+  color: #0f172a !important;
   font-weight: 900;
 }
 
@@ -414,12 +458,12 @@
 .footerContainer {
   width: 100%;
   box-sizing: border-box;
-  margin-top: 1.5mm;
+  margin-top: 2mm;
   page-break-inside: avoid;
   break-inside: avoid;
 }
 
-/* Financial Summary Grid (Full-width & Prominent) */
+/* Financial Summary Grid (Full-width 5-Card Layout in Black Text) */
 .bottomSection {
   width: 100%;
   box-sizing: border-box;
@@ -434,8 +478,8 @@
 
 .finGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2.5mm;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2mm;
   width: 100%;
   box-sizing: border-box;
 }
@@ -445,49 +489,38 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1.8mm 2mm;
-  border: 1.2px solid #cbd5e1;
+  padding: 1.8mm 1.5mm;
+  border: 1px solid #0f172a;
   border-radius: 4px;
   background: #ffffff !important;
   text-align: center;
   box-sizing: border-box;
 }
 
-.highlightToPay {
-  background: #ffffff !important;
-  border-color: #cbd5e1 !important;
-}
-
-.highlightCollected {
-  background: #ffffff !important;
-  border-color: #cbd5e1 !important;
+.finBoxGrand {
+  border: 1.5px solid #000000;
+  background: #f8fafc !important;
 }
 
 .finLabel {
-  font-size: 7.4pt;
+  font-size: 7.2pt;
   font-weight: 800;
-  color: #475569;
+  color: #0f172a !important;
   margin-bottom: 1mm;
   white-space: nowrap;
 }
 
 .finValue {
-  font-size: 11.5pt;
+  font-size: 11pt;
   font-weight: 900;
-  color: #0f172a;
+  color: #000000 !important;
   line-height: 1;
 }
 
-.toPayColor {
-  color: #eb5a00 !important;
-  font-size: 13pt;
+.finValueGrand {
+  font-size: 12.5pt;
   font-weight: 900;
-}
-
-.collectedColor {
-  color: #15803d !important;
-  font-size: 13pt;
-  font-weight: 900;
+  color: #000000 !important;
 }
 
 /* Signatures Footer */
@@ -582,8 +615,7 @@
   .paidBadge,
   .summaryRow,
   .finBox,
-  .highlightToPay,
-  .highlightCollected {
+  .finBoxGrand {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
