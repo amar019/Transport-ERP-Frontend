@@ -473,19 +473,56 @@ export const MemoDetailsPage = () => {
                         </button>
                       </td>
                       <td className="py-3 px-4">
-                        <div className="font-extrabold text-slate-800 flex items-center gap-1.5">
-                          {(b.isDirectEntry || (!b.customer && b.receiver?.shopName)) && (
-                            <span className="text-[9px] font-black bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded border border-amber-200 shrink-0">
-                              ⚡ Direct
-                            </span>
-                          )}
-                          <span>
-                            {b.customer?.shopName || b.receiver?.shopName || b.customer?.ownerName || b.receiver?.ownerName || (typeof b.customer === "string" ? b.customer : "N/A")}
-                          </span>
-                        </div>
-                        {(b.customer?.mobile || b.receiver?.mobile || b.sender?.mobile) && (
-                          <div className="text-[11px] text-slate-400">{b.customer?.mobile || b.receiver?.mobile || b.sender?.mobile}</div>
-                        )}
+                        {(() => {
+                          const customerObj = typeof b.customer === "object" && b.customer !== null ? b.customer : {};
+                          const receiverObj = typeof b.receiver === "object" && b.receiver !== null ? b.receiver : {};
+
+                          const isDirect = Boolean(
+                            b.isDirectEntry ||
+                            (!b.customer && (receiverObj.shopName || receiverObj.name || receiverObj.ownerName || (typeof b.receiver === "string" && b.receiver)))
+                          );
+
+                          const mainName =
+                            customerObj.shopName ||
+                            receiverObj.shopName ||
+                            receiverObj.name ||
+                            receiverObj.ownerName ||
+                            customerObj.ownerName ||
+                            customerObj.name ||
+                            (typeof b.customer === "string" && b.customer.trim()
+                              ? b.customer
+                              : typeof b.receiver === "string" && b.receiver.trim()
+                              ? b.receiver
+                              : b.sender?.name || "N/A");
+
+                          const subName =
+                            (customerObj.ownerName || receiverObj.ownerName || receiverObj.name) !== mainName
+                              ? customerObj.ownerName || receiverObj.ownerName || receiverObj.name
+                              : null;
+
+                          const mobile = customerObj.mobile || receiverObj.mobile || b.sender?.mobile;
+
+                          return (
+                            <div>
+                              <div className="font-extrabold text-slate-800 flex items-center gap-1.5">
+                                {isDirect && (
+                                  <span className="text-[9px] font-black bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded border border-amber-200 shrink-0">
+                                    ⚡ Direct
+                                  </span>
+                                )}
+                                <span>{mainName}</span>
+                              </div>
+                              {subName && (
+                                <div className="text-[11px] text-slate-500 font-medium">
+                                  {subName}
+                                </div>
+                              )}
+                              {mobile && (
+                                <div className="text-[11px] text-slate-400">{mobile}</div>
+                              )}
+                            </div>
+                          );
+                        })()}
                       </td>
                       <td className="py-3 px-4">{b.itemName || "Goods"}</td>
                       <td className="py-3 px-4 text-center font-bold">{b.quantity ?? 1}</td>

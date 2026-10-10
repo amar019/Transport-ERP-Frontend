@@ -11,7 +11,7 @@ export const MemoPrintDocument = ({ memo = {}, company = {} }) => {
   const {
     name = "Mahakal Transport",
     logo = "/LOGO.jpg",
-    phones = "A. Nagar: 9766148289  |  Jamkhed: 9370445558",
+    phones = "A. Nagar: 9766148289  |  Jamkhed: 8483817081",
   } = company;
 
   const rawBookings = Array.isArray(memo.bookings) ? memo.bookings : [];
@@ -133,16 +133,16 @@ export const MemoPrintDocument = ({ memo = {}, company = {} }) => {
                     </div>
                   </div>
 
-                  {/* Metadata (Right) - Unboxed Executive Header */}
+                  {/* Metadata Box (Right) */}
                   <div className={styles.headerMetaBox}>
-                    <div className={styles.metaRowPrimary}>
-                      <div className={styles.metaItemBig}>
-                        <span className={styles.metaLabelBig}>Memo No:</span>
-                        <span className={styles.memoNoValue}>{memo.memoNumber || "MEM-0000"}</span>
+                    <div className={styles.metaRow}>
+                      <div className={styles.metaItem}>
+                        <span className={styles.metaLabel}>Memo No:</span>
+                        <span className={styles.highlightValue}>{memo.memoNumber || "MEM-0000"}</span>
                       </div>
-                      <div className={styles.metaItemBig}>
-                        <span className={styles.metaLabelBig}>Date:</span>
-                        <span className={styles.dateValue}>{formatDate(memo.memoDate || memo.date || memo.createdAt)}</span>
+                      <div className={styles.metaItem}>
+                        <span className={styles.metaLabel}>Date:</span>
+                        <span className={styles.metaValue}>{formatDate(memo.memoDate || memo.date || memo.createdAt)}</span>
                       </div>
                       <div className={styles.metaItem}>
                         <span className={styles.metaLabel}>Page:</span>
@@ -150,7 +150,8 @@ export const MemoPrintDocument = ({ memo = {}, company = {} }) => {
                       </div>
                     </div>
 
-                    <div className={styles.metaRowSecondary}>
+                    <div className={styles.metaRow}>
+
                       <div className={styles.metaItem}>
                         <span className={styles.metaLabel}>Payment Status:</span>
                         <span className={styles.statusValue}>{memo.collectionStatus || "PENDING"}</span>
@@ -186,28 +187,28 @@ export const MemoPrintDocument = ({ memo = {}, company = {} }) => {
                     <th style={{ width: '4.5%', paddingLeft: '2mm' }}>
                       Sr.No.<br /><span className={styles.subTh}>(क्र.)</span>
                     </th>
-                    <th style={{ width: '9.5%' }}>
+                    <th style={{ width: '8.5%' }}>
                       Bilty No.<br /><span className={styles.subTh}>(बील्टी नं.)</span>
                     </th>
-                    <th className={styles.alignLeft} style={{ width: '17.5%' }}>
+                    <th className={styles.alignLeft} style={{ width: '14%' }}>
                       Consignee Name<br /><span className={styles.subTh}>(Consignee Name)</span>
                     </th>
-                    <th className={styles.alignLeft} style={{ width: '13.5%' }}>
+                    <th className={styles.alignLeft} style={{ width: '21%' }}>
                       From / To<br /><span className={styles.subTh}>(Delivery Address)</span>
                     </th>
                     <th style={{ width: '9.5%' }}>
                       Mobile<br /><span className={styles.subTh}>(Contact)</span>
                     </th>
-                    <th className={styles.alignLeft} style={{ width: '18.5%' }}>
+                    <th className={styles.alignLeft} style={{ width: '16.5%' }}>
                       Goods<br /><span className={styles.subTh}>(Description)</span>
                     </th>
                     <th style={{ width: '4.5%' }}>
                       Qty.<br /><span className={styles.subTh}>(Qty.)</span>
                     </th>
-                    <th className={styles.alignRight} style={{ width: '7.0%' }}>
+                    <th className={styles.alignRight} style={{ width: '6.5%' }}>
                       Freight<br /><span className={styles.subTh}>(Freight)</span>
                     </th>
-                    <th className={styles.alignRight} style={{ width: '7.5%' }}>
+                    <th className={styles.alignRight} style={{ width: '6.5%' }}>
                       Total<br /><span className={styles.subTh}>(Total)</span>
                     </th>
                     <th style={{ width: '8.0%', paddingRight: '2mm' }}>
@@ -226,8 +227,19 @@ export const MemoPrintDocument = ({ memo = {}, company = {} }) => {
                       const shopName =
                         customer.shopName ||
                         receiver.shopName ||
-                        (typeof b.customer === 'string' ? b.customer : (receiver.ownerName || b.sender?.name || "-"));
-                      const ownerName = customer.ownerName || receiver.ownerName || "";
+                        receiver.name ||
+                        receiver.ownerName ||
+                        customer.ownerName ||
+                        customer.name ||
+                        (typeof b.customer === 'string' && b.customer.trim()
+                          ? b.customer
+                          : typeof b.receiver === 'string' && b.receiver.trim()
+                          ? b.receiver
+                          : b.sender?.name || "-");
+                      const ownerName =
+                        (customer.ownerName || receiver.ownerName || receiver.name) !== shopName
+                          ? customer.ownerName || receiver.ownerName || receiver.name || ""
+                          : "";
                       const mobile = customer.mobile || receiver.mobile || b.sender?.mobile || "-";
 
                       const address =
@@ -301,24 +313,24 @@ export const MemoPrintDocument = ({ memo = {}, company = {} }) => {
                   <div className={styles.financialSummary}>
                     <div className={styles.finGrid}>
                       <div className={styles.finBox}>
-                        <span className={styles.finLabel}>एकूण बिल्टी (Total Bilties)</span>
+                        <span className={styles.finLabel}>एकूण बिल्टी (Total Bilties):</span>
                         <span className={styles.finValue}>{displayTotalBilties}</span>
                       </div>
                       <div className={styles.finBox}>
-                        <span className={styles.finLabel}>एकूण नग (Total Cartons)</span>
+                        <span className={styles.finLabel}>एकूण नग (Total Cartons):</span>
                         <span className={styles.finValue}>{totalQuantity}</span>
                       </div>
-                      <div className={styles.finBox}>
-                        <span className={styles.finLabel}>एकूण पेड (Total Paid)</span>
-                        <span className={styles.finValue}>{formatCurrency(totalPaidAtBooking)}</span>
+                      <div className={`${styles.finBox} ${styles.highlightPaid}`}>
+                        <span className={styles.finLabel}>एकूण पेड रक्कम (Total Paid):</span>
+                        <span className={`${styles.finValue} ${styles.paidColor}`}>{formatCurrency(totalPaidAtBooking)}</span>
                       </div>
-                      <div className={styles.finBox}>
-                        <span className={styles.finLabel}>TO PAY (Total Unpaid)</span>
-                        <span className={styles.finValue}>{formatCurrency(totalToPay)}</span>
+                      <div className={`${styles.finBox} ${styles.highlightToPay}`}>
+                        <span className={styles.finLabel}>TO_PAY येणे रक्कम (Total Unpaid):</span>
+                        <span className={`${styles.finValue} ${styles.toPayColor}`}>{formatCurrency(totalToPay)}</span>
                       </div>
-                      <div className={`${styles.finBox} ${styles.finBoxGrand}`}>
-                        <span className={styles.finLabel}>एकूण मेमो रक्कम (Grand Total)</span>
-                        <span className={`${styles.finValue} ${styles.finValueGrand}`}>{formatCurrency(grandTotal)}</span>
+                      <div className={`${styles.finBox} ${styles.highlightGrand}`}>
+                        <span className={styles.finLabel}>एकूण मेमो रक्कम (Grand Total):</span>
+                        <span className={`${styles.finValue} ${styles.grandColor}`}>{formatCurrency(grandTotal)}</span>
                       </div>
                     </div>
                   </div>
