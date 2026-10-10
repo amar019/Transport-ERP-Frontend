@@ -96,7 +96,15 @@ export default function PaymentTransactionsPage() {
       const matchesMode = filters.paymentMode === "ALL" || tx.paymentMode === filters.paymentMode;
       const q = filters.search.toLowerCase().trim();
       const bookingNo = tx.booking?.bookingNumber?.toLowerCase() || "";
-      const custName = tx.customer?.name?.toLowerCase() || "";
+      const custName = (
+        tx.customer?.shopName ||
+        tx.customer?.name ||
+        tx.booking?.receiver?.shopName ||
+        tx.booking?.receiver?.ownerName ||
+        tx.directReceiver?.shopName ||
+        tx.directReceiver?.ownerName ||
+        ""
+      ).toLowerCase();
       const boyName = tx.deliveryBoy?.name?.toLowerCase() || "";
       const remarks = tx.remarks?.toLowerCase() || "";
       const matchesSearch =
@@ -453,12 +461,25 @@ export default function PaymentTransactionsPage() {
                       <td className="py-3.5 px-4">{getTypeBadge(item.type)}</td>
                       <td className="py-3.5 px-4">{getCollectedByBadge(item.collectedBy)}</td>
                       <td className="py-3.5 px-4 font-semibold text-[#0F172A] text-xs whitespace-nowrap">
-                        {item.customer?.name ? (
+                        {item.customer?.name || item.customer?.shopName ? (
                           <div>
-                            <span className="font-bold text-[#0F172A]">{item.customer.name}</span>
+                            <span className="font-bold text-[#0F172A]">
+                              {item.customer.shopName || item.customer.name}
+                            </span>
                             {item.customer.mobile && (
                               <span className="block text-[11px] text-[#94A3B8] font-mono font-normal">
                                 {item.customer.mobile}
+                              </span>
+                            )}
+                          </div>
+                        ) : (item.booking?.receiver?.shopName || item.booking?.receiver?.ownerName || item.directReceiver?.shopName || item.directReceiver?.ownerName) ? (
+                          <div>
+                            <span className="font-bold text-[#0F172A]">
+                              {item.booking?.receiver?.shopName || item.booking?.receiver?.ownerName || item.directReceiver?.shopName || item.directReceiver?.ownerName}
+                            </span>
+                            {(item.booking?.receiver?.mobile || item.directReceiver?.mobile) && (
+                              <span className="block text-[11px] text-[#94A3B8] font-mono font-normal">
+                                {item.booking?.receiver?.mobile || item.directReceiver?.mobile}
                               </span>
                             )}
                           </div>

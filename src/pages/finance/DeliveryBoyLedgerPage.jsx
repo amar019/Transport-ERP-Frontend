@@ -222,10 +222,18 @@ export default function DeliveryBoyLedgerPage() {
       const shopName = (
         item.paymentTransaction?.customer?.shopName ||
         item.booking?.customer?.shopName ||
+        item.booking?.receiver?.shopName ||
+        item.booking?.receiver?.ownerName ||
         item.booking?.customer?.name ||
         ""
       ).toLowerCase();
-      return bookingNo.includes(q) || shopName.includes(q);
+      const mobile = (
+        item.booking?.receiver?.mobile ||
+        item.booking?.customer?.mobile ||
+        item.paymentTransaction?.customer?.mobile ||
+        ""
+      ).toLowerCase();
+      return bookingNo.includes(q) || shopName.includes(q) || mobile.includes(q);
     });
   }, [outstandingData.collections, searchQuery]);
 
@@ -634,8 +642,14 @@ export default function DeliveryBoyLedgerPage() {
                     const shopName =
                       item.paymentTransaction?.customer?.shopName ||
                       item.booking?.customer?.shopName ||
-                      item.booking?.customer?.name ||
-                      "Direct Customer";
+                      item.booking?.receiver?.shopName ||
+                      item.booking?.receiver?.ownerName ||
+                      "Direct Walk-in";
+                    const mobileNumber =
+                      item.booking?.receiver?.mobile ||
+                      item.booking?.customer?.mobile ||
+                      item.paymentTransaction?.customer?.mobile ||
+                      null;
                     const address = item.booking?.deliveryAddress || "--";
 
                     return (
@@ -670,7 +684,14 @@ export default function DeliveryBoyLedgerPage() {
                           )}
                         </td>
                         <td className="py-3.5 px-4 font-semibold text-[#0F172A]">
-                          {shopName}
+                          <div>
+                            <span>{shopName}</span>
+                            {mobileNumber && (
+                              <span className="block text-[11px] text-[#64748B] font-mono font-normal">
+                                {mobileNumber}
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="py-3.5 px-4 text-slate-600 max-w-xs truncate">
                           {address}
