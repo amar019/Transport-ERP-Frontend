@@ -1,1 +1,241 @@
 /* Global App Styles */
+
+/* ========================================================
+   OFFICIAL SERVER INFRASTRUCTURE NOTICE STYLES
+   Designed as an authoritative Server/Hosting Billing Advisory
+   ======================================================== */
+
+.server-notice-popup {
+  position: relative !important;
+  border-radius: 0.875rem !important; /* 14px - crisp, formal document border */
+  border: 1px solid #cbd5e1 !important; /* formal slate border */
+  border-top: 6px solid #ea580c !important; /* bold warning header accent strip */
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+  font-family: inherit !important;
+  padding: 1.5rem 1.75rem 1.75rem 1.75rem !important;
+  max-width: 520px !important;
+  width: 92% !important;
+  background: #ffffff !important;
+  text-align: left !important;
+}
+
+/* SweetAlert2 Warning Icon tweak for Server Notice */
+.server-notice-popup .swal2-icon.swal2-warning {
+  margin: 0.25rem auto 0.75rem auto !important;
+  border-color: #ea580c !important;
+  color: #ea580c !important;
+  transform: scale(0.85);
+}
+
+.server-notice-title {
+  color: #0f172a !important; /* Slate-900 */
+  font-size: 1.35rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  text-align: center !important;
+  padding: 0 !important;
+  margin: 0 0 0.875rem 0 !important;
+  text-transform: uppercase !important;
+}
+
+.server-notice-html {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  text-align: left !important;
+}
+
+.server-notice-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+/* Header metadata bar */
+.server-notice-meta-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px dashed #cbd5e1;
+  padding-bottom: 0.625rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.6875rem;
+}
+
+.server-notice-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.25rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.server-pulse-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #dc2626;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse-dot 1.8s infinite;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.95); opacity: 1; }
+  50% { transform: scale(1.35); opacity: 0.5; }
+  100% { transform: scale(0.95); opacity: 1; }
+}
+
+.server-notice-id {
+  color: #64748b;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+
+/* Technical Details Card */
+.server-notice-info-card {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+}
+
+.server-notice-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.server-notice-label {
+  color: #64748b;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.server-notice-value {
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.server-notice-status {
+  background-color: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  font-size: 0.6875rem;
+}
+
+/* Primary Official Statement Box */
+.server-notice-statement-box {
+  background-color: #fffaf5;
+  border-left: 3.5px solid #ea580c;
+  border-top: 1px solid #fed7aa;
+  border-right: 1px solid #fed7aa;
+  border-bottom: 1px solid #fed7aa;
+  padding: 0.75rem 0.875rem;
+  border-radius: 0.375rem;
+}
+
+.server-notice-statement {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: #1e293b;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Action Directive Callout */
+.server-notice-action-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-left: 3.5px solid #2563eb;
+  border-radius: 0.375rem;
+  padding: 0.625rem 0.875rem;
+}
+
+.server-notice-callout-icon {
+  color: #2563eb;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.server-notice-callout-text {
+  font-size: 0.8125rem;
+  color: #1e40af;
+  line-height: 1.45;
+}
+
+.server-notice-callout-text strong {
+  font-weight: 700;
+}
+
+/* Document Footer */
+.server-notice-doc-footer {
+  text-align: center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.625rem;
+  color: #94a3b8;
+  letter-spacing: 0.03em;
+  padding-top: 0.25rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* Confirm Action Button */
+.server-notice-btn {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+  color: #ffffff !important;
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  padding: 0.7rem 2.5rem !important;
+  border-radius: 0.5rem !important; /* 8px */
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3) !important;
+  border: 1px solid #c2410c !important;
+  cursor: pointer !important;
+  margin: 0.875rem auto 0 auto !important;
+  display: block !important;
+  transition: all 0.2s ease !important;
+}
+
+.server-notice-btn:hover {
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+  box-shadow: 0 6px 16px rgba(234, 88, 12, 0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
+.server-notice-btn:active {
+  transform: translateY(0) !important;
+}
+
+.server-notice-btn:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.45) !important;
+}
+
+.server-notice-close {
+  color: #94a3b8 !important;
+  font-size: 1.5rem !important;
+  transition: color 0.15s ease !important;
+}
+
+.server-notice-close:hover {
+  color: #334155 !important;
+}
+
+

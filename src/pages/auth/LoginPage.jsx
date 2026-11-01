@@ -11,6 +11,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { ROUTES } from "@/constants/paths";
+import { showPaymentReminder } from "@/utils/swal";
 
 export const LoginPage = () => {
   const dispatch = useDispatch();
@@ -34,6 +35,13 @@ export const LoginPage = () => {
       navigate(from, { replace: true });
     }
   }, [isAuthenticated, navigate, from]);
+
+  // Display payment reminder popup whenever the login page is opened
+  useEffect(() => {
+    if (!isAuthenticated) {
+      showPaymentReminder();
+    }
+  }, [isAuthenticated]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
