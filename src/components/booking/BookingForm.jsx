@@ -389,9 +389,44 @@ export default function BookingForm({
     const bId = branch._id || branch.id;
     setValue("toBranch", bId, { shouldValidate: true });
     setValue("toBranchName", branch.name || "");
+    try {
+      localStorage.setItem("last_selected_dest_branch_id", bId);
+      localStorage.setItem("last_selected_dest_branch_name", branch.name || "");
+    } catch (e) {
+      // ignore storage error
+    }
     setDestDropdownOpen(false);
     setDestSearchTerm("");
   };
+
+  // Auto-select Destination Branch for Fast Bilty Creation:
+  // 1. If only 1 destination branch exists (e.g., Jamkhed Branch), auto-select it immediately.
+  // 2. If multiple exist, pre-fill with the last used destination branch from localStorage.
+  useEffect(() => {
+    if (isEditMode) return;
+    if (selectedToBranchId) return;
+    if (!destinationBranches || destinationBranches.length === 0) return;
+
+    if (destinationBranches.length === 1) {
+      const singleBranch = destinationBranches[0];
+      const bId = singleBranch._id || singleBranch.id;
+      setValue("toBranch", bId, { shouldValidate: true });
+      setValue("toBranchName", singleBranch.name || "");
+    } else {
+      try {
+        const lastId = localStorage.getItem("last_selected_dest_branch_id");
+        if (lastId) {
+          const match = destinationBranches.find((b) => (b._id || b.id) === lastId);
+          if (match) {
+            setValue("toBranch", lastId, { shouldValidate: true });
+            setValue("toBranchName", match.name || "");
+          }
+        }
+      } catch (e) {
+        // ignore storage error
+      }
+    }
+  }, [destinationBranches, selectedToBranchId, isEditMode, setValue]);
 
   // Select Customer / Party Handler
   const handleSelectCustomer = (cust) => {
@@ -461,9 +496,14 @@ export default function BookingForm({
     onSubmit(payload);
   };
 
-  // Keyboard shortcut: Ctrl + Enter / Cmd + Enter
+  // Keyboard shortcuts: F10 to toggle Destination Branch, Ctrl+Enter to Submit
   const handleKeyDown = useCallback(
     (e) => {
+      if (e.key === "F10") {
+        e.preventDefault();
+        setDestDropdownOpen((prev) => !prev);
+        return;
+      }
       if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
         e.preventDefault();
         handleSubmit(handleFormSubmit)();
@@ -627,6 +667,14 @@ export default function BookingForm({
                           placeholder="Type city, branch name, or code..."
                           value={destSearchTerm}
                           onChange={(e) => setDestSearchTerm(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && filteredDestinationBranches.length > 0) {
+                              e.preventDefault();
+                              handleSelectDestinationBranch(filteredDestinationBranches[0]);
+                            } else if (e.key === "Escape") {
+                              setDestDropdownOpen(false);
+                            }
+                          }}
                           className="w-full pl-8 pr-3 py-2 text-xs bg-white border border-slate-200 rounded-lg focus:outline-hidden focus:border-orange-500 font-semibold"
                         />
                       </div>

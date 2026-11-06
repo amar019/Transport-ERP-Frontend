@@ -28,6 +28,7 @@ import PaymentListPage from "@/pages/finance/PaymentListPage";
 import CustomerLedgerPage from "@/pages/finance/CustomerLedgerPage";
 import DeliveryBoyLedgerPage from "@/pages/finance/DeliveryBoyLedgerPage";
 import PaymentTransactionsPage from "@/pages/finance/PaymentTransactionsPage";
+import BookingReportPage from "@/pages/reports/BookingReportPage";
 import PlaceholderPage from "@/pages/placeholder/PlaceholderPage";
 import PublicCustomerRegisterPage from "@/pages/public/PublicCustomerRegisterPage";
 
@@ -93,8 +94,8 @@ export const AppRoutes = () => {
           <Route path={ROUTES.FINANCE.PAYMENTS} element={<PaymentListPage />} />
           <Route path={ROUTES.FINANCE.EXPENSES} element={<ExpensesPage />} />
 
-          {/* Reports Placeholders */}
-          <Route path={ROUTES.REPORTS.BOOKING} element={<PlaceholderPage />} />
+          {/* Reports */}
+          <Route path={ROUTES.REPORTS.BOOKING} element={<BookingReportPage />} />
           <Route path={ROUTES.REPORTS.DELIVERY} element={<PlaceholderPage />} />
           <Route path={ROUTES.REPORTS.FINANCIAL} element={<PlaceholderPage />} />
 
